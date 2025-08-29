@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | ABHIVOCOPEDIA</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #eee;
+      padding: 2rem;
+    }
+    h1 {
+      color: #4db8ff;
+    }
+    #visitorList {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #222;
+      border-radius: 8px;
+    }
+    li {
+      margin: 8px 0;
+      padding: 5px;
+      border-bottom: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <p id="count"></p>
+  <h3>Visitor Logs:</h3>
+  <ul id="visitorList"></ul>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js"></script>
+
+  <script>
+    // TODO: Use same Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const ADMIN_EMAIL = "abhivocopedia@gmail.com";
+
+    auth.onAuthStateChanged(user => {
+      if (user && user.email === ADMIN_EMAIL) {
+        // Show visitors
+        db.collection("visitors").orderBy("timestamp", "desc")
+          .onSnapshot(snapshot => {
+            const list = document.getElementById("visitorList");
+            const count = document.getElementById("count");
+            list.innerHTML = "";
+            count.textContent = `Total Visitors: ${snapshot.size}`;
+            snapshot.forEach(doc => {
+              const v = doc.data();
+              const li = document.createElement("li");
+              li.textContent = `${v.email} - ${v.timestamp?.toDate()}`;
+              list.appendChild(li);
+            });
+          });
+      } else {
+        document.body.innerHTML = "<h2>Access Denied</h2>";
+      }
+    });
+
+    // Force Google login
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(err => console.error(err));
+  </script>
+</body>
+</html>
