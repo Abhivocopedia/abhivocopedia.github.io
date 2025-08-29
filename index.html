@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ABHINANDAN BHATTA | Portfolio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+    header {
+      padding: 3rem;
+      animation: fadeInDown 1.5s ease;
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    h2 {
+      font-weight: 400;
+      margin-top: 10px;
+    }
+    .section {
+      padding: 3rem 2rem;
+      animation: fadeInUp 2s ease;
+    }
+    footer {
+      padding: 2rem;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.4);
+    }
+    @keyframes fadeInDown {
+      from {opacity:0; transform:translateY(-50px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+    @keyframes fadeInUp {
+      from {opacity:0; transform:translateY(50px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ABHINANDAN BHATTA</h1>
+    <h2>Student | Coder | Musician</h2>
+  </header>
+
+  <div class="section">
+    <h3>About Me</h3>
+    <p>[Your bio and achievements will go here]</p>
+    <p>You can add a <b>picture</b>, <b>video</b>, or <b>music player</b> here later.</p>
+  </div>
+
+  <div class="section">
+    <h3>Projects</h3>
+    <p>[ECE Projects, Coding Works, AWS, Hackathons...]</p>
+  </div>
+
+  <div class="section">
+    <h3>Hobbies</h3>
+    <p>[Music, Sports, Anchoring, Yakshagana, Karate, etc.]</p>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 ABHINANDAN BHATTA | Portfolio</p>
+  </footer>
+
+  <!-- Background Calm Music -->
+  <audio autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js"></script>
+
+  <script>
+    // TODO: Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Auto log visitor
+    window.onload = () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then(result => {
+          const user = result.user;
+          db.collection("visitors").add({
+            email: user.email,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        })
+        .catch(err => console.error(err));
+    };
+  </script>
+</body>
+</html>
