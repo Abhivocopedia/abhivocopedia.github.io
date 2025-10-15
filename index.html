@@ -1964,10 +1964,20 @@
         </section>
 
         <!-- Footer -->
-        <div class="license" style="margin-top: 20px; font-size: 0.8rem; color: var(--lighter-gray);">
+        <div class="license" style="margin-top: 20px; font-size: 0.8rem; color: var(--lighter-gray); padding-bottom: 10px;">
             <p>© 2025 Abhinandana Bhatta. All intellectual property rights reserved.</p>
             <p style="margin-top: 8px; font-size: 0.7rem;">Contact details are intended for legitimate professional inquiries only.</p>
         </div>
+
+        <style>
+        @media (max-width: 768px) {
+            .license {
+                position: relative;
+                bottom: -0.3mm;
+                margin-bottom: 10px;
+            }
+        }
+        </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
