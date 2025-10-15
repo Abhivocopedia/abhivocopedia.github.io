@@ -28,8 +28,22 @@
             color: var(--light);
             overflow-x: hidden;
             line-height: 1.6;
-            /* Enable cursor for all devices */
-            cursor: none;
+        }
+
+        /* Enable cursor only for desktop */
+        @media (min-width: 769px) {
+            body {
+                cursor: none;
+            }
+            .cursor, .cursor-follower {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cursor, .cursor-follower {
+                display: none !important;
+            }
         }
 
         /* Animated Background */
@@ -151,7 +165,7 @@
             }
         }
 
-        /* Custom Cursor - Enabled for all devices */
+        /* Custom Cursor - Only for desktop */
         .cursor {
             position: fixed;
             width: 20px;
@@ -175,110 +189,7 @@
             transition: transform 0.4s ease;
         }
 
-        /* Mobile cursor adjustments */
-        @media (max-width: 768px) {
-            .cursor {
-                width: 16px;
-                height: 16px;
-            }
-            
-            .cursor-follower {
-                width: 32px;
-                height: 32px;
-            }
-        }
-
-        /* Unique Spotlight Effect */
-        .cursor-spotlight {
-            position: fixed;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            background: radial-gradient(
-                circle,
-                rgba(255, 255, 255, 0.15) 0%,
-                rgba(255, 255, 255, 0.1) 30%,
-                rgba(255, 255, 255, 0.05) 50%,
-                transparent 70%
-            );
-            pointer-events: none;
-            z-index: 9997;
-            mix-blend-mode: overlay;
-            filter: blur(15px);
-            transition: all 0.3s ease;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Mobile spotlight adjustments */
-        @media (max-width: 768px) {
-            .cursor-spotlight {
-                width: 200px;
-                height: 200px;
-                filter: blur(10px);
-            }
-        }
-
-        /* Spotlight color variations for different sections */
-        .cursor-spotlight.home {
-            background: radial-gradient(
-                circle,
-                rgba(255, 255, 255, 0.2) 0%,
-                rgba(255, 255, 255, 0.15) 30%,
-                rgba(255, 255, 255, 0.08) 50%,
-                transparent 70%
-            );
-        }
-
-        .cursor-spotlight.about {
-            background: radial-gradient(
-                circle,
-                rgba(108, 99, 255, 0.2) 0%,
-                rgba(108, 99, 255, 0.15) 30%,
-                rgba(108, 99, 255, 0.08) 50%,
-                transparent 70%
-            );
-        }
-
-        .cursor-spotlight.skills {
-            background: radial-gradient(
-                circle,
-                rgba(255, 101, 132, 0.2) 0%,
-                rgba(255, 101, 132, 0.15) 30%,
-                rgba(255, 101, 132, 0.08) 50%,
-                transparent 70%
-            );
-        }
-
-        .cursor-spotlight.projects {
-            background: radial-gradient(
-                circle,
-                rgba(78, 205, 196, 0.2) 0%,
-                rgba(78, 205, 196, 0.15) 30%,
-                rgba(78, 205, 196, 0.08) 50%,
-                transparent 70%
-            );
-        }
-
-        .cursor-spotlight.education {
-            background: radial-gradient(
-                circle,
-                rgba(69, 183, 209, 0.2) 0%,
-                rgba(69, 183, 209, 0.15) 30%,
-                rgba(69, 183, 209, 0.08) 50%,
-                transparent 70%
-            );
-        }
-
-        .cursor-spotlight.contact {
-            background: radial-gradient(
-                circle,
-                rgba(150, 206, 180, 0.2) 0%,
-                rgba(150, 206, 180, 0.15) 30%,
-                rgba(150, 206, 180, 0.08) 50%,
-                transparent 70%
-            );
-        }
-
+        
         /* Welcome Screen */
         .welcome-screen {
             position: fixed;
@@ -337,7 +248,7 @@
             margin-bottom: 15px;
             color: var(--light);
             opacity: 0;
-            animation: fadeInUp 1s ease 0.5s forwards;
+            animation: fadeInUp 1s ease 1s forwards;
         }
 
         @media (min-width: 768px) {
@@ -398,18 +309,21 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            animation: loadingShine 2s infinite;
+            animation: loadingShine 5s infinite;
         }
 
         @keyframes loadingShine {
             0% { left: -100%; }
+            25% { left: -50%; }
+            50% { left: 0%; }
+            75% { left: 50%; }
             100% { left: 100%; }
         }
 
         /* Main Content */
         .main-content {
             opacity: 0;
-            transition: opacity 1s ease;
+            transition: opacity 3s ease;
         }
 
         .main-content.loaded {
@@ -527,6 +441,8 @@
             color: var(--light);
             font-size: 1.5rem;
             cursor: pointer;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         @media (min-width: 768px) {
@@ -541,7 +457,8 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background: var(--dark);
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
             z-index: 1000;
             display: flex;
             flex-direction: column;
@@ -562,6 +479,9 @@
             font-size: 1.5rem;
             font-weight: 500;
             transition: color 0.3s ease;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
 
         .mobile-nav a:hover {
@@ -577,6 +497,8 @@
             color: var(--light);
             font-size: 2rem;
             cursor: pointer;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         /* Hero Section */
@@ -592,6 +514,12 @@
         @media (min-width: 768px) {
             .hero {
                 padding: 100px 50px 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 60px 15px 30px;
             }
         }
 
@@ -634,6 +562,12 @@
         @media (min-width: 768px) {
             .hero-text h1 {
                 font-size: 4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 {
+                font-size: 2rem;
             }
         }
 
@@ -702,6 +636,7 @@
             overflow: hidden;
             border: 1px solid var(--light);
             font-size: 0.9rem;
+            min-height: 44px;
         }
 
         @media (min-width: 768px) {
@@ -764,6 +699,13 @@
             .photo-frame {
                 width: 380px;
                 height: 480px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-frame {
+                width: 250px;
+                height: 340px;
             }
         }
 
@@ -1029,7 +971,60 @@
                 font-size: 0.95rem;
             }
         }
+        
+        /* Typewriter effect styles */
+                
+        .typewriter-container {
+            display: block;
+            position: relative;
+            max-width: 100%;
+            width: 100%;
+            text-align: center;
+        }
 
+        .typewriter-text {
+            margin: 0 auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-word;
+            line-height: 1.5;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+            display: inline-block;
+            min-height: 80px;
+            position: relative;
+            text-align: left;
+        }
+
+        .typewriter-cursor {
+            display: inline;
+            animation: blink-caret 0.75s step-end infinite;
+            color: var(--light);
+            font-weight: bold;
+        }
+
+        @keyframes blink-caret {
+            from, to { opacity: 1 }
+            50% { opacity: 0 }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .typewriter-text {
+                font-size: 0.9rem;
+                min-height: 100px;
+                line-height: 1.6;
+                padding: 0 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .typewriter-text {
+                font-size: 0.85rem;
+                min-height: 120px;
+                line-height: 1.7;
+            }
+        }
         /* Skills Section */
         .skills-container {
             max-width: 1200px;
@@ -1107,6 +1102,7 @@
             overflow: hidden;
             width: 100%;
             max-width: 150px;
+            min-height: 44px;
         }
 
         @media (min-width: 768px) {
@@ -1567,6 +1563,8 @@
             text-decoration: none;
             transition: all 0.4s ease;
             font-size: 1.1rem;
+            min-height: 44px;
+            min-width: 44px;
         }
 
         @media (min-width: 768px) {
@@ -1686,7 +1684,9 @@
             <div class="hero-content">
                 <div class="hero-text">
                     <h1>Abhinandana <span class="highlight">Bhatta</span></h1>
-                    <p>Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.</p>
+                    <div class="typewriter-container">
+    <p class="typewriter-text">Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.</p>
+                    </div>
                     <div class="cta-buttons">
                         <a href="#projects" class="btn btn-primary">
                             <i class="fas fa-code"></i> View Projects
@@ -1936,6 +1936,7 @@
         <!-- Footer -->
         <footer>
             <h3>Thanks For Your Time</h3>
+            <h6><center>-Abhi</center></h6>
         </footer>
     </div>
 
@@ -1966,55 +1967,47 @@
                 });
             });
             
-            // Custom cursor effect for ALL devices
-            let mouseX = 0, mouseY = 0;
-            let followerX = 0, followerY = 0;
-            
-            // Mouse/touch move handler
-            function handleMove(e) {
-                let clientX, clientY;
+            // Custom cursor effect - ONLY for desktop
+            if (window.innerWidth >= 769) {
+                let mouseX = 0, mouseY = 0;
+                let followerX = 0, followerY = 0;
                 
-                if (e.type === 'touchmove') {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
+                // Mouse move handler
+                document.addEventListener('mousemove', function(e) {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    
+                    cursor.style.left = mouseX + 'px';
+                    cursor.style.top = mouseY + 'px';
+                });
+                
+                // Smooth follower animation
+                function animateFollower() {
+                    followerX += (mouseX - followerX) * 0.1;
+                    followerY += (mouseY - followerY) * 0.1;
+                    
+                    cursorFollower.style.left = followerX + 'px';
+                    cursorFollower.style.top = followerY + 'px';
+                    
+                    requestAnimationFrame(animateFollower);
                 }
+                animateFollower();
                 
-                mouseX = clientX;
-                mouseY = clientY;
+                // Hover effects for interactive elements - ONLY for desktop
+                const interactiveElements = document.querySelectorAll('.btn, .skill-item, .project-card, .stat-item, .contact-item, .social-link');
                 
-                cursor.style.left = mouseX + 'px';
-                cursor.style.top = mouseY + 'px';
+                interactiveElements.forEach(element => {
+                    element.addEventListener('mouseenter', () => {
+                        cursor.style.transform = 'scale(1.5)';
+                        cursorFollower.style.transform = 'scale(1.2)';
+                    });
+                    
+                    element.addEventListener('mouseleave', () => {
+                        cursor.style.transform = 'scale(1)';
+                        cursorFollower.style.transform = 'scale(1)';
+                    });
+                });
             }
-            
-            // Add both mouse and touch events
-            document.addEventListener('mousemove', handleMove);
-            document.addEventListener('touchmove', handleMove);
-            
-            // Smooth follower animation
-            function animateFollower() {
-                followerX += (mouseX - followerX) * 0.1;
-                followerY += (mouseY - followerY) * 0.1;
-                
-                cursorFollower.style.left = followerX + 'px';
-                cursorFollower.style.top = followerY + 'px';
-                
-                requestAnimationFrame(animateFollower);
-            }
-            animateFollower();
-            
-            // Hide cursor on touch start (better UX for mobile)
-            document.addEventListener('touchstart', function() {
-                cursor.style.opacity = '0.7';
-                cursorFollower.style.opacity = '0.7';
-            });
-            
-            document.addEventListener('touchend', function() {
-                cursor.style.opacity = '1';
-                cursorFollower.style.opacity = '1';
-            });
             
             // Hide welcome screen and show main content after loading
             setTimeout(() => {
@@ -2070,34 +2063,70 @@
                     }
                 });
             });
-            
-            // Hover effects for interactive elements for ALL devices
-            const interactiveElements = document.querySelectorAll('.btn, .skill-item, .project-card, .stat-item, .contact-item, .social-link');
-            
-            interactiveElements.forEach(element => {
-                // Mouse events
-                element.addEventListener('mouseenter', () => {
-                    cursor.style.transform = 'scale(1.5)';
-                    cursorFollower.style.transform = 'scale(1.2)';
-                });
-                
-                element.addEventListener('mouseleave', () => {
-                    cursor.style.transform = 'scale(1)';
-                    cursorFollower.style.transform = 'scale(1)';
-                });
-                
-                // Touch events for mobile
-                element.addEventListener('touchstart', () => {
-                    cursor.style.transform = 'scale(1.5)';
-                    cursorFollower.style.transform = 'scale(1.2)';
-                });
-                
-                element.addEventListener('touchend', () => {
-                    cursor.style.transform = 'scale(1)';
-                    cursorFollower.style.transform = 'scale(1)';
-                });
-            });
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const typewriterContainer = document.querySelector('.typewriter-container');
+    const fullText = "Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.";
+    let currentText = '';
+    let isDeleting = false;
+    let charIndex = 0;
+    let typingSpeed = 100;
+    let deletingSpeed = 50;
+    let pauseTime = 2000;
+
+    // Clear container and create text element
+    typewriterContainer.innerHTML = '';
+    const textElement = document.createElement('span');
+    textElement.className = 'typewriter-text';
+    typewriterContainer.appendChild(textElement);
+
+    // Create cursor element
+    const cursor = document.createElement('span');
+    cursor.className = 'typewriter-cursor';
+    cursor.textContent = '|';
+    textElement.appendChild(cursor);
+
+    function typeWriter() {
+        const textContent = textElement.childNodes[0] ? textElement.childNodes[0].textContent : '';
+        
+        if (!isDeleting && charIndex < fullText.length) {
+            // Typing forward
+            if (charIndex === 0) {
+                // Create text node for first character
+                const textNode = document.createTextNode(fullText[charIndex]);
+                textElement.insertBefore(textNode, cursor);
+            } else {
+                // Append to existing text node
+                textElement.childNodes[0].textContent += fullText[charIndex];
+            }
+            charIndex++;
+            setTimeout(typeWriter, typingSpeed);
+        } else if (isDeleting && charIndex > 0) {
+            // Deleting backward
+            const currentContent = textElement.childNodes[0].textContent;
+            textElement.childNodes[0].textContent = currentContent.slice(0, -1);
+            charIndex--;
+            setTimeout(typeWriter, deletingSpeed);
+        } else {
+            // Switch mode
+            isDeleting = !isDeleting;
+            if (!isDeleting) {
+                // Reset for new typing cycle
+                charIndex = 0;
+                // Clear text but keep cursor
+                if (textElement.childNodes[0]) {
+                    textElement.removeChild(textElement.childNodes[0]);
+                }
+            }
+            setTimeout(typeWriter, pauseTime);
+        }
+    }
+
+    // Start the typewriter effect
+    setTimeout(typeWriter, 1000);
+});
+</script>
 </body>
 </html>
