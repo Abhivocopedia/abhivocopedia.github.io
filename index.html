@@ -1964,10 +1964,22 @@
         </section>
 
         <!-- Footer -->
-        <div class="license" style="margin-top: 20px; font-size: 0.8rem; color: var(--lighter-gray); padding-bottom: 10px;">
-            <p>© 2025 Abhinandana Bhatta. All intellectual property rights reserved.</p>
-            <p style="margin-top: 8px; font-size: 0.7rem;">Contact details are intended for legitimate professional inquiries only.</p>
+        <div class="license" style="margin-top: 20px; font-size: 0.8rem; color: var(--lighter-gray); padding: 0 0.3mm; text-align: center;">
+            <marquee behavior="scroll" direction="left" scrollamount="3">
+                © 2025 Abhinandana Bhatta. All intellectual property rights reserved. | Contact details are intended for legitimate professional inquiries only.
+            </marquee>
         </div>
+
+<style>
+@media (max-width: 768px) {
+    .license {
+        position: relative;
+        bottom: -0.3mm;
+        margin-bottom: 10px;
+        padding: 0 0.3mm !important;
+    }
+}
+</style>
 
         <style>
         @media (max-width: 768px) {
