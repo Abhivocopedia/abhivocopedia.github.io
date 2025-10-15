@@ -1616,6 +1616,14 @@
                 margin-top: 30px !important;
             }
         }
+        @keyframes pulseGlow {
+            from {
+                text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff;
+            }
+            to {
+                text-shadow: 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 50px #ffffff, 0 0 80px #ffffff;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1639,7 +1647,7 @@
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-content">
             <!-- Replace this in your welcome screen -->
-            <div class="welcome-logo" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; position: relative; display: inline-block; text-align: center; color: #ffffff; text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ff00de, 0 0 70px #ff00de, 0 0 80px #ff00de, 0 0 100px #ff00de, 0 0 150px #ff00de; animation: pulseGlow 2s ease-in-out infinite alternate;">
+           <div class="welcome-logo" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; position: relative; display: inline-block; text-align: center; color: #ffffff; text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff, 0 0 40px #ffffff, 0 0 70px #ffffff; animation: pulseGlow 2s ease-in-out infinite alternate;">
                 AB
             </div>
             <div class="welcome-text">Abhinandana Bhatta</div>
