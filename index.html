@@ -227,22 +227,6 @@
             }
         }
 
-        .welcome-logo::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--light), transparent);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
         .welcome-text {
             font-size: 1.8rem;
             margin-bottom: 15px;
@@ -1210,11 +1194,17 @@
 
         .project-content {
             padding: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         @media (min-width: 768px) {
             .project-content {
                 padding: 30px;
+                text-align: left;
+                align-items: flex-start;
             }
         }
 
@@ -1223,6 +1213,7 @@
             margin-bottom: 15px;
             color: var(--light);
             text-align: center;
+            width: 100%;
         }
 
         @media (min-width: 768px) {
@@ -1238,6 +1229,7 @@
             font-size: 0.95rem;
             line-height: 1.6;
             text-align: center;
+            width: 100%;
         }
 
         @media (min-width: 768px) {
@@ -1252,6 +1244,7 @@
             flex-wrap: wrap;
             gap: 8px;
             justify-content: center;
+            width: 100%;
         }
 
         @media (min-width: 768px) {
@@ -1273,6 +1266,38 @@
             .project-tag {
                 padding: 6px 15px;
                 font-size: 0.8rem;
+            }
+        }
+
+        /* Project Gallery Button - Centered and Styled */
+        .project-gallery-btn {
+            margin-top: 15px;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            transition: all 0.4s ease;
+            font-size: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 32px;
+            opacity: 0.7;
+            align-self: center;
+        }
+
+        .project-gallery-btn:hover {
+            background: var(--light);
+            color: var(--dark);
+            transform: translateY(-2px);
+            opacity: 1;
+            border-color: var(--light);
+        }
+
+        @media (min-width: 768px) {
+            .project-gallery-btn {
+                align-self: flex-start;
             }
         }
 
@@ -1638,6 +1663,254 @@
                 transform: translate(-50%, -50%) scale(0.7) translateX(-100px) translateY(-80px);
             }
         }
+        /* Magnetic Gradient Background */
+        .magnetic-gradient {
+            position: fixed;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle at center,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.04) 30%,
+                rgba(255, 255, 255, 0.02) 50%,
+                transparent 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -1;
+            transform: translate(-50%, -50%);
+            opacity: 0.7;
+            transition: transform 0.1s ease-out;
+            mix-blend-mode: overlay;
+        }
+
+        /* Multiple gradient layers for depth */
+        .gradient-layer-1 {
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle at center,
+                rgba(255, 255, 255, 0.06) 0%,
+                rgba(255, 255, 255, 0.03) 25%,
+                transparent 60%);
+            filter: blur(100px);
+            opacity: 0.5;
+        }
+
+        .gradient-layer-2 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle at center,
+                rgba(255, 255, 255, 0.1) 0%,
+                rgba(255, 255, 255, 0.05) 20%,
+                transparent 50%);
+            filter: blur(60px);
+            opacity: 0.4;
+        }
+
+        /* Enhanced Welcome Animation */
+        .welcome-logo {
+            position: relative;
+            display: inline-block;
+            text-align: center;
+            color: #ffffff;
+            overflow: visible;
+        }
+
+        .welcome-logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--light), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .welcome-logo span {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .welcome-logo .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 20%, transparent 60%);
+            border-radius: 50%;
+            filter: blur(30px);
+            z-index: 1;
+            animation: wanderGlow 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        /* Photo Gallery Modal */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .gallery-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .gallery-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .gallery-image {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border: 1px solid var(--medium-gray);
+        }
+
+        .gallery-caption {
+            color: var(--light);
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .gallery-nav {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .gallery-nav-btn {
+            background: var(--dark-gray);
+            border: 1px solid var(--medium-gray);
+            color: var(--light);
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .gallery-nav-btn:hover {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .close-gallery {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 2rem;
+            cursor: pointer;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--dark-gray);
+            color: var(--light);
+            padding: 15px 25px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 0;
+            z-index: 10001;
+            transition: transform 0.4s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Photo Grid for Gallery */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .grid-photo {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border: 1px solid var(--medium-gray);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .grid-photo:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .gallery-content {
+                max-width: 95%;
+            }
+            
+            .gallery-image {
+                max-height: 60vh;
+            }
+            
+            .close-gallery {
+                top: -40px;
+                right: 0;
+            }
+            
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .grid-photo {
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .grid-photo {
+                height: 100px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1660,20 +1933,16 @@
     <!-- Welcome Screen -->
     <div class="welcome-screen" id="welcomeScreen">
         <div class="welcome-content">
-            <!-- Replace this in your welcome screen -->
-         <div class="welcome-logo" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 4px; position: relative; display: inline-block; text-align: center; color: #ffffff; overflow: visible;">
-                <style>
-                    .welcome-logo::before {
-                        display: none !important;
-                    }
-                </style>
-                <span style="position: relative; z-index: 2;">AB</span>
-                <div style="position: absolute; top: 50%; left: 50%; width: 250px; height: 250px; background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.5) 20%, transparent 60%); border-radius: 50%; filter: blur(30px); z-index: 1; animation: wanderGlow 4s ease-in-out infinite; pointer-events: none;"></div>
-            </div>
-            <div class="welcome-text">Abhinandana Bhatta</div>
-            <div class="welcome-subtext">Electronics & Communication Engineer</div>
-            <div class="loading-container">
-                <div class="loading-progress"></div>
+            <div class="welcome-animation">
+                <div class="welcome-logo" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 4px;">
+                    <span>AB</span>
+                    <div class="logo-glow"></div>
+                </div>
+                <div class="welcome-text">Abhinandana Bhatta</div>
+                <div class="welcome-subtext">Electronics & Communication Engineer</div>
+                <div class="loading-container">
+                    <div class="loading-progress"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1695,7 +1964,6 @@
     <div class="main-content" id="mainContent">
         <!-- Navigation -->
         <nav id="mainNav">
-            <!-- Replace this in your nav section -->
             <div class="logo" style="position: relative; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                 <div style="position: absolute; width: 100%; height: 100%; border: 2px solid var(--light);"></div>
                 <div style="font-weight: 700; font-size: 0.9rem; z-index: 1;">AB</div>
@@ -1719,7 +1987,7 @@
                 <div class="hero-text">
                     <h1>Abhinandana <span class="highlight">Bhatta</span></h1>
                     <div class="typewriter-container">
-    <p class="typewriter-text">Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.</p>
+                        <p class="typewriter-text">Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.</p>
                     </div>
                     <div class="cta-buttons">
                         <a href="#projects" class="btn btn-primary">
@@ -1849,6 +2117,9 @@
                             <span class="project-tag">Automation</span>
                             <span class="project-tag">Sensors</span>
                         </div>
+                        <button class="project-gallery-btn" data-gallery="iot-gallery">
+                            <i class="fas fa-images"></i> View Photos
+                        </button>
                     </div>
                 </div>
                 <div class="project-card">
@@ -1863,6 +2134,9 @@
                             <span class="project-tag">Award</span>
                             <span class="project-tag">IoT</span>
                         </div>
+                        <button class="project-gallery-btn" data-gallery="hackathon-gallery">
+                            <i class="fas fa-images"></i> View Photos
+                        </button>
                     </div>
                 </div>
                 <div class="project-card">
@@ -1877,6 +2151,9 @@
                             <span class="project-tag">Java</span>
                             <span class="project-tag">Web Dev</span>
                         </div>
+                        <button class="project-gallery-btn" data-gallery="college-gallery">
+                            <i class="fas fa-images"></i> View Photos
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1916,7 +2193,7 @@
             </div>
         </section>
 
-                <!-- Contact Section -->
+        <!-- Contact Section -->
         <section id="contact">
             <div class="section-title">
                 <h2>Get In Touch</h2>
@@ -1976,27 +2253,35 @@
                 © 2025 Abhinandana Bhatta. All intellectual property rights reserved. | Contact details are intended for legitimate professional inquiries only.
             </marquee>
         </div>
+    </div>
 
-<style>
-@media (max-width: 768px) {
-    .license {
-        position: relative;
-        bottom: -0.3mm;
-        margin-bottom: 10px;
-        padding: 0 0.3mm !important;
-    }
-}
-</style>
+    <!-- Photo Gallery Modal -->
+    <div class="gallery-modal" id="galleryModal">
+        <div class="gallery-content">
+            <button class="close-gallery" id="closeGallery">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="galleryView">
+                <img src="" alt="" class="gallery-image" id="galleryImage">
+                <div class="gallery-caption" id="galleryCaption"></div>
+                <div class="gallery-nav">
+                    <button class="gallery-nav-btn" id="prevBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="gallery-nav-btn" id="nextBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="galleryGrid" class="photo-grid" style="display: none;"></div>
+            <button id="toggleView" class="gallery-nav-btn" style="margin-top: 15px;">
+                <i class="fas fa-th"></i> Grid View
+            </button>
+        </div>
+    </div>
 
-        <style>
-        @media (max-width: 768px) {
-            .license {
-                position: relative;
-                bottom: -0.3mm;
-                margin-bottom: 10px;
-            }
-        }
-        </style>
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -2008,6 +2293,59 @@
             const mobileMenuBtn = document.getElementById('mobileMenuBtn');
             const mobileNav = document.getElementById('mobileNav');
             const closeMenu = document.getElementById('closeMenu');
+
+            // Create magnetic gradient background
+            const magneticGradient = document.createElement('div');
+            magneticGradient.className = 'magnetic-gradient';
+            
+            // Create additional layers for depth
+            const gradientLayer1 = document.createElement('div');
+            gradientLayer1.className = 'magnetic-gradient gradient-layer-1';
+            
+            const gradientLayer2 = document.createElement('div');
+            gradientLayer2.className = 'magnetic-gradient gradient-layer-2';
+            
+            document.body.appendChild(magneticGradient);
+            document.body.appendChild(gradientLayer1);
+            document.body.appendChild(gradientLayer2);
+
+            // Magnetic gradient movement variables
+            let mouseX = 0, mouseY = 0;
+            let gradientX = 0, gradientY = 0;
+
+            // Mouse move handler for all effects
+            document.addEventListener('mousemove', function(e) {
+                if (window.innerWidth >= 769) { // Only for desktop
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                }
+            });
+
+            // Magnetic gradient animation
+            function animateGradient() {
+                // Smooth follow with delay
+                gradientX += (mouseX - gradientX) * 0.05;
+                gradientY += (mouseY - gradientY) * 0.05;
+                
+                magneticGradient.style.left = gradientX + 'px';
+                magneticGradient.style.top = gradientY + 'px';
+                
+                gradientLayer1.style.left = (gradientX + 50) + 'px';
+                gradientLayer1.style.top = (gradientY - 30) + 'px';
+                
+                gradientLayer2.style.left = (gradientX - 30) + 'px';
+                gradientLayer2.style.top = (gradientY + 40) + 'px';
+                
+                requestAnimationFrame(animateGradient);
+            }
+            animateGradient();
+
+            // Hide effects on mobile
+            if (window.innerWidth < 769) {
+                magneticGradient.style.display = 'none';
+                gradientLayer1.style.display = 'none';
+                gradientLayer2.style.display = 'none';
+            }
             
             // Mobile menu functionality
             mobileMenuBtn.addEventListener('click', function() {
@@ -2027,22 +2365,22 @@
             
             // Custom cursor effect - ONLY for desktop
             if (window.innerWidth >= 769) {
-                let mouseX = 0, mouseY = 0;
+                let cursorMouseX = 0, cursorMouseY = 0;
                 let followerX = 0, followerY = 0;
                 
-                // Mouse move handler
+                // Mouse move handler for cursor
                 document.addEventListener('mousemove', function(e) {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
+                    cursorMouseX = e.clientX;
+                    cursorMouseY = e.clientY;
                     
-                    cursor.style.left = mouseX + 'px';
-                    cursor.style.top = mouseY + 'px';
+                    cursor.style.left = cursorMouseX + 'px';
+                    cursor.style.top = cursorMouseY + 'px';
                 });
                 
                 // Smooth follower animation
                 function animateFollower() {
-                    followerX += (mouseX - followerX) * 0.1;
-                    followerY += (mouseY - followerY) * 0.1;
+                    followerX += (cursorMouseX - followerX) * 0.1;
+                    followerY += (cursorMouseY - followerY) * 0.1;
                     
                     cursorFollower.style.left = followerX + 'px';
                     cursorFollower.style.top = followerY + 'px';
@@ -2052,7 +2390,7 @@
                 animateFollower();
                 
                 // Hover effects for interactive elements - ONLY for desktop
-                const interactiveElements = document.querySelectorAll('.btn, .skill-item, .project-card, .stat-item, .contact-item, .social-link');
+                const interactiveElements = document.querySelectorAll('.btn, .skill-item, .project-card, .stat-item, .contact-item, .social-link, .project-gallery-btn');
                 
                 interactiveElements.forEach(element => {
                     element.addEventListener('mouseenter', () => {
@@ -2136,70 +2474,253 @@
                     }
                 });
             });
-        });
-    </script>
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const typewriterContainer = document.querySelector('.typewriter-container');
-    const fullText = "Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.";
-    let currentText = '';
-    let isDeleting = false;
-    let charIndex = 0;
-    let typingSpeed = 100;
-    let deletingSpeed = 50;
-    let pauseTime = 2000;
 
-    // Clear container and create text element
-    typewriterContainer.innerHTML = '';
-    const textElement = document.createElement('span');
-    textElement.className = 'typewriter-text';
-    typewriterContainer.appendChild(textElement);
+            // Photo Gallery Functionality
+            // Define photo galleries for each project
+            // This is where you can add your photos
+            const galleries = {
+                'iot-gallery': {
+                    title: 'IoT Automation System',
+                    images: [
+                        // Add your IoT project photos here
+                        // Example: { src: 'iot-project-1.jpg', caption: 'IoT System Overview' },
+                    ]
+                },
+                'hackathon-gallery': {
+                    title: 'DSU DevHack 2.0',
+                    images: [
+                        { src: 'hackathon-1.jpg', caption: 'Hackathon Event' },
+                        { src: 'hackathon-2.jpg', caption: 'Mentor Moment' },
+                        { src: 'hackathon-3.jpg', caption: 'Me' },
+                        { src: 'hackathon-4.jpg', caption: 'Best Build Award' },
+                        // Add your hackathon photos here
+                        // Example: { src: 'hackathon-1.jpg', caption: 'Hackathon Event' },
+                    ]
+                },
+                'college-gallery': {
+                    title: 'College Projects',
+                    images: [
+                        // Add your college project photos here
+                        // Example: { src: 'college-project-1.jpg', caption: 'Project Development' },
+                    ]
+                }
+            };
 
-    // Create cursor element
-    const cursor = document.createElement('span');
-    cursor.className = 'typewriter-cursor';
-    cursor.textContent = '|';
-    textElement.appendChild(cursor);
+            // Get DOM elements
+            const galleryModal = document.getElementById('galleryModal');
+            const galleryImage = document.getElementById('galleryImage');
+            const galleryCaption = document.getElementById('galleryCaption');
+            const closeGallery = document.getElementById('closeGallery');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const galleryButtons = document.querySelectorAll('.project-gallery-btn');
+            const toast = document.getElementById('toast');
+            const galleryView = document.getElementById('galleryView');
+            const galleryGrid = document.getElementById('galleryGrid');
+            const toggleView = document.getElementById('toggleView');
 
-    function typeWriter() {
-        const textContent = textElement.childNodes[0] ? textElement.childNodes[0].textContent : '';
-        
-        if (!isDeleting && charIndex < fullText.length) {
-            // Typing forward
-            if (charIndex === 0) {
-                // Create text node for first character
-                const textNode = document.createTextNode(fullText[charIndex]);
-                textElement.insertBefore(textNode, cursor);
-            } else {
-                // Append to existing text node
-                textElement.childNodes[0].textContent += fullText[charIndex];
-            }
-            charIndex++;
-            setTimeout(typeWriter, typingSpeed);
-        } else if (isDeleting && charIndex > 0) {
-            // Deleting backward
-            const currentContent = textElement.childNodes[0].textContent;
-            textElement.childNodes[0].textContent = currentContent.slice(0, -1);
-            charIndex--;
-            setTimeout(typeWriter, deletingSpeed);
-        } else {
-            // Switch mode
-            isDeleting = !isDeleting;
-            if (!isDeleting) {
-                // Reset for new typing cycle
-                charIndex = 0;
-                // Clear text but keep cursor
-                if (textElement.childNodes[0]) {
-                    textElement.removeChild(textElement.childNodes[0]);
+            // Current gallery state
+            let currentGallery = null;
+            let currentImageIndex = 0;
+            let isGridView = false;
+
+            // Open gallery when button is clicked
+            galleryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const galleryId = this.getAttribute('data-gallery');
+                    openGallery(galleryId);
+                });
+            });
+
+            // Close gallery
+            closeGallery.addEventListener('click', closeGalleryModal);
+
+            // Navigation buttons
+            prevBtn.addEventListener('click', showPrevImage);
+            nextBtn.addEventListener('click', showNextImage);
+
+            // Toggle view
+            toggleView.addEventListener('click', function() {
+                isGridView = !isGridView;
+                if (isGridView) {
+                    galleryView.style.display = 'none';
+                    galleryGrid.style.display = 'grid';
+                    toggleView.innerHTML = '<i class="fas fa-image"></i> Single View';
+                    renderGrid();
+                } else {
+                    galleryView.style.display = 'block';
+                    galleryGrid.style.display = 'none';
+                    toggleView.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (galleryModal.classList.contains('active')) {
+                    if (e.key === 'Escape') {
+                        closeGalleryModal();
+                    } else if (e.key === 'ArrowLeft' && !isGridView) {
+                        showPrevImage();
+                    } else if (e.key === 'ArrowRight' && !isGridView) {
+                        showNextImage();
+                    }
+                }
+            });
+
+            // Function to open gallery
+            function openGallery(galleryId) {
+                if (galleries[galleryId]) {
+                    currentGallery = galleries[galleryId];
+                    
+                    // Check if gallery has photos
+                    if (currentGallery.images.length === 0) {
+                        showToast('No photos available for this project');
+                        return;
+                    }
+                    
+                    currentImageIndex = 0;
+                    isGridView = false;
+                    galleryView.style.display = 'block';
+                    galleryGrid.style.display = 'none';
+                    toggleView.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                    updateGalleryImage();
+                    galleryModal.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
                 }
             }
-            setTimeout(typeWriter, pauseTime);
-        }
-    }
 
-    // Start the typewriter effect
-    setTimeout(typeWriter, 1000);
-});
-</script>
+            // Function to close gallery
+            function closeGalleryModal() {
+                galleryModal.classList.remove('active');
+                document.body.style.overflow = ''; // Re-enable scrolling
+            }
+
+            // Function to show previous image
+            function showPrevImage() {
+                if (currentGallery) {
+                    currentImageIndex = (currentImageIndex - 1 + currentGallery.images.length) % currentGallery.images.length;
+                    updateGalleryImage();
+                }
+            }
+
+            // Function to show next image
+            function showNextImage() {
+                if (currentGallery) {
+                    currentImageIndex = (currentImageIndex + 1) % currentGallery.images.length;
+                    updateGalleryImage();
+                }
+            }
+
+            // Function to update gallery image and caption
+            function updateGalleryImage() {
+                if (currentGallery && currentGallery.images[currentImageIndex]) {
+                    const image = currentGallery.images[currentImageIndex];
+                    galleryImage.src = image.src;
+                    galleryImage.alt = image.caption;
+                    galleryCaption.textContent = `${image.caption} (${currentImageIndex + 1}/${currentGallery.images.length})`;
+                }
+            }
+
+            // Function to render grid view
+            function renderGrid() {
+                if (!currentGallery) return;
+                
+                galleryGrid.innerHTML = '';
+                currentGallery.images.forEach((image, index) => {
+                    const img = document.createElement('img');
+                    img.src = image.src;
+                    img.alt = image.caption;
+                    img.className = 'grid-photo';
+                    img.addEventListener('click', () => {
+                        currentImageIndex = index;
+                        isGridView = false;
+                        galleryView.style.display = 'block';
+                        galleryGrid.style.display = 'none';
+                        toggleView.innerHTML = '<i class="fas fa-th"></i> Grid View';
+                        updateGalleryImage();
+                    });
+                    galleryGrid.appendChild(img);
+                });
+            }
+
+            // Function to show toast message
+            function showToast(message) {
+                toast.textContent = message;
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            // Close gallery when clicking outside the image
+            galleryModal.addEventListener('click', function(e) {
+                if (e.target === galleryModal) {
+                    closeGalleryModal();
+                }
+            });
+
+            // Typewriter effect
+            const typewriterContainer = document.querySelector('.typewriter-container');
+            const fullText = "Electronics & Communication Engineering Student passionate about IoT, coding, and building innovative solutions.";
+            let currentText = '';
+            let isDeleting = false;
+            let charIndex = 0;
+            let typingSpeed = 100;
+            let deletingSpeed = 50;
+            let pauseTime = 2000;
+
+            // Clear container and create text element
+            typewriterContainer.innerHTML = '';
+            const textElement = document.createElement('span');
+            textElement.className = 'typewriter-text';
+            typewriterContainer.appendChild(textElement);
+
+            // Create cursor element
+            const cursorElement = document.createElement('span');
+            cursorElement.className = 'typewriter-cursor';
+            cursorElement.textContent = '|';
+            textElement.appendChild(cursorElement);
+
+            function typeWriter() {
+                const textContent = textElement.childNodes[0] ? textElement.childNodes[0].textContent : '';
+                
+                if (!isDeleting && charIndex < fullText.length) {
+                    // Typing forward
+                    if (charIndex === 0) {
+                        // Create text node for first character
+                        const textNode = document.createTextNode(fullText[charIndex]);
+                        textElement.insertBefore(textNode, cursorElement);
+                    } else {
+                        // Append to existing text node
+                        textElement.childNodes[0].textContent += fullText[charIndex];
+                    }
+                    charIndex++;
+                    setTimeout(typeWriter, typingSpeed);
+                } else if (isDeleting && charIndex > 0) {
+                    // Deleting backward
+                    const currentContent = textElement.childNodes[0].textContent;
+                    textElement.childNodes[0].textContent = currentContent.slice(0, -1);
+                    charIndex--;
+                    setTimeout(typeWriter, deletingSpeed);
+                } else {
+                    // Switch mode
+                    isDeleting = !isDeleting;
+                    if (!isDeleting) {
+                        // Reset for new typing cycle
+                        charIndex = 0;
+                        // Clear text but keep cursor
+                        if (textElement.childNodes[0]) {
+                            textElement.removeChild(textElement.childNodes[0]);
+                        }
+                    }
+                    setTimeout(typeWriter, pauseTime);
+                }
+            }
+
+            // Start the typewriter effect
+            setTimeout(typeWriter, 1000);
+        });
+    </script>
 </body>
 </html>
