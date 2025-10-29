@@ -1924,6 +1924,50 @@
             text-decoration: none;
             color: inherit;
         }
+        /* Other Skills Section Specific Styles */
+        #other-skills .skill-item {
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px 10px;
+        }
+        
+        #other-skills .skill-name {
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            #other-skills .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            #other-skills .skill-item {
+                min-height: 110px;
+                padding: 15px 8px;
+            }
+            
+            #other-skills .skill-icon {
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #other-skills .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+            
+            #other-skills .skill-item {
+                min-height: 100px;
+                padding: 12px 5px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2109,6 +2153,66 @@
                         <div class="skill-item">
                             <i class="fas fa-file-alt skill-icon"></i>
                             <div class="skill-name">Google Docs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Other Skills Section -->
+<section id="other-skills">
+    <div class="section-title">
+        <h2>Other Skills</h2>
+        <p>Beyond technology - my creative and hosting abilities</p>
+    </div>
+    <div class="skills-container">
+        <div class="skills-category">
+            <h3>Emcee & Hosting</h3>
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <i class="fas fa-microphone skill-icon"></i>
+                    <div class="skill-name">Public Events</div>
+                    <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">10+ Grand Events</div>
+                </div>
+                <div class="skill-item">
+                    <i class="fas fa-users skill-icon"></i>
+                    <div class="skill-name">Small Events</div>
+                    <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">25+ Events</div>
+                </div>
+                <div class="skill-item">
+                    <i class="fas fa-star skill-icon"></i>
+                    <div class="skill-name">Hero Moments</div>
+                    <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">15+ Hosts</div>
+                </div>
+                <div class="skill-item">
+                    <i class="fas fa-landmark skill-icon"></i>
+                    <div class="skill-name">Govt Programs</div>
+                    <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">3 District Level</div>
+                </div>
+            </div>
+        </div>
+        <div class="skills-category">
+                    <h3>Music & Arts</h3>
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <i class="fas fa-music skill-icon"></i>
+                            <div class="skill-name">Flautist</div>
+                            <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">Wind Instrument</div>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-piano skill-icon"></i>
+                            <div class="skill-name">Pianist</div>
+                            <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">Keyboard</div>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-drum skill-icon"></i>
+                            <div class="skill-name">Percussion</div>
+                            <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">Rhythm Pad & Tabla</div>
+                        </div>
+                        <div class="skill-item">
+                            <i class="fas fa-sliders-h skill-icon"></i>
+                            <div class="skill-name">Composition</div>
+                            <div style="font-size: 0.8rem; color: var(--lighter-gray); margin-top: 8px;">Direction & Arrangement</div>
                         </div>
                     </div>
                 </div>
