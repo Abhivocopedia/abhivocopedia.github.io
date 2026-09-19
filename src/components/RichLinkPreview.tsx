@@ -3,6 +3,7 @@ import {
   useMemo,
   useState,
 } from 'react'
+import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import styles from './RichLinkPreview.module.css'
 
@@ -36,7 +37,9 @@ const API_BASE =
   import.meta.env.VITE_LINK_PREVIEW_API ||
   '/api/link-preview'
 
-function buildApiUrl(url: string) {
+function buildApiUrl(
+  url: string,
+) {
   return `${API_BASE}?url=${encodeURIComponent(url)}`
 }
 
@@ -60,16 +63,34 @@ function platformName(
 }
 
 function fallbackTiles(
-  images: string[],
+  data: LinkPreviewData | null,
 ) {
-  const tiles = [...images]
+  const images = [
+    ...(data?.images || []),
+  ]
 
-  while (tiles.length < 6) {
-    tiles.push('')
+  if (
+    data?.image &&
+    !images.includes(data.image)
+  ) {
+    images.unshift(data.image)
   }
 
-  return tiles.slice(0, 6)
+  while (images.length < 6) {
+    images.push('')
+  }
+
+  return images.slice(0, 6)
 }
+
+const tileContent = [
+  'PROFILE',
+  'LATEST',
+  'BUILD',
+  'POST',
+  'MEDIA',
+  'EXPLORE',
+]
 
 export function RichLinkPreview({
   url,
@@ -83,14 +104,10 @@ export function RichLinkPreview({
   const [loading, setLoading] =
     useState(true)
 
-  const [error, setError] =
-    useState<string | null>(null)
-
   useEffect(() => {
     let cancelled = false
 
     setLoading(true)
-    setError(null)
     setData(null)
 
     fetch(buildApiUrl(url))
@@ -98,32 +115,39 @@ export function RichLinkPreview({
         const result =
           (await response.json()) as LinkPreviewData
 
-        if (!response.ok || !result.ok) {
+        if (!response.ok) {
           throw new Error(
             result.error ||
-              'Preview could not be generated.',
+              `Preview request failed with ${response.status}.`,
           )
         }
 
         return result
       })
       .then((result) => {
-        if (cancelled) {
-          return
+        if (!cancelled) {
+          setData(result)
         }
-
-        setData(result)
       })
-      .catch((reason) => {
-        if (cancelled) {
-          return
+      .catch(() => {
+        if (!cancelled) {
+          setData({
+            ok: true,
+            url,
+            platform: 'web',
+            title:
+              label ||
+              'Link Preview',
+            description:
+              'Open the destination to explore the original page.',
+            siteName:
+              label ||
+              'WEB',
+            favicon: '',
+            images: [],
+            image: null,
+          })
         }
-
-        setError(
-          reason instanceof Error
-            ? reason.message
-            : 'Preview unavailable.',
-        )
       })
       .finally(() => {
         if (!cancelled) {
@@ -134,25 +158,29 @@ export function RichLinkPreview({
     return () => {
       cancelled = true
     }
-  }, [url])
+  }, [url, label])
 
-  const tiles = useMemo(
-    () =>
-      fallbackTiles(
-        data?.images || [],
-      ),
-    [data?.images],
-  )
+  const tiles =
+    useMemo(
+      () => fallbackTiles(data),
+      [data],
+    )
+
+  const displayUsername =
+    username ||
+    data?.siteName ||
+    label ||
+    'Open profile'
 
   const displayTitle =
     data?.title ||
     label ||
     'Link Preview'
 
-  const displayUsername =
-    username ||
-    data?.siteName ||
-    'Open profile'
+  const displayPlatform =
+    data
+      ? platformName(data.platform)
+      : label || 'LINK'
 
   return (
     <div
@@ -160,8 +188,9 @@ export function RichLinkPreview({
       style={
         {
           '--preview-accent':
-            accent || 'var(--mustard)',
-        } as React.CSSProperties
+            accent ||
+            'var(--mustard)',
+        } as CSSProperties
       }
     >
       <div className={styles.identity}>
@@ -181,9 +210,17 @@ export function RichLinkPreview({
               src={data.favicon}
               alt=""
               loading="lazy"
+              onError={(event) => {
+                event.currentTarget.style.display =
+                  'none'
+              }}
             />
           ) : (
-            <span>↗</span>
+            <span>
+              {displayUsername
+                .slice(0, 1)
+                .toUpperCase()}
+            </span>
           )}
         </div>
 
@@ -198,84 +235,124 @@ export function RichLinkPreview({
         </div>
 
         <span className={styles.platform}>
-          {data
-            ? platformName(data.platform)
-            : label || 'LINK'}
+          {displayPlatform}
         </span>
       </div>
 
-      <div className={styles.previewArea}>
-        {loading && (
-          <div
-            className={styles.loadingGrid}
-            aria-label="Loading link preview"
-          >
-            {Array.from({ length: 6 }).map(
-              (_, index) => (
-                <span
-                  key={index}
+      <div
+        className={styles.previewArea}
+        aria-label={`${displayPlatform} link preview`}
+      >
+        {loading
+          ? Array.from({
+              length: 6,
+            }).map((_, index) => (
+              <motion.div
+                key={index}
+                className={
+                  styles.floatingTile
+                }
+                initial={{
+                  opacity: 0,
+                  scale: 0.7,
+                  y: 20,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay:
+                    index * 0.06,
+                  duration: 0.4,
+                }}
+              >
+                <div
                   className={
-                    styles.skeleton
+                    styles.skeletonTile
                   }
                 />
-              ),
-            )}
-          </div>
-        )}
-
-        {!loading && data && (
-          <div
-            className={styles.imageGrid}
-          >
-            {tiles.map(
+              </motion.div>
+            ))
+          : tiles.map(
               (image, index) => (
-                <div
+                <motion.div
                   key={`${image}-${index}`}
                   className={
-                    styles.imageTile
+                    styles.floatingTile
+                  }
+                  whileHover={{
+                    y: -10,
+                    rotate: 0,
+                    scale: 1.04,
+                    zIndex: 10,
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 280,
+                    damping: 18,
+                  }}
+                  style={
+                    {
+                      '--tile-index':
+                        index,
+                    } as CSSProperties
                   }
                 >
                   {image ? (
                     <img
                       src={image}
                       alt=""
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div
                       className={
-                        styles.emptyTile
+                        styles.tileImage
+                      }
+                      loading="lazy"
+                      onError={(
+                        event,
+                      ) => {
+                        event.currentTarget.style.display =
+                          'none'
+
+                        const parent =
+                          event.currentTarget
+                            .parentElement
+
+                        parent?.classList.add(
+                          styles.tileFailed,
+                        )
+                      }}
+                    />
+                  ) : null}
+
+                  <div
+                    className={
+                      styles.tileOverlay
+                    }
+                  >
+                    <span
+                      className={
+                        styles.tileNumber
                       }
                     >
-                      <span>
-                        {index + 1}
-                      </span>
-                    </div>
-                  )}
-                </div>
+                      0{index + 1}
+                    </span>
+
+                    <span
+                      className={
+                        styles.tileText
+                      }
+                    >
+                      {image
+                        ? displayPlatform
+                        : tileContent[
+                            index
+                          ]}
+                    </span>
+                  </div>
+                </motion.div>
               ),
             )}
-          </div>
-        )}
-
-        {!loading && error && (
-          <div className={styles.errorState}>
-            <span className={styles.errorIcon}>
-              !
-            </span>
-
-            <div>
-              <strong>
-                Preview unavailable
-              </strong>
-
-              <p>
-                Open the link to view the
-                original page.
-              </p>
-            </div>
-          </div>
-        )}
       </div>
 
       <div className={styles.footer}>
@@ -288,18 +365,13 @@ export function RichLinkPreview({
 
           <small>
             {data?.description ||
-              'Rich preview generated from the public page.'}
+              'Rich preview from the public destination.'}
           </small>
         </div>
 
-        <motion.span
-          className={styles.open}
-          whileHover={{
-            x: 4,
-          }}
-        >
+        <span className={styles.open}>
           OPEN ↗
-        </motion.span>
+        </span>
       </div>
     </div>
   )
