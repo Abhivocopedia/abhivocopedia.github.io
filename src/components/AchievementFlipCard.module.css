@@ -2,6 +2,13 @@
   display: contents;
 }
 
+.cardWrapper:hover .card,
+.cardWrapper:focus-within .card {
+  .cardInner {
+    transform: rotateY(-180deg);
+  }
+}
+
 .card {
   position: relative;
   perspective: 1000px;

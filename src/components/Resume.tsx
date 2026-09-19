@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
 import { Star, Arrow, Label, DotPattern, DecorativeCorner } from './DecorativeMarks'
@@ -8,11 +9,66 @@ import { skills } from '../data/skills'
 import { projects } from '../data/projects'
 
 export function Resume() {
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back()
+    } else {
+      window.location.href = '/'
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+        e.preventDefault()
+        window.print()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
+
   return (
     <>
       <div id="copyNotice" role="status" aria-live="polite" className={styles.copyNotice}>
         Copying is disabled on this page.
       </div>
+
+      <header className={styles.actionBar} role="banner">
+        <div className={styles.actionBarInner}>
+          <button 
+            className={styles.backBtn}
+            onClick={handleBack}
+            aria-label="Back to portfolio"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>BACK TO PORTFOLIO</span>
+          </button>
+          
+          <div className={styles.resumeTitle}>
+            <Label variant="number">ABHIVOCOPEDIA</Label>
+            <h1>RESUME</h1>
+          </div>
+
+          <button 
+            className={styles.printBtn}
+            onClick={handlePrint}
+            aria-label="Download or print PDF"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            <span>DOWNLOAD / PRINT PDF</span>
+          </button>
+        </div>
+      </header>
 
       <section className={styles.hero} aria-labelledby="resume-title">
         <div className={styles.bgDecoration} aria-hidden="true">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, forwardRef } from 'react'
 import { motion } from 'framer-motion'
 import { education, EducationStation } from '../data/education'
 import { Label, DotPattern, Arrow } from './DecorativeMarks'
@@ -7,10 +7,36 @@ import styles from './EducationTrain.module.css'
 export function EducationTrain() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [stationPositions, setStationPositions] = useState<number[]>([])
+  const [trackWidth, setTrackWidth] = useState(0)
+  const [viewportWidth, setViewportWidth] = useState(0)
   
   const sectionRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
+  
+
+  const measureStationPositions = useCallback(() => {
+    if (!trackRef.current) return
+    
+    const track = trackRef.current
+    const stationNodes = track.querySelectorAll('[data-station-index]')
+    const positions: number[] = []
+    
+    stationNodes.forEach((node) => {
+      const rect = (node as HTMLElement).getBoundingClientRect()
+      const trackRect = track.getBoundingClientRect()
+      // Center of the station node relative to track start
+      const centerX = rect.left - trackRect.left + rect.width / 2
+      positions.push(centerX)
+    })
+    
+    if (positions.length > 0) {
+      setStationPositions(positions)
+      setTrackWidth(track.scrollWidth)
+      setViewportWidth(track.clientWidth)
+    }
+  }, [])
 
   const handleScroll = useCallback(() => {
     if (!sectionRef.current || !stickyRef.current) return
@@ -36,10 +62,26 @@ export function EducationTrain() {
 
     setProgress(scrollProgress)
 
-    const maxIndex = education.length - 1
-    const activeStationIndex = Math.round(scrollProgress * maxIndex)
-    setActiveIndex(Math.min(activeStationIndex, maxIndex))
-  }, [])
+    // Determine active station based on progress and station positions
+    if (stationPositions.length > 0) {
+      const maxIndex = stationPositions.length - 1
+      let activeStationIndex = 0
+      
+      // Find the station closest to the current progress
+      for (let i = 0; i < stationPositions.length; i++) {
+        const stationProgress = i / maxIndex
+        if (scrollProgress >= stationProgress - 0.15 && scrollProgress <= stationProgress + 0.15) {
+          activeStationIndex = i
+          break
+        }
+        if (scrollProgress > stationProgress) {
+          activeStationIndex = i
+        }
+      }
+      
+      setActiveIndex(Math.min(activeStationIndex, maxIndex))
+    }
+  }, [stationPositions])
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -47,8 +89,36 @@ export function EducationTrain() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [handleScroll])
 
-  const totalWidth = education.length > 1 ? (education.length - 1) * 400 : 400
-  const translateX = -progress * totalWidth
+  // Measure station positions on mount and resize
+  useEffect(() => {
+    measureStationPositions()
+    window.addEventListener('resize', measureStationPositions)
+    return () => window.removeEventListener('resize', measureStationPositions)
+  }, [measureStationPositions])
+
+  // Also measure after initial render
+  useEffect(() => {
+    const timer = setTimeout(measureStationPositions, 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Calculate train position based on actual station positions
+  const getTrainPosition = () => {
+    if (stationPositions.length === 0 || activeIndex >= stationPositions.length) return 0
+    
+    const stationX = stationPositions[activeIndex]
+    const viewportCenter = viewportWidth / 2
+    const trainOffset = 50 // Approximate half width of engine
+    
+    // Position train so its center aligns with the active station
+    const position = stationX - viewportCenter + trainOffset
+    
+    // Clamp to track boundaries
+    const maxPosition = trackWidth - viewportWidth
+    return Math.max(0, Math.min(position, maxPosition))
+  }
+
+  const translateX = getTrainPosition()
 
   return (
     <section id="education" ref={sectionRef} className={styles.section} aria-labelledby="education-title">
@@ -75,7 +145,7 @@ export function EducationTrain() {
             <div 
               className={styles.track} 
               ref={trackRef}
-              style={{ transform: `translate3d(${translateX}px, 0, 0)` }}
+              style={{ transform: `translate3d(${-translateX}px, 0, 0)` }}
             >
               <div className={styles.rail} aria-hidden="true">
                 <div className={styles.railLine}></div>
@@ -101,13 +171,17 @@ export function EducationTrain() {
                   <StationNode
                     key={station.id}
                     station={station}
+                    index={index}
                     isActive={index === activeIndex}
                     isCurrent={station.isCurrent}
                   />
                 ))}
               </div>
 
-              <TrainEngine activeIndex={activeIndex} totalStations={education.length} />
+              <TrainEngine 
+                activeIndex={activeIndex} 
+                totalStations={education.length} 
+              />
             </div>
           </div>
 
@@ -133,13 +207,17 @@ export function EducationTrain() {
 
 interface StationNodeProps {
   station: EducationStation
+  index: number
   isActive: boolean
   isCurrent?: boolean
 }
 
-function StationNode({ station, isActive, isCurrent }: StationNodeProps) {
+const StationNode = forwardRef<HTMLDivElement, StationNodeProps>(
+  ({ station, index, isActive, isCurrent }: StationNodeProps, ref: React.Ref<HTMLDivElement>) => {
   return (
     <div
+      ref={ref}
+      data-station-index={index}
       className={`${styles.stationNode} ${isActive ? styles.active : ''} ${isCurrent ? styles.current : ''}`}
       role="listitem"
       aria-current={isActive ? 'true' : undefined}
@@ -154,18 +232,20 @@ function StationNode({ station, isActive, isCurrent }: StationNodeProps) {
       {isCurrent && <span className={styles.currentBadge}>CURRENT</span>}
     </div>
   )
-}
+})
 
 interface TrainEngineProps {
   activeIndex: number
   totalStations: number
 }
 
-function TrainEngine({ activeIndex, totalStations }: TrainEngineProps) {
+const TrainEngine = forwardRef<HTMLDivElement, TrainEngineProps>(
+  ({ activeIndex, totalStations }: TrainEngineProps, ref: React.Ref<HTMLDivElement>) => {
   const position = totalStations > 1 ? (activeIndex / (totalStations - 1)) * 100 : 0
 
   return (
     <motion.div
+      ref={ref}
       className={styles.engine}
       style={{ left: `calc(${position}% - 50px)` }}
       animate={{ left: `calc(${position}% - 50px)` }}
@@ -198,7 +278,7 @@ function TrainEngine({ activeIndex, totalStations }: TrainEngineProps) {
       </div>
     </motion.div>
   )
-}
+})
 
 interface StationCardProps {
   station: EducationStation

@@ -3,13 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Star, Label } from './DecorativeMarks'
 import styles from './AchievementFlipCard.module.css'
 
-const IMAGE_EXTENSIONS = ['.webp', '.jpg', '.jpeg', '.png', '.avif', '.gif'] as const
-
-function getImagePaths(basePath: string): string[] {
-  const withoutExt = basePath.replace(/\.[^/.]+$/, '')
-  return IMAGE_EXTENSIONS.map(ext => `${withoutExt}${ext}`)
-}
-
 interface AchievementFlipCardProps {
   event: string
   title: string
@@ -33,6 +26,13 @@ export function AchievementFlipCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [allFailed, setAllFailed] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
+
+  const IMAGE_EXTENSIONS = ['.jpeg', '.jpg', '.webp', '.png', '.avif', '.gif'] as const
+
+  function getImagePaths(basePath: string): string[] {
+    const withoutExt = basePath.replace(/\.[^/.]+$/, '')
+    return IMAGE_EXTENSIONS.map(ext => `${withoutExt}${ext}`)
+  }
 
   const imagePaths = getImagePaths(`/images/achievements/${photoBaseName}`)
   const currentImagePath = imagePaths[currentImageIndex]
@@ -79,6 +79,7 @@ export function AchievementFlipCard({
         aria-label={`${event} - ${title} award details`}
         onClick={toggleFlip}
         onKeyDown={handleKeyDown}
+        onTouchStart={() => setIsFlipped(true)}
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
@@ -119,7 +120,7 @@ export function AchievementFlipCard({
 
               <div className={styles.flipPrompt}>
                 <Star size="sm" color="mustard" />
-                <span>CLICK TO REVEAL PHOTO</span>
+                <span>HOVER TO REVEAL PHOTO</span>
                 <Star size="sm" color="mustard" />
               </div>
             </div>

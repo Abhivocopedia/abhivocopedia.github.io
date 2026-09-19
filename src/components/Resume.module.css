@@ -894,6 +894,92 @@
   text-overflow: ellipsis;
 }
 
+.actionBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-nav);
+  background: rgba(23, 23, 23, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 2px solid var(--mustard);
+  padding: var(--space-md) 0;
+}
+
+.actionBarInner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+}
+
+.backBtn, .printBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  white-space: nowrap;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.backBtn {
+  background: transparent;
+  color: var(--warm-white);
+  border-color: rgba(255, 253, 246, 0.3);
+}
+
+.backBtn:hover {
+  background: var(--mustard);
+  border-color: var(--mustard);
+  color: var(--ink);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.printBtn {
+  background: var(--mustard);
+  color: var(--ink);
+  border-color: var(--mustard);
+}
+
+.printBtn:hover {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--warm-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-colored);
+}
+
+.resumeTitle {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resumeTitle > Label {
+  font-size: 0.625rem;
+  opacity: 0.7;
+}
+
+.resumeTitle h1 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--warm-white);
+  letter-spacing: -0.01em;
+}
+
 .copyNotice {
   position: fixed;
   bottom: var(--space-xl);
@@ -924,7 +1010,8 @@
   .contactCard,
   .linkCard,
   .copyNotice,
-  .no-print {
+  .no-print,
+  .actionBar {
     display: none !important;
   }
 
