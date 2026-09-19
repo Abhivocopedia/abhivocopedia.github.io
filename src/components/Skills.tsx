@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import { skills, SkillCategory } from '../data/skills'
 import { Star, Label } from './DecorativeMarks'
+import { soundFX } from '../lib/SoundFX'
 import styles from './Skills.module.css'
 
 export function Skills() {
@@ -612,6 +613,8 @@ function SkillFlipCard({
       (current) =>
         !current,
     )
+
+    soundFX.flip()
   }
 
   const handleKeyDown = (

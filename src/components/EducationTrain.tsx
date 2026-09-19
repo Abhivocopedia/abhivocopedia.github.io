@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import { education } from '../data/education'
 import type { EducationStation } from '../data/education'
 import styles from './EducationTrain.module.css'
+import { soundFX } from '../lib/SoundFX'
 
 type StationSide = 'top' | 'bottom'
 
@@ -25,6 +26,8 @@ export function EducationTrain() {
   const rafRef = useRef<number | null>(null)
   const moveStopTimerRef = useRef<number | null>(null)
   const previousTrainXRef = useRef(0)
+  const previousProgressRef = useRef(0)
+  const previousStationRef = useRef(0)
 
   const [progress, setProgress] = useState(0)
   const [isMoving, setIsMoving] = useState(false)
@@ -76,6 +79,46 @@ export function EducationTrain() {
       : 0
 
   const wheelRotation = trainX * WHEEL_DEGREES_PER_PIXEL
+
+  useEffect(() => {
+    const progressDelta = Math.abs(
+      progress -
+        previousProgressRef.current,
+    )
+
+    if (progressDelta > 0.00015) {
+      soundFX.startTrain()
+    } else {
+      soundFX.stopTrain()
+    }
+
+    const nextStation = Math.min(
+      totalStations - 1,
+      Math.round(
+        progress * maxStationIndex,
+      ),
+    )
+
+    if (
+      nextStation !==
+      previousStationRef.current
+    ) {
+      soundFX.station()
+      previousStationRef.current =
+        nextStation
+    }
+
+    previousProgressRef.current =
+      progress
+
+    return () => {
+      soundFX.stopTrain()
+    }
+  }, [
+    maxStationIndex,
+    progress,
+    totalStations,
+  ])
 
   const measure = useCallback(() => {
     const viewport = viewportRef.current
@@ -571,3 +614,4 @@ function TrainEngine({
     </div>
   )
 }
+

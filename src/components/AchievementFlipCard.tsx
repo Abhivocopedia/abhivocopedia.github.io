@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Star, Label } from './DecorativeMarks'
 import styles from './AchievementFlipCard.module.css'
+import { soundFX } from '../lib/SoundFX'
 
 interface AchievementFlipCardProps {
   event: string
@@ -45,6 +46,8 @@ export function AchievementFlipCard({
   const visuallyFlipped = isFlipped || isHovered
 
   const toggleFlip = () => {
+    soundFX.flip()
+
     setIsFlipped((prev) => !prev)
     if (!isFlipped) {
       setCurrentImageIndex(0)
@@ -209,3 +212,4 @@ export function AchievementFlipCard({
     </div>
   )
 }
+
