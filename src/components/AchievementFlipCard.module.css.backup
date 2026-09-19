@@ -313,4 +313,3 @@
   .cardInner {
     transition: none;
   }
-}

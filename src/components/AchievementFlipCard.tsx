@@ -40,11 +40,8 @@ export function AchievementFlipCard({
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [allFailed, setAllFailed] = useState(false)
 
-  const imagePaths = getImagePaths(
-    `/images/achievements/${photoBaseName}`,
-  )
+  const imagePaths = getImagePaths(`/images/achievements/${photoBaseName}`)
   const currentImagePath = imagePaths[currentImageIndex]
-
   const visuallyFlipped = isFlipped || isHovered
 
   const toggleFlip = () => {
@@ -94,7 +91,6 @@ export function AchievementFlipCard({
               : 'rotateY(0deg)',
           }}
         >
-          {/* FRONT */}
           <div className={styles.cardFace} data-side="front">
             <div className={styles.cardFront}>
               <div className={styles.frontTop}>
@@ -120,10 +116,7 @@ export function AchievementFlipCard({
               </div>
 
               <div className={styles.awardContent}>
-                <Label
-                  variant="meta"
-                  className={styles.awardEvent}
-                >
+                <Label variant="meta" className={styles.awardEvent}>
                   {event}
                 </Label>
                 <h3 className={styles.awardTitle}>{title}</h3>
@@ -142,9 +135,7 @@ export function AchievementFlipCard({
 
                 <div className={styles.awardDetail}>
                   <Label variant="meta">ROLE</Label>
-                  <span className={styles.detailValue}>
-                    {contribution}
-                  </span>
+                  <span className={styles.detailValue}>{contribution}</span>
                 </div>
               </div>
 
@@ -156,14 +147,7 @@ export function AchievementFlipCard({
             </div>
           </div>
 
-          {/* BACK */}
-          <div
-            className={styles.cardFace}
-            data-side="back"
-            style={{
-              transform: 'rotateY(180deg)',
-            }}
-          >
+          <div className={styles.cardFace} data-side="back">
             <div className={styles.cardBack}>
               <div className={styles.backImageWrapper}>
                 {!allFailed ? (
@@ -177,28 +161,6 @@ export function AchievementFlipCard({
                 ) : (
                   <div className={styles.photoPlaceholder}>
                     <div className={styles.placeholderContent}>
-                      <svg
-                        width="64"
-                        height="64"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                      >
-                        <rect
-                          x="3"
-                          y="3"
-                          width="18"
-                          height="18"
-                          rx="2"
-                        />
-                        <circle cx="8.5" cy="8.5" r="1.5" />
-                        <polyline points="21 15 16 10 5 21" />
-                      </svg>
-
                       <p>ACHIEVEMENT PHOTO</p>
                       <span>COMING SOON</span>
                     </div>

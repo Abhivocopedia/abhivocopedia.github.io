@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Navbar } from './components/Navbar'
 import { Hero } from './components/Hero'
 import { About } from './components/About'
@@ -15,35 +15,45 @@ import './styles/globals.css'
 
 type Route = 'home' | 'resume'
 
+function getRouteFromLocation(): Route {
+  return window.location.hash.replace(/^#/, '') === 'resume'
+    ? 'resume'
+    : 'home'
+}
+
 function App() {
-  const [route, setRoute] = useState<Route>('home')
+  const [route, setRoute] = useState<Route>(getRouteFromLocation)
 
   useEffect(() => {
     const handleHashChange = () => {
-      const hash = window.location.hash.slice(1)
-      if (hash === 'resume') {
-        setRoute('resume')
-      } else {
-        setRoute('home')
-      }
+      setRoute(getRouteFromLocation())
+      window.scrollTo({ top: 0, behavior: 'auto' })
     }
 
-    handleHashChange()
     window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange)
+    }
   }, [])
 
   const navigate = (newRoute: Route) => {
-    setRoute(newRoute)
-    window.location.hash = newRoute === 'home' ? '' : newRoute
+    window.location.hash =
+      newRoute === 'home' ? '' : newRoute
   }
+
+  const isResume = route === 'resume'
 
   return (
     <>
       <CopyProtection />
-      <Navbar onNavigate={navigate} />
+
+      {!isResume && <Navbar onNavigate={navigate} />}
+
       <main id="main-content">
-        {route === 'home' ? (
+        {isResume ? (
+          <Resume />
+        ) : (
           <>
             <Hero />
             <About />
@@ -54,11 +64,10 @@ function App() {
             <BeyondCode />
             <Contact />
           </>
-        ) : (
-          <Resume />
         )}
       </main>
-      <Footer />
+
+      {!isResume && <Footer />}
     </>
   )
 }
