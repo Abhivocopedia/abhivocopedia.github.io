@@ -54,7 +54,7 @@ class SoundFX {
       this.masterGain =
         this.context.createGain()
 
-      this.masterGain.gain.value = 0.16
+      this.masterGain.gain.value = 0.5
 
       this.masterGain.connect(
         this.context.destination,
@@ -178,7 +178,7 @@ class SoundFX {
     this.tone(
       1050,
       0.045,
-      0.075,
+      0.3,
       'square',
     )
 
@@ -186,7 +186,7 @@ class SoundFX {
       this.tone(
         720,
         0.035,
-        0.045,
+        0.18,
         'square',
       )
     }, 18)
@@ -195,7 +195,7 @@ class SoundFX {
   flip() {
     const output =
       this.createOutput(
-        0.09,
+        0.36,
       )
 
     if (!output) return
@@ -237,7 +237,7 @@ class SoundFX {
     )
 
     gain.gain.exponentialRampToValueAtTime(
-      0.085,
+      0.34,
       context.currentTime +
         0.018,
     )
@@ -277,7 +277,7 @@ class SoundFX {
 
     const output =
       this.createOutput(
-        0.025,
+        0.1,
       )
 
     if (!output) return
@@ -402,7 +402,7 @@ class SoundFX {
     this.trainOscillator.start()
 
     this.trainGain.gain.exponentialRampToValueAtTime(
-      0.045,
+      0.18,
       context.currentTime +
         0.35,
     )
@@ -455,7 +455,7 @@ class SoundFX {
     this.tone(
       880,
       0.12,
-      0.055,
+      0.22,
       'sine',
     )
 
@@ -463,7 +463,7 @@ class SoundFX {
       this.tone(
         1320,
         0.18,
-        0.045,
+        0.18,
         'sine',
       )
     }, 110)
@@ -508,3 +508,4 @@ class SoundFX {
 
 export const soundFX =
   new SoundFX()
+
