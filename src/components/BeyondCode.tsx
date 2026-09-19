@@ -1,122 +1,50 @@
-import { useState } from 'react'
-import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
 import { memories } from '../data/memories.generated'
 import {
   Label,
   DotPattern,
-  Sticker,
 } from './DecorativeMarks'
 import styles from './BeyondCode.module.css'
 
-type MemoryOrientation =
-  | 'portrait'
-  | 'landscape'
+const COLUMN_COUNT = 4
 
-function MemoryPhoto({
-  src,
-  name,
-  index,
-}: {
-  src: string
-  name: string
-  index: number
-}) {
-  const [orientation, setOrientation] =
-    useState<MemoryOrientation | null>(null)
+const memoryColumns = Array.from(
+  { length: COLUMN_COUNT },
+  (_, columnIndex) =>
+    memories.filter(
+      (_, imageIndex) =>
+        imageIndex % COLUMN_COUNT === columnIndex,
+    ),
+)
 
-  const handleLoad = (
-    event: React.SyntheticEvent<HTMLImageElement>,
-  ) => {
-    const image = event.currentTarget
-
-    setOrientation(
-      image.naturalHeight > image.naturalWidth
-        ? 'portrait'
-        : 'landscape',
-    )
-  }
-
-  const cardClass = orientation
-    ? `${styles.memoryCard} ${
-        orientation === 'portrait'
-          ? styles.portrait
-          : styles.landscape
-      }`
-    : styles.memoryCard
-
-  return (
-    <motion.figure
-      className={cardClass}
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      whileInView={{
-        opacity: 1,
-        y: 0,
-      }}
-      viewport={{
-        once: true,
-        margin: '-40px',
-      }}
-      transition={{
-        duration: 0.65,
-        delay: Math.min(index * 0.04, 0.3),
-        ease: [0.16, 1, 0.3, 1],
-      }}
-      style={
-        {
-          '--float-delay': `${(index % 6) * -0.7}s`,
-        } as CSSProperties
-      }
-    >
-      <div className={styles.memoryImageWrap}>
-        <img
-          src={src}
-          alt={name}
-          className={styles.memoryImage}
-          loading={index < 4 ? 'eager' : 'lazy'}
-          decoding="async"
-          onLoad={handleLoad}
-        />
-
-        <div
-          className={styles.memoryOverlay}
-          aria-hidden="true"
-        >
-          <span>{String(index + 1).padStart(2, '0')}</span>
-        </div>
-      </div>
-    </motion.figure>
-  )
-}
+const marqueeItems = [
+  ...profile.beyondCode,
+  ...profile.beyondCode,
+  ...profile.beyondCode,
+  ...profile.beyondCode,
+]
 
 export function BeyondCode() {
-  const marqueeItems = [
-    ...profile.vexr.lines,
-    ...profile.beyondCode,
-    ...profile.vexr.lines,
-    ...profile.beyondCode,
-  ]
-
   return (
     <section
       id="beyond-code"
       className={styles.section}
-      aria-labelledby="beyond-title"
+      aria-labelledby="beyond-code-title"
     >
       <div
-        className={styles.bgDecoration}
+        className={styles.background}
         aria-hidden="true"
       >
-        <DotPattern color="ink" />
+        <DotPattern color="warm-white" />
       </div>
 
       <div className={styles.container}>
-        {/* HEADER */}
-        <motion.div
+        {/* =====================================================
+            HEADER
+        ===================================================== */}
+
+        <motion.header
           className={styles.header}
           initial={{
             opacity: 0,
@@ -128,38 +56,65 @@ export function BeyondCode() {
           }}
           viewport={{
             once: true,
-            margin: '-50px',
+            margin: '-80px',
           }}
           transition={{
-            duration: 0.6,
-            ease: [0.25, 0.46, 0.45, 0.94],
+            duration: 0.7,
           }}
         >
           <Label variant="number">06</Label>
 
           <h2
-            id="beyond-title"
+            id="beyond-code-title"
             className={styles.title}
           >
             BEYOND CODE
           </h2>
 
-          <div
-            className={styles.divider}
-            aria-hidden="true"
-          />
-
           <p className={styles.subtitle}>
             The things that happen beyond the screen.
           </p>
-        </motion.div>
+        </motion.header>
 
-        {/* TOP MOVING MARQUEE */}
+        {/* =====================================================
+            FULL WIDTH MOVING MARQUEE
+        ===================================================== */}
+
+        <div
+          className={styles.marqueeViewport}
+          aria-hidden="true"
+        >
+          <div className={styles.marqueeTrack}>
+            {marqueeItems.map((item, index) => (
+              <div
+                key={`${item}-${index}`}
+                className={styles.marqueeItem}
+              >
+                <span className={styles.marqueeDot}>
+                  •
+                </span>
+
+                <span className={styles.marqueeText}>
+                  {item}
+                </span>
+
+                <span className={styles.marqueeDot}>
+                  •
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* =====================================================
+            MEMORY WALL
+        ===================================================== */}
+
         <motion.div
-          className={styles.marqueeWrapper}
+          className={styles.memoryHeader}
           initial={{
             opacity: 0,
-            y: 20,
+            y: 24,
           }}
           whileInView={{
             opacity: 1,
@@ -171,90 +126,102 @@ export function BeyondCode() {
           }}
           transition={{
             duration: 0.6,
-            delay: 0.1,
-            ease: [0.25, 0.46, 0.45, 0.94],
           }}
         >
-          <div
-            className={styles.marqueeTrack}
-            aria-hidden="true"
-          >
-            <div className={styles.marqueeContent}>
-              {marqueeItems.map((item, index) => (
-                <span
-                  key={`${item}-${index}`}
-                  className={styles.marqueeItem}
+          <Label variant="meta">
+            MEMORY WALL
+          </Label>
+        </motion.div>
+
+        <div className={styles.memoryWall}>
+          {memoryColumns.map(
+            (column, columnIndex) => {
+              if (column.length === 0) {
+                return null
+              }
+
+              const movingDown =
+                columnIndex % 2 === 1
+
+              return (
+                <div
+                  key={`memory-column-${columnIndex}`}
+                  className={`${styles.memoryColumn} ${
+                    movingDown
+                      ? styles.memoryColumnDown
+                      : styles.memoryColumnUp
+                  }`}
                 >
-                  {profile.vexr.lines.includes(item) ? (
-                    <Sticker
-                     
-                    >
-                      {item}
-                    </Sticker>
-                  ) : (
-                    item
-                  )}
+                  <div className={styles.memoryTrack}>
+                    <MemorySequence
+                      items={column}
+                    />
 
-                  <span className={styles.marqueeDot}>
-                    •
-                  </span>
-                </span>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* MEMORY WALL */}
-        <motion.div
-          className={styles.memorySection}
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            margin: '-50px',
-          }}
-          transition={{
-            duration: 0.65,
-            delay: 0.15,
-          }}
-        >
-          <div className={styles.memoryHeading}>
-            <div>
-              <Label variant="meta">
-                MEMORY WALL
-              </Label>
-
-              <h3 className={styles.memoryTitle}>
-                LIFE IN FRAMES
-              </h3>
-            </div>
-
-            <span className={styles.memoryCount}>
-              {memories.length} FRAME
-              {Number(memories.length) === 1
-                ? ''
-                : 'S'}
-            </span>
-          </div>
-
-          <div className={styles.memoryWall}>
-            {memories.map((memory, index) => (
-              <MemoryPhoto
-                key={memory.src}
-                src={memory.src}
-                name={memory.name}
-                index={index}
-              />
-            ))}
-          </div>
-        </motion.div>
+                    <MemorySequence
+                      items={column}
+                      duplicate
+                    />
+                  </div>
+                </div>
+              )
+            },
+          )}
+        </div>
       </div>
     </section>
+  )
+}
+
+function MemorySequence({
+  items,
+  duplicate = false,
+}: {
+  items: readonly (typeof memories)[number][]
+  duplicate?: boolean
+}) {
+  return (
+    <div
+      className={styles.memorySequence}
+      aria-hidden={duplicate}
+    >
+      {items.map((memory, index) => {
+        const isPortrait =
+          index % 4 === 1
+
+        const rotation =
+          index % 3 === 0
+            ? styles.rotateLeft
+            : index % 3 === 1
+              ? styles.rotateRight
+              : styles.rotateNeutral
+
+        return (
+          <figure
+            key={`${duplicate ? 'copy-' : ''}${memory.src}-${index}`}
+            className={`${styles.memoryFigure} ${
+              isPortrait
+                ? styles.memoryPortrait
+                : styles.memoryLandscape
+            } ${rotation}`}
+          >
+            <div className={styles.imageFrame}>
+              <img
+                src={memory.src}
+                alt={memory.name}
+                loading="lazy"
+                draggable="false"
+              />
+
+              <span
+                className={styles.frameIndex}
+                aria-hidden="true"
+              >
+                {String(index + 1).padStart(2, '0')}
+              </span>
+            </div>
+          </figure>
+        )
+      })}
+    </div>
   )
 }

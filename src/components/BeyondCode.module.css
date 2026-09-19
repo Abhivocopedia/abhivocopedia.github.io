@@ -1,348 +1,419 @@
 .section {
   position: relative;
-  padding: var(--space-5xl) 0;
-  background: var(--ink);
-  color: var(--warm-white);
+  width: 100%;
   overflow: hidden;
+  background: #111111;
+  color: #f4f4f4;
+  padding: clamp(5rem, 10vw, 9rem) 0;
 }
 
-.bgDecoration {
+.background {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
-  opacity: 0.25;
+  opacity: 0.18;
 }
 
 .container {
   position: relative;
   z-index: 1;
-  width: min(
-    var(--container-max),
-    calc(100% - (var(--container-padding) * 2))
-  );
-  margin: 0 auto;
-}
-
-.header {
-  text-align: center;
-  margin-bottom: var(--space-3xl);
-}
-
-.title {
-  margin-top: var(--space-sm);
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 7vw, 5.5rem);
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.04em;
-  color: var(--warm-white);
-}
-
-.divider {
-  width: min(260px, 60vw);
-  height: 2px;
-  margin: var(--space-lg) auto 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--mustard),
-    transparent
-  );
-}
-
-.subtitle {
-  margin-top: var(--space-lg);
-  color: rgba(255, 253, 246, 0.62);
-  font-family: var(--font-body);
-  font-size: 1rem;
+  width: 100%;
 }
 
 /* =========================================================
-   MOVING MARQUEE
+   HEADER
 ========================================================= */
 
-.marqueeWrapper {
+.header {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title {
+  margin: 0.8rem 0 0;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+}
+
+.subtitle {
+  margin: 1.4rem auto 0;
+  max-width: 46rem;
+  color: rgba(255, 255, 255, 0.68);
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.7;
+}
+
+/* =========================================================
+   FULL WIDTH MARQUEE
+========================================================= */
+
+.marqueeViewport {
   position: relative;
   width: 100vw;
-  left: 50%;
-  transform: translateX(-50%);
+  margin-top: clamp(3rem, 7vw, 6rem);
+  margin-left: calc(50% - 50vw);
   overflow: hidden;
-  margin-bottom: clamp(3rem, 7vw, 6rem);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.025);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: #151515;
 }
 
 .marqueeTrack {
-  width: max-content;
-  animation: marqueeMove 22s linear infinite;
-}
-
-.marqueeContent {
   display: flex;
+  width: max-content;
   align-items: center;
-  gap: clamp(1.5rem, 3vw, 3rem);
-  padding: 1.1rem 0;
-  white-space: nowrap;
+  animation: marqueeMove 24s linear infinite;
+  will-change: transform;
 }
 
 .marqueeItem {
   display: inline-flex;
   align-items: center;
-  gap: 1.25rem;
-  color: rgba(255, 253, 246, 0.82);
+  gap: 1.8rem;
+  min-height: 4.2rem;
+  padding: 0 1.8rem;
+  white-space: nowrap;
+}
+
+.marqueeText {
+  color: #ffffff;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .marqueeDot {
-  color: var(--mustard);
-  font-size: 1rem;
+  color: #ffffff;
+  font-size: 1.1rem;
 }
 
 @keyframes marqueeMove {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
+}
+
+/* =========================================================
+   MEMORY HEADER
+========================================================= */
+
+.memoryHeader {
+  width: min(1180px, calc(100% - 2rem));
+  margin: clamp(4rem, 8vw, 7rem) auto 2rem;
+  text-align: left;
 }
 
 /* =========================================================
    MEMORY WALL
 ========================================================= */
 
-.memorySection {
-  width: 100%;
-}
-
-.memoryHeading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 1.75rem;
-}
-
-.memoryTitle {
-  margin-top: 0.4rem;
-  font-family: var(--font-display);
-  font-size: clamp(1.8rem, 4vw, 3.2rem);
-  line-height: 0.95;
-  letter-spacing: -0.035em;
-}
-
-.memoryCount {
-  flex-shrink: 0;
-  padding: 0.5rem 0.7rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 999px;
-  color: rgba(255, 253, 246, 0.62);
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-}
-
-/*
-  Masonry-style wall.
-
-  Browser automatically decides portrait/landscape from
-  natural image dimensions, then applies:
-  Portrait  = 4:5
-  Landscape = 3:2
-*/
-
 .memoryWall {
-  column-count: 4;
-  column-gap: clamp(0.8rem, 1.6vw, 1.4rem);
-}
-
-.memoryCard {
   position: relative;
-  width: 100%;
-  margin: 0 0 clamp(0.8rem, 1.6vw, 1.4rem);
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  animation: memoryFloat 7s ease-in-out infinite;
-  animation-delay: var(--float-delay);
-}
-
-.memoryCard::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  pointer-events: none;
-  transition:
-    border-color 0.35s ease,
-    box-shadow 0.35s ease;
-}
-
-.memoryCard:hover {
-  animation-play-state: paused;
-  z-index: 4;
-}
-
-.memoryCard:hover::after {
-  border-color: rgba(224, 174, 62, 0.72);
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.32),
-    0 0 0 1px rgba(224, 174, 62, 0.12);
-}
-
-.memoryImageWrap {
-  position: relative;
-  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(1rem, 1.8vw, 1.8rem);
+  width: min(1280px, calc(100% - 2rem));
+  height: clamp(34rem, 72vh, 54rem);
+  margin: 0 auto;
   overflow: hidden;
-  border-radius: 18px;
-  background: #151515;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
 }
 
-.memoryCard.portrait .memoryImageWrap {
-  aspect-ratio: 4 / 5;
+.memoryColumn {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
 }
 
-.memoryCard.landscape .memoryImageWrap {
-  aspect-ratio: 3 / 2;
-}
-
-.memoryCard:not(.portrait):not(.landscape) .memoryImageWrap {
-  aspect-ratio: 3 / 2;
-}
-
-.memoryImage {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(0) contrast(1.02);
-  transform: scale(1.015);
-  transition:
-    filter 0.45s ease,
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.memoryCard:hover .memoryImage {
-  filter: saturate(1) contrast(1.04);
-  transform: scale(1.055);
-}
-
-.memoryOverlay {
-  position: absolute;
-  inset: 0;
+.memoryTrack {
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 0.7rem;
-  pointer-events: none;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.3),
-      transparent 28%,
-      transparent 68%,
-      rgba(0, 0, 0, 0.28)
-    );
+  flex-direction: column;
+  width: 100%;
+  will-change: transform;
 }
 
-.memoryOverlay span {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2rem;
-  height: 2rem;
-  padding: 0 0.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.42);
-  color: var(--warm-white);
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  backdrop-filter: blur(8px);
+.memorySequence {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 1.8vw, 1.8rem);
+  padding-bottom: clamp(1rem, 1.8vw, 1.8rem);
 }
 
-@keyframes memoryFloat {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) rotate(0deg);
+.memoryColumnUp .memoryTrack {
+  animation: memoryUp 28s linear infinite;
+}
+
+.memoryColumnDown .memoryTrack {
+  animation: memoryDown 31s linear infinite;
+}
+
+@keyframes memoryUp {
+  from {
+    transform: translate3d(0, 0, 0);
   }
 
-  50% {
-    transform: translate3d(
-      0,
-      -7px,
-      0
-    ) rotate(0.15deg);
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes memoryDown {
+  from {
+    transform: translate3d(0, -50%, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
   }
 }
 
 /* =========================================================
-   RESPONSIVE
+   MEMORY PHOTO
 ========================================================= */
 
-@media (max-width: 1100px) {
+.memoryFigure {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  overflow: visible;
+  transform-origin: center;
+}
+
+.memoryLandscape {
+  aspect-ratio: 4 / 3;
+}
+
+.memoryPortrait {
+  aspect-ratio: 4 / 5;
+}
+
+.imageFrame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 1.25rem;
+  background: #1c1c1c;
+  box-shadow:
+    0 1.2rem 2.8rem rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(255, 255, 255, 0.025) inset;
+}
+
+.imageFrame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.08),
+      transparent 30%,
+      rgba(0, 0, 0, 0.22)
+    );
+}
+
+.imageFrame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(0.95);
+  transition:
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.5s ease;
+  user-select: none;
+}
+
+.memoryFigure:hover .imageFrame img {
+  transform: scale(1.035);
+  filter: grayscale(100%) contrast(1.05);
+}
+
+/* =========================================================
+   FLOATING FEEL
+========================================================= */
+
+.rotateLeft {
+  transform: rotate(-0.8deg);
+}
+
+.rotateRight {
+  transform: rotate(0.7deg);
+}
+
+.rotateNeutral {
+  transform: rotate(0deg);
+}
+
+.frameIndex {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(15, 15, 15, 0.65);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+}
+
+/* =========================================================
+   EDGE FADE
+========================================================= */
+
+.memoryWall::before,
+.memoryWall::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.memoryWall::before {
+  top: 0;
+  height: 6rem;
+  background: linear-gradient(
+    to bottom,
+    #111111,
+    transparent
+  );
+}
+
+.memoryWall::after {
+  bottom: 0;
+  height: 6rem;
+  background: linear-gradient(
+    to top,
+    #111111,
+    transparent
+  );
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 980px) {
   .memoryWall {
-    column-count: 3;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    height: 48rem;
+  }
+
+  .memoryColumn:nth-child(4) {
+    display: none;
   }
 }
 
-@media (max-width: 760px) {
-  .memoryHeading {
-    align-items: flex-start;
-    flex-direction: column;
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+  .section {
+    padding: 4rem 0;
+  }
+
+  .header {
+    width: min(100% - 1.25rem, 1180px);
+  }
+
+  .title {
+    font-size: clamp(2.7rem, 13vw, 4.8rem);
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .marqueeItem {
+    min-height: 3.5rem;
+    gap: 1.2rem;
+    padding: 0 1.2rem;
+  }
+
+  .marqueeText {
+    font-size: 0.68rem;
+  }
+
+  .memoryHeader {
+    width: min(100% - 1.25rem, 1180px);
+    margin-top: 4rem;
+  }
+
+  .memoryWall {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: calc(100% - 1rem);
+    height: 38rem;
     gap: 0.8rem;
   }
 
-  .memoryWall {
-    column-count: 2;
+  .memoryColumn:nth-child(3),
+  .memoryColumn:nth-child(4) {
+    display: none;
   }
 
-  .memoryCard {
-    margin-bottom: 0.8rem;
+  .memorySequence {
+    gap: 0.8rem;
+    padding-bottom: 0.8rem;
   }
 
-  .memoryImageWrap {
-    border-radius: 14px;
+  .imageFrame {
+    border-radius: 0.95rem;
   }
 
-  .memoryCard::after {
-    border-radius: 14px;
+  .frameIndex {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    font-size: 0.5rem;
   }
 }
 
-@media (max-width: 460px) {
-  .memoryWall {
-    column-count: 1;
-  }
-
-  .memoryTitle {
-    font-size: 2rem;
-  }
-
-  .memoryCount {
-    font-size: 0.58rem;
-  }
-}
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
-  .marqueeTrack {
-    animation: none;
-  }
-
-  .memoryCard {
-    animation: none;
-  }
-
-  .memoryImage {
-    transition: none;
+  .marqueeTrack,
+  .memoryTrack {
+    animation-play-state: paused;
   }
 }
