@@ -1,0 +1,161 @@
+.footer {
+  background: #171717;
+  color: #FFFDF6;
+  padding: 4rem 0 2rem;
+  border-top: 4px solid #E0AE3E;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 253, 246, 0.1);
+}
+
+@media (min-width: 769px) {
+  .main {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+.brand {
+  max-width: 300px;
+}
+
+.logo {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #E0AE3E;
+  margin-bottom: 0.75rem;
+}
+
+.tagline {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: rgba(255, 253, 246, 0.7);
+  line-height: 1.6;
+}
+
+.vexr {
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .vexr {
+    text-align: left;
+  }
+}
+
+.vexrLabel {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #E0AE3E;
+  margin-bottom: 1rem;
+}
+
+.vexrLines {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-end;
+}
+
+@media (max-width: 768px) {
+  .vexrLines {
+    align-items: flex-start;
+  }
+}
+
+.vexrLine {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #FFFDF6;
+  white-space: nowrap;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+
+@media (min-width: 769px) {
+  .bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.copyright p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: rgba(255, 253, 246, 0.5);
+}
+
+.footerLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.footerLinks a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 253, 246, 0.08);
+  color: rgba(255, 253, 246, 0.7);
+  transition: all 0.2s ease;
+}
+
+.footerLinks a:hover {
+  background: #E0AE3E;
+  color: #171717;
+  transform: translateY(-2px);
+}
+
+.footerLinks a:focus-visible {
+  outline: 2px solid #E0AE3E;
+  outline-offset: 3px;
+}
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 3rem 0 1.5rem;
+  }
+
+  .main {
+    gap: 2rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .logo {
+    font-size: 1.25rem;
+  }
+
+  .vexrLine {
+    font-size: 1rem;
+  }
+}
