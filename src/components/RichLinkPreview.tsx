@@ -3,26 +3,35 @@ import {
   useMemo,
   useState,
 } from 'react'
-import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import styles from './RichLinkPreview.module.css'
+
+type PreviewPlatform =
+  | 'instagram'
+  | 'github'
+  | 'linkedin'
+  | 'youtube'
+  | 'x'
+  | 'web'
+
+type PreviewTile = {
+  type: 'image' | 'text'
+  src?: string
+  label: string
+  meta?: string
+}
 
 type LinkPreviewData = {
   ok: boolean
   url: string
-  platform:
-    | 'instagram'
-    | 'github'
-    | 'linkedin'
-    | 'youtube'
-    | 'x'
-    | 'web'
+  platform: PreviewPlatform
   title: string
   description: string
   siteName: string
   favicon: string
   images: string[]
   image: string | null
+  tiles: PreviewTile[]
   error?: string
 }
 
@@ -37,24 +46,72 @@ const API_BASE =
   import.meta.env.VITE_LINK_PREVIEW_API ||
   '/api/link-preview'
 
-function buildApiUrl(
-  url: string,
-) {
+function buildApiUrl(url: string) {
   return `${API_BASE}?url=${encodeURIComponent(url)}`
 }
 
-function platformName(
-  platform: LinkPreviewData['platform'],
+function detectPlatform(url: string): PreviewPlatform {
+  try {
+    const host = new URL(url).hostname
+      .toLowerCase()
+      .replace(/^www\./, '')
+
+    if (
+      host === 'github.com' ||
+      host.endsWith('.github.com')
+    ) {
+      return 'github'
+    }
+
+    if (
+      host === 'instagram.com' ||
+      host.endsWith('.instagram.com')
+    ) {
+      return 'instagram'
+    }
+
+    if (
+      host === 'linkedin.com' ||
+      host.endsWith('.linkedin.com')
+    ) {
+      return 'linkedin'
+    }
+
+    if (
+      host === 'youtube.com' ||
+      host === 'youtu.be' ||
+      host.endsWith('.youtube.com')
+    ) {
+      return 'youtube'
+    }
+
+    if (
+      host === 'x.com' ||
+      host === 'twitter.com' ||
+      host.endsWith('.x.com') ||
+      host.endsWith('.twitter.com')
+    ) {
+      return 'x'
+    }
+  } catch {
+    // Keep generic web fallback.
+  }
+
+  return 'web'
+}
+
+function platformLabel(
+  platform: PreviewPlatform,
 ) {
   switch (platform) {
-    case 'instagram':
-      return 'Instagram'
     case 'github':
-      return 'GitHub'
+      return 'GITHUB'
     case 'linkedin':
-      return 'LinkedIn'
+      return 'LINKEDIN'
+    case 'instagram':
+      return 'INSTAGRAM'
     case 'youtube':
-      return 'YouTube'
+      return 'YOUTUBE'
     case 'x':
       return 'X'
     default:
@@ -63,34 +120,88 @@ function platformName(
 }
 
 function fallbackTiles(
-  data: LinkPreviewData | null,
-) {
-  const images = [
-    ...(data?.images || []),
-  ]
-
-  if (
-    data?.image &&
-    !images.includes(data.image)
-  ) {
-    images.unshift(data.image)
+  platform: PreviewPlatform,
+): PreviewTile[] {
+  if (platform === 'youtube') {
+    return []
   }
 
-  while (images.length < 6) {
-    images.push('')
+  const sets: Record<
+    Exclude<PreviewPlatform, 'youtube'>,
+    string[]
+  > = {
+    github: [
+      'PROFILE',
+      'RECENT REPO',
+      'RECENT FILE',
+      'COMMITS',
+      'README',
+      'EXPLORE',
+    ],
+
+    instagram: [
+      'PROFILE',
+      'LATEST',
+      'POST',
+      'MEDIA',
+      'REELS',
+      'EXPLORE',
+    ],
+
+    linkedin: [
+      'PROFILE',
+      'LATEST',
+      'POST',
+      'EXPERIENCE',
+      'ABOUT',
+      'ACTIVITY',
+    ],
+
+    x: [
+      'PROFILE',
+      'LATEST',
+      'POSTS',
+      'MEDIA',
+      'ABOUT',
+      'EXPLORE',
+    ],
+
+    web: [
+      'PAGE',
+      'LATEST',
+      'MEDIA',
+      'INFO',
+      'LINK',
+      'EXPLORE',
+    ],
   }
 
-  return images.slice(0, 6)
+  return sets[platform].map((label) => ({
+    type: 'text',
+    label,
+  }))
 }
 
-const tileContent = [
-  'PROFILE',
-  'LATEST',
-  'BUILD',
-  'POST',
-  'MEDIA',
-  'EXPLORE',
-]
+function makeFallbackData(
+  url: string,
+  label?: string,
+): LinkPreviewData {
+  const platform = detectPlatform(url)
+
+  return {
+    ok: false,
+    url,
+    platform,
+    title: label || platformLabel(platform),
+    description:
+      'Open the destination to explore the original.',
+    siteName: platformLabel(platform),
+    favicon: '',
+    images: [],
+    image: null,
+    tiles: fallbackTiles(platform),
+  }
+}
 
 export function RichLinkPreview({
   url,
@@ -98,8 +209,16 @@ export function RichLinkPreview({
   username,
   accent,
 }: RichLinkPreviewProps) {
+  const requestedPlatform =
+    useMemo(
+      () => detectPlatform(url),
+      [url],
+    )
+
   const [data, setData] =
-    useState<LinkPreviewData | null>(null)
+    useState<LinkPreviewData | null>(
+      null,
+    )
 
   const [loading, setLoading] =
     useState(true)
@@ -118,36 +237,26 @@ export function RichLinkPreview({
         if (!response.ok) {
           throw new Error(
             result.error ||
-              `Preview request failed with ${response.status}.`,
+              'Preview unavailable.',
           )
         }
 
         return result
       })
       .then((result) => {
-        if (!cancelled) {
-          setData(result)
-        }
+        if (cancelled) return
+
+        setData(result)
       })
       .catch(() => {
-        if (!cancelled) {
-          setData({
-            ok: true,
+        if (cancelled) return
+
+        setData(
+          makeFallbackData(
             url,
-            platform: 'web',
-            title:
-              label ||
-              'Link Preview',
-            description:
-              'Open the destination to explore the original page.',
-            siteName:
-              label ||
-              'WEB',
-            favicon: '',
-            images: [],
-            image: null,
-          })
-        }
+            label,
+          ),
+        )
       })
       .finally(() => {
         if (!cancelled) {
@@ -160,65 +269,62 @@ export function RichLinkPreview({
     }
   }, [url, label])
 
+  const platform =
+    data?.platform ||
+    requestedPlatform
+
   const tiles =
-    useMemo(
-      () => fallbackTiles(data),
-      [data],
-    )
+    data?.tiles?.length
+      ? data.tiles
+      : fallbackTiles(platform)
 
   const displayUsername =
     username ||
-    data?.siteName ||
+    data?.title ||
     label ||
-    'Open profile'
+    platformLabel(platform)
 
   const displayTitle =
     data?.title ||
     label ||
-    'Link Preview'
+    platformLabel(platform)
 
-  const displayPlatform =
-    data
-      ? platformName(data.platform)
-      : label || 'LINK'
+  const avatar =
+    data?.image ||
+    data?.favicon ||
+    null
+
+  const isYoutube =
+    platform === 'youtube'
 
   return (
     <div
-      className={styles.root}
+      className={`${styles.root} ${
+        isYoutube
+          ? styles.youtubeRoot
+          : ''
+      }`}
       style={
         {
           '--preview-accent':
             accent ||
             'var(--mustard)',
-        } as CSSProperties
+        } as React.CSSProperties
       }
     >
+      {/* HEADER */}
       <div className={styles.identity}>
         <div className={styles.avatar}>
-          {data?.image ? (
+          {avatar ? (
             <img
-              src={data.image}
+              src={avatar}
               alt=""
               loading="lazy"
-              onError={(event) => {
-                event.currentTarget.style.display =
-                  'none'
-              }}
-            />
-          ) : data?.favicon ? (
-            <img
-              src={data.favicon}
-              alt=""
-              loading="lazy"
-              onError={(event) => {
-                event.currentTarget.style.display =
-                  'none'
-              }}
             />
           ) : (
             <span>
               {displayUsername
-                .slice(0, 1)
+                .charAt(0)
                 .toUpperCase()}
             </span>
           )}
@@ -234,142 +340,229 @@ export function RichLinkPreview({
           </span>
         </div>
 
-        <span className={styles.platform}>
-          {displayPlatform}
+        <span
+          className={styles.platform}
+        >
+          {platformLabel(platform)}
         </span>
       </div>
 
-      <div
-        className={styles.previewArea}
-        aria-label={`${displayPlatform} link preview`}
-      >
-        {loading
-          ? Array.from({
-              length: 6,
-            }).map((_, index) => (
-              <motion.div
-                key={index}
-                className={
-                  styles.floatingTile
-                }
-                initial={{
-                  opacity: 0,
-                  scale: 0.7,
-                  y: 20,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                  y: 0,
-                }}
-                transition={{
-                  delay:
-                    index * 0.06,
-                  duration: 0.4,
-                }}
-              >
-                <div
-                  className={
-                    styles.skeletonTile
-                  }
-                />
-              </motion.div>
-            ))
-          : tiles.map(
-              (image, index) => (
+      {/* CONTENT */}
+      {!isYoutube && (
+        <div className={styles.previewArea}>
+          {loading ? (
+            <div
+              className={
+                styles.tileGrid
+              }
+              aria-label="Loading preview"
+            >
+              {Array.from({
+                length: 6,
+              }).map((_, index) => (
                 <motion.div
-                  key={`${image}-${index}`}
-                  className={
-                    styles.floatingTile
-                  }
-                  whileHover={{
-                    y: -10,
-                    rotate: 0,
-                    scale: 1.04,
-                    zIndex: 10,
+                  key={index}
+                  className={`${styles.tile} ${styles.loadingTile}`}
+                  animate={{
+                    y: [
+                      0,
+                      -5,
+                      0,
+                    ],
+                    rotate: [
+                      -2,
+                      1,
+                      -2,
+                    ],
                   }}
                   transition={{
-                    type: 'spring',
-                    stiffness: 280,
-                    damping: 18,
+                    duration:
+                      2.4 +
+                      index * 0.15,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay:
+                      index * 0.08,
                   }}
-                  style={
-                    {
-                      '--tile-index':
-                        index,
-                    } as CSSProperties
-                  }
-                >
-                  {image ? (
-                    <img
-                      src={image}
-                      alt=""
-                      className={
-                        styles.tileImage
-                      }
-                      loading="lazy"
-                      onError={(
-                        event,
-                      ) => {
-                        event.currentTarget.style.display =
-                          'none'
-
-                        const parent =
-                          event.currentTarget
-                            .parentElement
-
-                        parent?.classList.add(
-                          styles.tileFailed,
-                        )
+                />
+              ))}
+            </div>
+          ) : (
+            <div
+              className={styles.tileGrid}
+            >
+              {tiles
+                .slice(0, 6)
+                .map(
+                  (
+                    tile,
+                    index,
+                  ) => (
+                    <motion.div
+                      key={`${tile.label}-${index}`}
+                      className={`${styles.tile} ${
+                        tile.type ===
+                        'image'
+                          ? styles.imageTile
+                          : styles.textTile
+                      }`}
+                      initial={{
+                        opacity: 0,
+                        scale: 0.8,
+                        y: 15,
                       }}
-                    />
-                  ) : null}
-
-                  <div
-                    className={
-                      styles.tileOverlay
-                    }
-                  >
-                    <span
-                      className={
-                        styles.tileNumber
-                      }
+                      animate={{
+                        opacity: 1,
+                        scale: 1,
+                        y: [
+                          0,
+                          index % 2
+                            ? -4
+                            : 4,
+                          0,
+                        ],
+                        rotate:
+                          index % 2
+                            ? 1.4
+                            : -1.4,
+                      }}
+                      transition={{
+                        opacity: {
+                          duration: 0.45,
+                          delay:
+                            index * 0.06,
+                        },
+                        scale: {
+                          duration: 0.45,
+                          delay:
+                            index * 0.06,
+                          ease: [
+                            0.16,
+                            1,
+                            0.3,
+                            1,
+                          ],
+                        },
+                        y: {
+                          duration:
+                            3.2 +
+                            index *
+                              0.2,
+                          repeat:
+                            Infinity,
+                          ease: 'easeInOut',
+                          delay:
+                            index * 0.12,
+                        },
+                        rotate: {
+                          duration:
+                            3.8 +
+                            index *
+                              0.15,
+                          repeat:
+                            Infinity,
+                          ease: 'easeInOut',
+                        },
+                      }}
+                      whileHover={{
+                        scale: 1.05,
+                        rotate: 0,
+                        zIndex: 5,
+                      }}
                     >
-                      0{index + 1}
-                    </span>
+                      {tile.type ===
+                        'image' &&
+                      tile.src ? (
+                        <>
+                          <img
+                            src={tile.src}
+                            alt=""
+                            loading="lazy"
+                          />
 
-                    <span
-                      className={
-                        styles.tileText
-                      }
-                    >
-                      {image
-                        ? displayPlatform
-                        : tileContent[
-                            index
-                          ]}
-                    </span>
-                  </div>
-                </motion.div>
-              ),
-            )}
-      </div>
+                          <span
+                            className={
+                              styles.imageLabel
+                            }
+                          >
+                            {
+                              tile.label
+                            }
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span
+                            className={
+                              styles.tileNumber
+                            }
+                          >
+                            {String(
+                              index + 1,
+                            ).padStart(
+                              2,
+                              '0',
+                            )}
+                          </span>
 
+                          <span
+                            className={
+                              styles.tileLabel
+                            }
+                          >
+                            {
+                              tile.label
+                            }
+                          </span>
+
+                          {tile.meta && (
+                            <span
+                              className={
+                                styles.tileMeta
+                              }
+                            >
+                              {
+                                tile.meta
+                              }
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </motion.div>
+                  ),
+                )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* YOUTUBE EMPTY STATE */}
+      {isYoutube && (
+        <div
+          className={styles.youtubeSpace}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* FOOTER */}
       <div className={styles.footer}>
         <div className={styles.footerInfo}>
           <span>
             {data?.siteName ||
-              label ||
-              'LINK'}
+              platformLabel(
+                platform,
+              )}
           </span>
 
           <small>
             {data?.description ||
-              'Rich preview from the public destination.'}
+              'Open the original profile.'}
           </small>
         </div>
 
-        <span className={styles.open}>
+        <span
+          className={styles.open}
+        >
           OPEN ↗
         </span>
       </div>
