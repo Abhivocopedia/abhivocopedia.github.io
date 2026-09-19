@@ -1,22 +1,14 @@
 .section {
   position: relative;
-  padding: var(--space-5xl) 0;
+  padding: var(--space-5xl) 0 var(--space-4xl);
   background: var(--paper);
   overflow: visible;
-}
-
-.bgDecoration {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  overflow: hidden;
 }
 
 .sectionInner {
   position: relative;
   z-index: 1;
-  max-width: var(--container-max);
+  width: min(100%, var(--container-max));
   margin: 0 auto;
   padding: 0 var(--container-padding);
 }
@@ -26,21 +18,30 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-md);
-  margin-bottom: var(--space-3xl);
+  margin-bottom: clamp(2rem, 5vw, 4rem);
   text-align: center;
 }
 
-.title {
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+.sectionNumber {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.15em;
+  color: var(--mustard);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 7vw, 5.2rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
   color: var(--ink);
-  line-height: 1;
 }
 
 .divider {
-  width: min(400px, 80%);
+  width: min(400px, 70%);
   height: 2px;
   background: linear-gradient(
     90deg,
@@ -50,15 +51,6 @@
   );
 }
 
-.subtitle {
-  font-family: var(--font-body);
-  font-size: 1.125rem;
-  color: var(--ink-muted);
-  max-width: 600px;
-}
-
-/* The journey itself consumes vertical scroll while the sticky viewport
-   converts that progress into horizontal motion. */
 .journey {
   position: relative;
   height: 360vh;
@@ -66,12 +58,11 @@
 
 .sticky {
   position: sticky;
-  top: 88px;
-  height: calc(100vh - 88px);
+  top: 0;
+  height: 100vh;
   min-height: 620px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .trackViewport {
@@ -80,6 +71,21 @@
   min-height: 0;
   overflow: hidden;
   isolation: isolate;
+  border-top: 1px solid rgba(23, 23, 23, 0.07);
+  border-bottom: 1px solid rgba(23, 23, 23, 0.07);
+  background:
+    radial-gradient(
+      circle at 50% 48%,
+      rgba(224, 174, 62, 0.09),
+      transparent 32%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 253, 246, 0.4),
+      transparent 32%,
+      transparent 68%,
+      rgba(23, 23, 23, 0.025)
+    );
 }
 
 .track {
@@ -87,8 +93,9 @@
   left: 0;
   top: 0;
   height: 100%;
-  min-width: 1400px;
+  min-width: 1500px;
   will-change: transform;
+  transition: transform 55ms linear;
 }
 
 .rail {
@@ -96,10 +103,10 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: 72px;
+  height: 80px;
   transform: translateY(-50%);
   pointer-events: none;
-  z-index: 1;
+  z-index: 4;
 }
 
 .railBase {
@@ -107,16 +114,17 @@
   left: 0;
   right: 0;
   top: 50%;
-  height: 8px;
+  height: 7px;
   transform: translateY(-50%);
   background: var(--ink);
   border-radius: 999px;
+  box-shadow: 0 2px 0 rgba(23, 23, 23, 0.1);
 }
 
 .railProgress {
   position: absolute;
   top: 50%;
-  height: 12px;
+  height: 10px;
   transform: translateY(-50%);
   background: linear-gradient(
     90deg,
@@ -126,8 +134,7 @@
     var(--orange)
   );
   border-radius: 999px;
-  z-index: 2;
-  transition: width 80ms linear;
+  z-index: 1;
 }
 
 .railTies {
@@ -136,13 +143,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0;
 }
 
 .railTie {
-  width: 8px;
-  height: 34px;
-  border-radius: 4px;
+  width: 7px;
+  height: 32px;
+  border-radius: 999px;
   background: var(--ink);
   opacity: 0.28;
 }
@@ -153,217 +159,211 @@
   bottom: 0;
   width: 1px;
   transform: translateX(-50%);
-  z-index: 5;
+  z-index: 6;
 }
 
 .stationNode {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
   width: 34px;
   height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
   z-index: 8;
-  color: var(--ink);
 }
 
 .nodeOuter {
   position: relative;
-  width: 30px;
-  height: 30px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   border: 4px solid var(--ink);
   background: var(--paper);
-  display: block;
+  box-shadow: 0 0 0 4px rgba(245, 240, 226, 0.7);
   transition:
-    background 250ms ease,
-    border-color 250ms ease,
-    box-shadow 250ms ease;
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .nodeInner {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: var(--ink);
-  transition: background 250ms ease, transform 250ms ease;
 }
 
-.nodeRing {
+.nodePulse {
   position: absolute;
-  inset: -8px;
+  inset: -7px;
+  border: 2px solid var(--station-color, var(--mustard));
   border-radius: 50%;
-  border: 2px solid var(--card-color, var(--ink));
-  opacity: 0.35;
+  opacity: 0.2;
   transform: scale(0.9);
   transition:
-    opacity 250ms ease,
-    transform 250ms ease;
+    opacity 180ms ease,
+    transform 180ms ease;
 }
 
 .stationActive .nodeOuter {
-  background: var(--card-color, var(--mustard));
-  border-color: var(--card-color, var(--mustard));
-  box-shadow: 0 0 0 7px rgba(23, 23, 23, 0.08);
+  background: var(--station-color, var(--mustard));
+  border-color: var(--station-color, var(--mustard));
+  transform: scale(1.13);
 }
 
 .stationActive .nodeInner {
   background: var(--paper);
-  transform: translate(-50%, -50%) scale(1.15);
 }
 
-.stationActive .nodeRing {
-  opacity: 1;
-  transform: scale(1.15);
-}
-
-.nodeLabel {
-  position: absolute;
-  top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-
-.stationActive .nodeLabel {
-  color: var(--ink);
-}
-
-.currentBadge {
-  position: absolute;
-  top: calc(100% + 38px);
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  font-family: var(--font-mono);
-  font-size: 0.52rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--mustard);
-  background: rgba(224, 174, 62, 0.12);
-  border: 1px solid rgba(224, 174, 62, 0.35);
-  padding: 0.18rem 0.45rem;
-  border-radius: var(--radius-sm);
+.stationActive .nodePulse {
+  opacity: 0.85;
+  transform: scale(1.13);
 }
 
 .stationCardWrap {
   position: absolute;
   left: 0;
   width: 320px;
+  z-index: 9;
   transform: translateX(-50%);
-  z-index: 7;
+  transition:
+    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   transform-origin: center;
-  pointer-events: auto;
 }
 
 .cardTop {
-  bottom: calc(50% + 110px);
+  bottom: calc(50% + 76px);
 }
 
 .cardBottom {
-  top: calc(50% + 110px);
+  top: calc(50% + 76px);
 }
 
-.stationCardWrap::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  width: 2px;
-  height: 74px;
-  transform: translateX(-50%);
-  background: var(--ink);
-  opacity: 0.22;
+.cardVisible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.cardHidden {
+  opacity: 0;
   pointer-events: none;
 }
 
-.cardTop::after {
-  top: 100%;
+.cardTop.cardHidden {
+  transform: translateX(-50%) translateY(18px) scale(0.975);
 }
 
-.cardBottom::after {
+.cardBottom.cardHidden {
+  transform: translateX(-50%) translateY(-18px) scale(0.975);
+}
+
+.cardConnector {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(23, 23, 23, 0.24);
+  pointer-events: none;
+}
+
+.cardTop .cardConnector {
+  top: 100%;
+  height: 76px;
+}
+
+.cardBottom .cardConnector {
   bottom: 100%;
+  height: 76px;
 }
 
 .stationCard {
   position: relative;
   width: 100%;
-  min-height: 205px;
+  min-height: 178px;
   padding: var(--space-lg);
-  background: var(--warm-white);
-  border: 3px solid rgba(23, 23, 23, 0.12);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 253, 246, 0.98);
+  border: 2px solid rgba(23, 23, 23, 0.15);
+  border-radius: 22px;
+  box-shadow:
+    0 18px 38px rgba(23, 23, 23, 0.13),
+    0 4px 0 rgba(23, 23, 23, 0.04);
   overflow: hidden;
   text-align: left;
   transition:
-    border-color 250ms ease,
-    box-shadow 250ms ease,
-    transform 250ms ease;
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .cardActive {
-  border-color: var(--card-color, var(--mustard));
-  box-shadow: var(--shadow-xl);
+  border-color: var(--station-color, var(--mustard));
+  box-shadow:
+    0 22px 46px rgba(23, 23, 23, 0.16),
+    0 4px 0 var(--station-color, var(--mustard));
 }
 
-.cardTopRow {
+.cardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  margin-bottom: 0.8rem;
+}
+
+.cardLabel {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--station-color, var(--ink));
 }
 
 .currentSticker {
   flex-shrink: 0;
+  padding: 0.18rem 0.42rem;
+  border: 1px solid rgba(224, 174, 62, 0.45);
+  border-radius: 999px;
+  background: rgba(224, 174, 62, 0.12);
+  color: var(--mustard-dark);
   font-family: var(--font-mono);
   font-size: 0.5rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--mustard);
-  border: 1px solid rgba(224, 174, 62, 0.35);
-  background: rgba(224, 174, 62, 0.12);
-  border-radius: var(--radius-sm);
-  padding: 0.16rem 0.38rem;
+  letter-spacing: 0.1em;
 }
 
 .cardTitle {
-  margin: 0 0 var(--space-md);
+  margin: 0 0 0.8rem;
   font-family: var(--font-display);
   font-size: 1.05rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   color: var(--ink);
 }
 
 .cardDetails {
+  margin: 0 0 0.9rem;
+  padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  margin: 0 0 var(--space-md);
-  padding: 0;
+  gap: 0.3rem;
 }
 
 .cardDetail {
   position: relative;
-  padding-left: 1rem;
+  padding-left: 0.95rem;
   font-family: var(--font-body);
-  font-size: 0.82rem;
-  line-height: 1.4;
+  font-size: 0.77rem;
+  line-height: 1.42;
   color: var(--ink-muted);
 }
 
@@ -372,16 +372,17 @@
   position: absolute;
   left: 0;
   top: 0;
-  color: var(--card-color, var(--ink));
+  color: var(--station-color, var(--ink));
   font-weight: 700;
 }
 
 .cardPeriod {
-  padding-top: 0.6rem;
+  padding-top: 0.58rem;
   border-top: 1px solid rgba(23, 23, 23, 0.1);
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.61rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
   color: var(--ink-light);
 }
 
@@ -389,19 +390,19 @@
   position: absolute;
   left: 50%;
   bottom: 0;
-  width: 76px;
+  width: 72px;
   height: 4px;
   transform: translateX(-50%);
-  background: var(--card-color, var(--mustard));
-  border-radius: 4px 4px 0 0;
+  border-radius: 999px 999px 0 0;
+  background: var(--station-color, var(--mustard));
 }
 
 .engine {
   position: absolute;
   top: 50%;
-  z-index: 12;
-  width: 154px;
-  height: 106px;
+  z-index: 14;
+  width: 124px;
+  height: 94px;
   transform: translate(-50%, -50%);
   pointer-events: none;
   will-change: left;
@@ -409,147 +410,298 @@
 
 .engineBody {
   position: relative;
-  width: 154px;
-  height: 86px;
+  width: 124px;
+  height: 78px;
 }
 
 .engineCab {
   position: absolute;
   left: 0;
-  bottom: 23px;
-  width: 44px;
-  height: 48px;
-  border-radius: 9px 9px 3px 3px;
-  background: var(--ink);
+  bottom: 19px;
+  width: 35px;
+  height: 43px;
   border: 3px solid var(--paper);
+  border-radius: 8px 8px 3px 3px;
+  background: var(--ink);
   z-index: 4;
 }
 
 .engineWindow {
   position: absolute;
   left: 50%;
-  top: 8px;
-  width: 20px;
-  height: 18px;
+  top: 7px;
+  width: 16px;
+  height: 15px;
   transform: translateX(-50%);
-  border-radius: 4px;
+  border: 2px solid var(--paper);
+  border-radius: 3px;
   background: var(--mustard);
 }
 
-.engineLight {
+.engineWindowBar {
   position: absolute;
   left: 50%;
-  bottom: -7px;
-  width: 12px;
-  height: 12px;
+  top: 15px;
+  width: 2px;
+  height: 9px;
   transform: translateX(-50%);
-  border-radius: 50%;
-  background: var(--mustard);
-  box-shadow: 0 0 12px rgba(224, 174, 62, 0.65);
+  background: var(--ink);
 }
 
 .engineBoiler {
   position: absolute;
-  left: 34px;
-  right: 18px;
-  bottom: 23px;
-  height: 38px;
+  left: 28px;
+  right: 16px;
+  bottom: 20px;
+  height: 34px;
+  border: 3px solid var(--paper);
   border-radius: 18px;
   background: var(--deep-green);
-  border: 3px solid var(--paper);
   z-index: 3;
 }
 
 .engineGauge {
   position: absolute;
-  right: 18px;
+  right: 14px;
   top: 50%;
-  width: 26px;
-  height: 26px;
+  width: 23px;
+  height: 23px;
   transform: translateY(-50%);
-  border-radius: 50%;
-  background: var(--ink);
-  border: 2px solid var(--mustard);
   display: grid;
   place-items: center;
+  border: 2px solid var(--mustard);
+  border-radius: 50%;
+  background: var(--ink);
 }
 
 .engineGauge span {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--mustard);
 }
 
+.engineChimney {
+  position: absolute;
+  left: 77px;
+  bottom: 53px;
+  width: 11px;
+  height: 22px;
+  border-radius: 3px 3px 1px 1px;
+  background: var(--ink);
+  z-index: 5;
+}
+
+.chimneyCap {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 19px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 99px;
+  background: var(--ink);
+}
+
 .engineCowcatcher {
   position: absolute;
-  right: 0;
-  bottom: 15px;
-  width: 24px;
-  height: 30px;
+  right: -2px;
+  bottom: 11px;
+  width: 25px;
+  height: 28px;
   background: var(--ink);
-  clip-path: polygon(100% 50%, 0 0, 0 100%);
-  z-index: 5;
+  clip-path: polygon(
+    100% 50%,
+    0 0,
+    0 100%
+  );
+  z-index: 6;
 }
 
 .engineWheels {
   position: absolute;
-  left: 12px;
-  right: 25px;
-  bottom: 8px;
+  left: 6px;
+  right: 15px;
+  bottom: 3px;
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
-  z-index: 6;
+  z-index: 8;
 }
 
 .wheel {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 3px rgba(255, 253, 246, 0.35);
+  transform: rotate(var(--wheel-rotation));
+  transform-origin: center;
+  will-change: transform;
+}
+
+.wheelLarge {
   width: 25px;
   height: 25px;
-  border-radius: 50%;
-  border: 4px solid var(--ink);
-  background: var(--paper);
-  display: block;
 }
 
-.wheelSpin {
-  animation: wheelSpin 0.7s linear infinite;
+.engineMoving {
+  animation: engineRide 150ms ease-in-out infinite alternate;
 }
 
-@keyframes wheelSpin {
+@keyframes engineRide {
+  from {
+    margin-top: 0;
+  }
   to {
-    transform: rotate(360deg);
+    margin-top: 1.5px;
   }
 }
 
-.engineLabel {
+.smokeStack {
+  position: absolute;
+  left: 77px;
+  top: 3px;
+  width: 10px;
+  height: 15px;
+  z-index: 16;
+}
+
+.smokePuff {
   position: absolute;
   left: 50%;
   bottom: 0;
-  transform: translateX(-50%);
-  font-family: var(--font-mono);
-  font-size: 0.5rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--ink-muted);
+  width: 11px;
+  height: 11px;
+  transform: translate(-50%, 0) scale(0.45);
+  border-radius: 50%;
+  background: rgba(74, 74, 74, 0.3);
+  filter: blur(1px);
+  opacity: 0;
 }
 
-.scrollHint {
-  display: flex;
+.engineMoving .smokePuff:nth-child(1) {
+  animation: smokeOne 1.25s ease-out infinite;
+}
+
+.engineMoving .smokePuff:nth-child(2) {
+  animation: smokeTwo 1.55s ease-out 0.35s infinite;
+}
+
+.engineMoving .smokePuff:nth-child(3) {
+  width: 15px;
+  height: 15px;
+  animation: smokeThree 1.8s ease-out 0.7s infinite;
+}
+
+@keyframes smokeOne {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.45);
+  }
+  18% {
+    opacity: 0.32;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(-50% - 6px),
+      -34px
+    ) scale(1.25);
+  }
+}
+
+@keyframes smokeTwo {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.4);
+  }
+  20% {
+    opacity: 0.28;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(-50% + 10px),
+      -44px
+    ) scale(1.45);
+  }
+}
+
+@keyframes smokeThree {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.35);
+  }
+  20% {
+    opacity: 0.24;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(
+      calc(-50% - 13px),
+      -54px
+    ) scale(1.65);
+  }
+}
+
+.engineReduced .smokePuff {
+  animation: none;
+  opacity: 0;
+}
+
+.progressMeta {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 320px) auto;
   align-items: center;
   justify-content: center;
-  gap: var(--space-sm);
-  padding: var(--space-md) 0 var(--space-lg);
-  text-align: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.progressRule {
+  position: relative;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: rgba(23, 23, 23, 0.12);
+}
+
+.progressRuleFill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  background: var(--mustard);
+  will-change: transform;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wheelSpin {
+  .track {
+    transition: none;
+  }
+
+  .engineMoving {
     animation: none;
   }
 
-  .stationCardWrap,
-  .railProgress {
+  .smokePuff {
+    animation: none !important;
+    opacity: 0 !important;
+  }
+
+  .stationCardWrap {
     transition: none;
+  }
+
+  .wheel {
+    transform: none;
   }
 }
 
@@ -559,19 +711,33 @@
   }
 
   .stationCardWrap {
-    width: 285px;
+    width: 290px;
+  }
+
+  .trackViewport {
+    min-height: 590px;
+  }
+
+  .sticky {
+    min-height: 590px;
   }
 }
 
 @media (max-width: 768px) {
+  .section {
+    padding-bottom: var(--space-3xl);
+  }
+
   .journey {
-    height: 420vh;
+    height: 410vh;
   }
 
   .sticky {
-    top: 72px;
-    height: calc(100vh - 72px);
-    min-height: 560px;
+    min-height: 550px;
+  }
+
+  .trackViewport {
+    min-height: 0;
   }
 
   .stationCardWrap {
@@ -579,33 +745,88 @@
   }
 
   .cardTop {
-    bottom: calc(50% + 94px);
+    bottom: calc(50% + 62px);
   }
 
   .cardBottom {
-    top: calc(50% + 94px);
+    top: calc(50% + 62px);
+  }
+
+  .cardTop .cardConnector,
+  .cardBottom .cardConnector {
+    height: 62px;
   }
 
   .stationCard {
-    min-height: 170px;
-    padding: var(--space-md);
+    min-height: 158px;
+    padding: 1rem;
+    border-radius: 18px;
   }
 
   .cardTitle {
-    font-size: 0.9rem;
+    font-size: 0.92rem;
   }
 
   .cardDetail {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
   }
 
-  .nodeLabel {
-    font-size: 0.58rem;
+  .cardPeriod {
+    font-size: 0.56rem;
   }
 
   .engine {
-    transform: translate(-50%, -50%) scale(0.82);
-    transform-origin: center;
+    width: 108px;
+    height: 84px;
+  }
+
+  .engineBody {
+    width: 108px;
+    height: 70px;
+    transform: scale(0.9);
+    transform-origin: left center;
+  }
+
+  .smokeStack {
+    left: 68px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  .title {
+    font-size: clamp(2.6rem, 15vw, 4.2rem);
+  }
+
+  .stationCardWrap {
+    width: 218px;
+  }
+
+  .cardTop {
+    bottom: calc(50% + 56px);
+  }
+
+  .cardBottom {
+    top: calc(50% + 56px);
+  }
+
+  .stationCard {
+    padding: 0.85rem;
+  }
+
+  .cardTitle {
+    font-size: 0.84rem;
+  }
+
+  .cardDetail {
+    font-size: 0.62rem;
+  }
+
+  .currentSticker {
+    font-size: 0.46rem;
   }
 }
 

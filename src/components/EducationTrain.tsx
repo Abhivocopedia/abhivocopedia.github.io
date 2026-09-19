@@ -1,15 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { motion } from 'framer-motion'
-import { education, EducationStation } from '../data/education'
-import { Label, DotPattern, Arrow } from './DecorativeMarks'
+import type { CSSProperties } from 'react'
+import { education } from '../data/education'
+import type { EducationStation } from '../data/education'
 import styles from './EducationTrain.module.css'
 
 type StationSide = 'top' | 'bottom'
-
-const NAVBAR_OFFSET = 88
-const DESKTOP_TRACK_MULTIPLIER = 3.4
-const MOBILE_TRACK_MULTIPLIER = 4.2
-const MIN_TRACK_WIDTH = 1400
 
 interface Metrics {
   viewportWidth: number
@@ -17,14 +12,23 @@ interface Metrics {
   stationPositions: number[]
 }
 
+const MIN_TRACK_WIDTH = 1500
+const DESKTOP_TRACK_MULTIPLIER = 3.2
+const MOBILE_TRACK_MULTIPLIER = 4.1
+const CAMERA_BIAS = 0.42
+const WHEEL_DEGREES_PER_PIXEL = 0.72
+
 export function EducationTrain() {
-  const sectionRef = useRef<HTMLElement>(null)
   const journeyRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const rafRef = useRef<number | null>(null)
+  const moveStopTimerRef = useRef<number | null>(null)
+  const previousTrainXRef = useRef(0)
 
   const [progress, setProgress] = useState(0)
+  const [isMoving, setIsMoving] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
   const [metrics, setMetrics] = useState<Metrics>({
     viewportWidth: 0,
     trackWidth: MIN_TRACK_WIDTH,
@@ -42,22 +46,21 @@ export function EducationTrain() {
     [maxStationIndex],
   )
 
-
   const interpolateStationPosition = useCallback(
     (value: number) => {
-      if (metrics.stationPositions.length === 0) return 0
+      const positions = metrics.stationPositions
 
-      if (value <= 0) return metrics.stationPositions[0]
-      if (value >= 1)
-        return metrics.stationPositions[metrics.stationPositions.length - 1]
+      if (positions.length === 0) return 0
+      if (value <= 0) return positions[0]
+      if (value >= 1) return positions[positions.length - 1]
 
       const scaled = value * maxStationIndex
       const lowerIndex = Math.floor(scaled)
       const upperIndex = Math.min(lowerIndex + 1, maxStationIndex)
       const localProgress = scaled - lowerIndex
 
-      const lower = metrics.stationPositions[lowerIndex] ?? 0
-      const upper = metrics.stationPositions[upperIndex] ?? lower
+      const lower = positions[lowerIndex] ?? 0
+      const upper = positions[upperIndex] ?? lower
 
       return lower + (upper - lower) * localProgress
     },
@@ -65,15 +68,17 @@ export function EducationTrain() {
   )
 
   const trainX = interpolateStationPosition(progress)
+  const trainScreenBias = metrics.viewportWidth * CAMERA_BIAS
 
-  const translateX =
+  const worldTranslateX =
     metrics.viewportWidth > 0
-      ? metrics.viewportWidth / 2 - trainX
+      ? trainScreenBias - trainX
       : 0
+
+  const wheelRotation = trainX * WHEEL_DEGREES_PER_PIXEL
 
   const measure = useCallback(() => {
     const viewport = viewportRef.current
-
     if (!viewport) return
 
     const viewportWidth = viewport.clientWidth
@@ -84,27 +89,27 @@ export function EducationTrain() {
 
     const trackWidth = Math.max(
       MIN_TRACK_WIDTH,
-      viewportWidth * multiplier,
+      Math.round(viewportWidth * multiplier),
     )
 
-    // Keep the first and final stations equally inset from each track edge.
-    // This makes all four station distances mathematically identical.
-    const horizontalInset = Math.max(
-      viewportWidth * 0.55,
-      viewportWidth <= 768 ? 110 : 180,
+    const sidePadding = Math.max(
+      viewportWidth * 0.38,
+      viewportWidth <= 768 ? 115 : 190,
     )
 
-    const usableTrackWidth = Math.max(
+    const usableWidth = Math.max(
       viewportWidth,
-      trackWidth - horizontalInset * 2,
+      trackWidth - sidePadding * 2,
     )
 
     const stationPositions = education.map((_, index) => {
-      if (maxStationIndex === 0) return trackWidth / 2
+      if (maxStationIndex === 0) {
+        return trackWidth / 2
+      }
 
       return (
-        horizontalInset +
-        (usableTrackWidth * index) / maxStationIndex
+        sidePadding +
+        (usableWidth * index) / maxStationIndex
       )
     })
 
@@ -116,23 +121,68 @@ export function EducationTrain() {
   }, [maxStationIndex])
 
   const updateScroll = useCallback(() => {
-    if (!journeyRef.current || !stickyRef.current) return
+    const journey = journeyRef.current
+    const sticky = stickyRef.current
 
-    const journeyRect = journeyRef.current.getBoundingClientRect()
-    const stickyHeight =
-      stickyRef.current.getBoundingClientRect().height
+    if (!journey || !sticky) return
 
-    const scrollableDistance = Math.max(
-      journeyRect.height - stickyHeight,
+    const journeyRect = journey.getBoundingClientRect()
+    const stickyHeight = sticky.clientHeight
+    const scrollDistance = Math.max(
+      journey.offsetHeight - stickyHeight,
       1,
     )
 
-    const rawProgress =
-      (NAVBAR_OFFSET - journeyRect.top) / scrollableDistance
+    const rawProgress = -journeyRect.top / scrollDistance
+    const nextProgress = Math.max(
+      0,
+      Math.min(1, rawProgress),
+    )
 
-    const nextProgress = Math.max(0, Math.min(1, rawProgress))
+    const nextStationX = interpolateStationPosition(nextProgress)
+    const delta = Math.abs(
+      nextStationX - previousTrainXRef.current,
+    )
+
+    previousTrainXRef.current = nextStationX
+
+    if (delta > 0.05) {
+      setIsMoving(true)
+
+      if (moveStopTimerRef.current !== null) {
+        window.clearTimeout(moveStopTimerRef.current)
+      }
+
+      moveStopTimerRef.current = window.setTimeout(() => {
+        setIsMoving(false)
+        moveStopTimerRef.current = null
+      }, 130)
+    }
 
     setProgress(nextProgress)
+  }, [interpolateStationPosition])
+
+  useEffect(() => {
+    const media = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    )
+
+    const syncReducedMotion = () => {
+      setReducedMotion(media.matches)
+    }
+
+    syncReducedMotion()
+    media.addEventListener?.(
+      'change',
+      syncReducedMotion,
+    )
+
+    return () => {
+      media.removeEventListener?.(
+        'change',
+        syncReducedMotion,
+      )
+    }
   }, [])
 
   useEffect(() => {
@@ -143,13 +193,24 @@ export function EducationTrain() {
       updateScroll()
     })
 
-    if (viewportRef.current) observer.observe(viewportRef.current)
+    if (viewportRef.current) {
+      observer.observe(viewportRef.current)
+    }
 
     return () => observer.disconnect()
   }, [measure, updateScroll])
 
   useEffect(() => {
-    const handleScroll = () => {
+    const initialTimer = window.setTimeout(() => {
+      measure()
+      updateScroll()
+    }, 120)
+
+    return () => window.clearTimeout(initialTimer)
+  }, [measure, updateScroll])
+
+  useEffect(() => {
+    const onScroll = () => {
       if (rafRef.current !== null) return
 
       rafRef.current = window.requestAnimationFrame(() => {
@@ -159,27 +220,24 @@ export function EducationTrain() {
     }
 
     updateScroll()
-    window.addEventListener('scroll', handleScroll, {
+    window.addEventListener('scroll', onScroll, {
       passive: true,
     })
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', onScroll)
+
       if (rafRef.current !== null) {
         window.cancelAnimationFrame(rafRef.current)
         rafRef.current = null
       }
+
+      if (moveStopTimerRef.current !== null) {
+        window.clearTimeout(moveStopTimerRef.current)
+        moveStopTimerRef.current = null
+      }
     }
   }, [updateScroll])
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => {
-      measure()
-      updateScroll()
-    }, 120)
-
-    return () => window.clearTimeout(timeout)
-  }, [measure, updateScroll])
 
   const getSide = (index: number): StationSide =>
     index % 2 === 0 ? 'top' : 'bottom'
@@ -187,52 +245,53 @@ export function EducationTrain() {
   return (
     <section
       id="education"
-      ref={sectionRef}
       className={styles.section}
       aria-labelledby="education-title"
     >
-      <div className={styles.bgDecoration} aria-hidden="true">
-        <DotPattern color="ink" />
-      </div>
-
       <div className={styles.sectionInner}>
-        <motion.div
-          className={styles.header}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{
-            duration: 0.6,
-            ease: [0.25, 0.46, 0.45, 0.94],
-          }}
-        >
-          <Label variant="number">02</Label>
-          <h2 id="education-title" className={styles.title}>
+        <header className={styles.header}>
+          <span className={styles.sectionNumber}>02</span>
+
+          <h2
+            id="education-title"
+            className={styles.title}
+          >
             EDUCATION
           </h2>
-          <div className={styles.divider} aria-hidden="true" />
-          <p className={styles.subtitle}>
-            Scroll vertically to travel horizontally through the journey.
-          </p>
-        </motion.div>
 
-        <div className={styles.journey} ref={journeyRef}>
-          <div className={styles.sticky} ref={stickyRef}>
+          <div
+            className={styles.divider}
+            aria-hidden="true"
+          />
+        </header>
+
+        <div
+          ref={journeyRef}
+          className={styles.journey}
+        >
+          <div
+            ref={stickyRef}
+            className={styles.sticky}
+          >
             <div
               ref={viewportRef}
               className={styles.trackViewport}
               role="region"
-              aria-label="Horizontal education timeline controlled by vertical scroll"
+              aria-label="Education journey"
             >
               <div
                 className={styles.track}
                 style={{
                   width: `${metrics.trackWidth}px`,
-                  transform: `translate3d(${translateX}px, 0, 0)`,
+                  transform: `translate3d(${worldTranslateX}px, 0, 0)`,
                 }}
               >
-                <div className={styles.rail} aria-hidden="true">
+                <div
+                  className={styles.rail}
+                  aria-hidden="true"
+                >
                   <div className={styles.railBase} />
+
                   <div
                     className={styles.railProgress}
                     style={{
@@ -246,60 +305,73 @@ export function EducationTrain() {
                       )}px`,
                     }}
                   />
+
                   <div className={styles.railTies}>
-                    {education.map((_, index) => (
-                      <span key={index} className={styles.railTie} />
+                    {education.map((station) => (
+                      <span
+                        key={station.id}
+                        className={styles.railTie}
+                      />
                     ))}
                   </div>
                 </div>
 
                 {education.map((station, index) => {
-                  const x = metrics.stationPositions[index] ?? 0
-                  const threshold =
-                    stationProgress[index] - 0.08
-                  const isRevealed =
-                    index === 0 || progress >= threshold
+                  const x =
+                    metrics.stationPositions[index] ?? 0
+
+                  const stationReached =
+                    index === 0 ||
+                    progress >=
+                      stationProgress[index] - 0.06
+
                   const isActive =
                     Math.abs(
-                      progress - stationProgress[index],
-                    ) <= 0.14
+                      progress -
+                        stationProgress[index],
+                    ) < 0.12
 
                   return (
                     <div
                       key={station.id}
                       className={`${styles.station} ${
-                        isActive ? styles.stationActive : ''
+                        isActive
+                          ? styles.stationActive
+                          : ''
                       }`}
-                      style={{ left: `${x}px` }}
+                      style={{
+                        left: `${x}px`,
+                      }}
                     >
                       <div
                         className={styles.stationNode}
                         style={
                           {
-                            '--card-color': station.color,
-                          } as React.CSSProperties
+                            '--station-color':
+                              station.color,
+                          } as CSSProperties
                         }
-                        aria-label={`${station.label}: ${station.institution}`}
                       >
-                        <span className={styles.nodeRing} />
-                        <span className={styles.nodeOuter}>
-                          <span className={styles.nodeInner} />
+                        <span
+                          className={
+                            styles.nodePulse
+                          }
+                        />
+
+                        <span
+                          className={styles.nodeOuter}
+                        >
+                          <span
+                            className={styles.nodeInner}
+                          />
                         </span>
-                        <span className={styles.nodeLabel}>
-                          {station.label}
-                        </span>
-                        {station.isCurrent && (
-                          <span className={styles.currentBadge}>
-                            CURRENT
-                          </span>
-                        )}
                       </div>
 
                       <StationCard
                         station={station}
                         side={getSide(index)}
-                        isRevealed={isRevealed}
-                        isActive={isActive}
+                        visible={stationReached}
+                        active={isActive}
                       />
                     </div>
                   )
@@ -307,20 +379,44 @@ export function EducationTrain() {
 
                 <TrainEngine
                   x={trainX}
-                  reducedMotion={false}
+                  wheelRotation={wheelRotation}
+                  moving={
+                    isMoving && !reducedMotion
+                  }
+                  reducedMotion={reducedMotion}
                 />
               </div>
             </div>
 
-            <div className={styles.scrollHint} aria-hidden="true">
-              <Label variant="meta">
-                VERTICAL SCROLL → HORIZONTAL JOURNEY
-              </Label>
-              <Arrow
-                direction="down"
-                size={18}
-                color="mustard"
-              />
+            <div
+              className={styles.progressMeta}
+              aria-hidden="true"
+            >
+              <span>
+                {String(
+                  Math.min(
+                    totalStations,
+                    Math.floor(
+                      progress *
+                        totalStations +
+                        1,
+                    ),
+                  ),
+                ).padStart(2, '0')}
+              </span>
+
+              <div className={styles.progressRule}>
+                <div
+                  className={styles.progressRuleFill}
+                  style={{
+                    transform: `scaleX(${progress})`,
+                  }}
+                />
+              </div>
+
+              <span>
+                {String(totalStations).padStart(2, '0')}
+              </span>
             </div>
           </div>
         </div>
@@ -332,48 +428,41 @@ export function EducationTrain() {
 interface StationCardProps {
   station: EducationStation
   side: StationSide
-  isRevealed: boolean
-  isActive: boolean
+  visible: boolean
+  active: boolean
 }
 
 function StationCard({
   station,
   side,
-  isRevealed,
-  isActive,
+  visible,
+  active,
 }: StationCardProps) {
   return (
-    <motion.article
+    <article
       className={`${styles.stationCardWrap} ${
         side === 'top'
           ? styles.cardTop
           : styles.cardBottom
-      }`}
-      initial={false}
-      animate={{
-        opacity: isRevealed ? 1 : 0,
-        y: isRevealed ? 0 : side === 'top' ? 16 : -16,
-        scale: isRevealed ? 1 : 0.97,
-      }}
-      transition={{
-        duration: 0.45,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      }}
+      } ${visible ? styles.cardVisible : styles.cardHidden}`}
+      style={
+        {
+          '--station-color': station.color,
+        } as CSSProperties
+      }
     >
+      <div className={styles.cardConnector} />
+
       <div
         className={`${styles.stationCard} ${
-          isActive ? styles.cardActive : ''
+          active ? styles.cardActive : ''
         }`}
-        style={
-          {
-            '--card-color': station.color,
-          } as React.CSSProperties
-        }
       >
-        <div className={styles.cardConnector} aria-hidden="true" />
+        <div className={styles.cardHeader}>
+          <span className={styles.cardLabel}>
+            {station.label}
+          </span>
 
-        <div className={styles.cardTopRow}>
-          <Label variant="number">{station.label}</Label>
           {station.isCurrent && (
             <span className={styles.currentSticker}>
               CURRENT
@@ -385,7 +474,7 @@ function StationCard({
           {station.institution}
         </h3>
 
-        <ul className={styles.cardDetails} role="list">
+        <ul className={styles.cardDetails}>
           {station.details.map((detail, index) => (
             <li
               key={`${station.id}-${index}`}
@@ -400,34 +489,56 @@ function StationCard({
           {station.period}
         </div>
 
-        <div
+        <span
           className={styles.cardAccent}
           aria-hidden="true"
         />
       </div>
-    </motion.article>
+    </article>
   )
 }
 
 interface TrainEngineProps {
   x: number
+  wheelRotation: number
+  moving: boolean
   reducedMotion: boolean
 }
 
 function TrainEngine({
   x,
+  wheelRotation,
+  moving,
   reducedMotion,
 }: TrainEngineProps) {
+  const engineClass = [
+    styles.engine,
+    moving ? styles.engineMoving : '',
+    reducedMotion ? styles.engineReduced : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const wheelStyle = {
+    '--wheel-rotation': `${wheelRotation}deg`,
+  } as CSSProperties
+
   return (
     <div
-      className={styles.engine}
+      className={engineClass}
       style={{ left: `${x}px` }}
       aria-hidden="true"
     >
+      <div className={styles.smokeStack}>
+        <span className={styles.smokePuff} />
+        <span className={styles.smokePuff} />
+        <span className={styles.smokePuff} />
+      </div>
+
       <div className={styles.engineBody}>
         <div className={styles.engineCab}>
           <div className={styles.engineWindow} />
-          <div className={styles.engineLight} />
+          <div className={styles.engineWindowBar} />
         </div>
 
         <div className={styles.engineBoiler}>
@@ -436,29 +547,27 @@ function TrainEngine({
           </div>
         </div>
 
+        <div className={styles.engineChimney}>
+          <span className={styles.chimneyCap} />
+        </div>
+
         <div className={styles.engineCowcatcher} />
 
         <div className={styles.engineWheels}>
           <span
-            className={`${styles.wheel} ${
-              reducedMotion ? '' : styles.wheelSpin
-            }`}
+            className={styles.wheel}
+            style={wheelStyle}
           />
           <span
-            className={`${styles.wheel} ${
-              reducedMotion ? '' : styles.wheelSpin
-            }`}
+            className={`${styles.wheel} ${styles.wheelLarge}`}
+            style={wheelStyle}
           />
           <span
-            className={`${styles.wheel} ${
-              reducedMotion ? '' : styles.wheelSpin
-            }`}
+            className={styles.wheel}
+            style={wheelStyle}
           />
         </div>
       </div>
-
-      <span className={styles.engineLabel}>ENGINE</span>
     </div>
   )
 }
-

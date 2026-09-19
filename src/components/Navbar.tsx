@@ -1,248 +1,429 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { profile } from '../data/profile'
+import {
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import styles from './Navbar.module.css'
 
-const navItems = [
-  { href: '#projects', label: 'PROJECTS' },
-  { href: '#education', label: 'EDUCATION' },
-  { href: '#skills', label: 'SKILLS' },
-  { href: '#recognition', label: 'RECOGNITION' },
-  { href: '#contact', label: 'CONTACT' }
+type AppRoute = 'home' | 'resume'
+
+interface NavbarProps {
+  onNavigate?: (route: AppRoute) => void
+}
+
+interface SectionLink {
+  id: string
+  label: string
+  number: string
+}
+
+const sectionLinks: SectionLink[] = [
+  { id: 'projects', label: 'PROJECTS', number: '01' },
+  { id: 'education', label: 'EDUCATION', number: '02' },
+  { id: 'skills', label: 'SKILLS', number: '03' },
+  { id: 'recognition', label: 'RECOGNITION', number: '04' },
+  { id: 'contact', label: 'CONTACT', number: '05' },
 ]
 
 const socialLinks = [
-  { href: profile.social.github, label: 'GitHub', icon: 'github' },
-  { href: profile.social.linkedin, label: 'LinkedIn', icon: 'linkedin' },
-  { href: profile.social.x, label: 'X', icon: 'x' }
+  {
+    label: 'GITHUB',
+    href: 'https://github.com/Abhivocopedia',
+    icon: 'GH',
+  },
+  {
+    label: 'LINKEDIN',
+    href: 'https://linkedin.com/in/abhinandana-bhatta',
+    icon: 'in',
+  },
+  {
+    label: 'X',
+    href: 'https://x.com/Abhinandan43024',
+    icon: '𝕏',
+  },
 ]
 
-interface NavbarProps {
-  onNavigate: (route: 'home' | 'resume') => void
-}
-
-export function Navbar({ onNavigate }: NavbarProps) {
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState('projects')
+export function Navbar({
+  onNavigate,
+}: NavbarProps) {
+  const [collapsed, setCollapsed] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50)
-      const sections = ['projects', 'education', 'skills', 'recognition', 'contact']
-      const scrollPos = window.scrollY + 200
-      for (const section of sections) {
-        const element = document.getElementById(section)
-        if (element) {
-          const { offsetTop, offsetHeight } = element
-          if (scrollPos >= offsetTop && scrollPos < offsetTop + offsetHeight) {
-            setActiveSection(section)
-            break
-          }
-        }
-      }
+    const media = window.matchMedia(
+      '(max-width: 760px)',
+    )
+
+    const syncMobile = () => {
+      setIsMobile(media.matches)
     }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+
+    syncMobile()
+    media.addEventListener?.('change', syncMobile)
+
+    return () => {
+      media.removeEventListener?.(
+        'change',
+        syncMobile,
+      )
+    }
   }, [])
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
+  useEffect(() => {
+    const update = () => {
+      setCollapsed(window.scrollY > 96)
     }
-    setMobileOpen(false)
+
+    update()
+
+    let frame: number | null = null
+
+    const onScroll = () => {
+      if (frame !== null) return
+
+      frame = window.requestAnimationFrame(() => {
+        frame = null
+        setCollapsed(window.scrollY > 96)
+      })
+    }
+
+    window.addEventListener('scroll', onScroll, {
+      passive: true,
+    })
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+
+      if (frame !== null) {
+        window.cancelAnimationFrame(frame)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false)
+        window.setTimeout(() => {
+          menuButtonRef.current?.focus()
+        }, 0)
+      }
+    }
+
+    const previousOverflow =
+      document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    document.addEventListener(
+      'keydown',
+      onKeyDown,
+    )
+
+    return () => {
+      document.body.style.overflow =
+        previousOverflow
+      document.removeEventListener(
+        'keydown',
+        onKeyDown,
+      )
+    }
+  }, [menuOpen])
+
+  const scrollToSection = (id: string) => {
+    const element =
+      document.getElementById(id)
+
+    if (!element) return
+
+    const targetTop =
+      element.getBoundingClientRect().top +
+      window.scrollY -
+      86
+
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: 'smooth',
+    })
+
+    window.history.replaceState(
+      null,
+      '',
+      `#${id}`,
+    )
+
+    setMenuOpen(false)
   }
 
+  const handleSectionClick = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+  ) => {
+    event.preventDefault()
+    scrollToSection(id)
+  }
+
+  const handleHomeClick = (
+    event?: React.MouseEvent,
+  ) => {
+    event?.preventDefault()
+
+    window.history.replaceState(
+      null,
+      '',
+      window.location.pathname +
+        window.location.search,
+    )
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+
+    setMenuOpen(false)
+  }
+
+  const handleResume = (
+    event: React.MouseEvent,
+  ) => {
+    event.preventDefault()
+    setMenuOpen(false)
+
+    if (onNavigate) {
+      onNavigate('resume')
+    } else {
+      window.location.hash = 'resume'
+    }
+  }
+
+  const compactVisible = collapsed || isMobile
+
   return (
-    <header
-      className={`${styles.nav} ${scrolled ? styles.scrolled : ''}`}
-      role="navigation"
-      aria-label="Main navigation"
-    >
-      <div className={styles.navInner}>
-        <div className={styles.navMain}>
-          <a href="/" className={styles.logo} aria-label="Abhivocopedia - Home">
-            <span className={styles.logoMark}>ABHIVOCOPEDIA</span>
+    <>
+      <header
+        className={`${styles.fullNav} ${
+          collapsed ? styles.fullNavCollapsed : ''
+        }`}
+        aria-label="Primary navigation"
+      >
+        <div className={styles.fullNavInner}>
+          <a
+            href="/"
+            className={styles.brand}
+            onClick={handleHomeClick}
+          >
+            ABHIVOCOPEDIA
           </a>
 
-          <nav className={styles.navLinks} aria-label="Primary navigation">
-            <ul className={styles.list} role="list">
-              {navItems.map(item => (
-                <li key={item.href}>
-                  <button
-                    className={`${styles.link} ${activeSection === item.href.replace('#', '') ? styles.active : ''}`}
-                    onClick={() => scrollToSection(item.href)}
-                    aria-current={activeSection === item.href.replace('#', '') ? 'page' : undefined}
-                  >
-                    {item.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
+          <nav
+            className={styles.mainLinks}
+            aria-label="Sections"
+          >
+            {sectionLinks.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                onClick={(event) =>
+                  handleSectionClick(
+                    event,
+                    link.id,
+                  )
+                }
+                className={
+                  styles.navLink
+                }
+              >
+                {link.label}
+              </a>
+            ))}
           </nav>
         </div>
 
-        <div className={styles.navActions}>
-          <div className={styles.socialGroup} aria-label="Social links">
-            {socialLinks.map((social, index) => (
+        <div className={styles.secondaryRow}>
+          <div className={styles.socialRow}>
+            {socialLinks.map((link) => (
               <a
-                key={social.label}
-                href={social.href}
+                key={link.href}
+                href={link.href}
                 target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label={social.label}
-                style={{ transitionDelay: `${index * 50}ms` }}
+                rel="noreferrer"
+                className={styles.socialButton}
+                aria-label={link.label}
               >
-                {renderSocialIcon(social.icon)}
-                <span className={styles.socialLabel}>{social.label}</span>
+                <span
+                  className={styles.socialIcon}
+                  aria-hidden="true"
+                >
+                  {link.icon}
+                </span>
+                <span>{link.label}</span>
               </a>
             ))}
+
+            <a
+              href="#resume"
+              onClick={handleResume}
+              className={styles.resumeButton}
+            >
+              <span
+                aria-hidden="true"
+                className={styles.documentIcon}
+              >
+                ▣
+              </span>
+              RESUME
+            </a>
           </div>
-
-          <button
-            className={styles.resumeLink}
-            onClick={() => onNavigate('resume')}
-            aria-label="View Resume"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            <span>Resume</span>
-          </button>
-
-          <button
-            className={styles.mobileToggle}
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-menu"
-            aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-          >
-            <span className={`${styles.hamburger} ${mobileOpen ? styles.hamburgerOpen : ''}`} aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-          </button>
         </div>
+      </header>
+
+      <div
+        className={`${styles.compactBar} ${
+          compactVisible ? styles.compactVisible : ''
+        }`}
+        aria-hidden={!compactVisible}
+      >
+        <span className={styles.compactBrand}>
+          ABHIVOCOPEDIA
+        </span>
+
+        <button
+          ref={menuButtonRef}
+          type="button"
+          className={styles.menuButton}
+          onClick={() =>
+            setMenuOpen((open) => !open)
+          }
+          aria-expanded={menuOpen}
+          aria-controls="portfolio-navigation-menu"
+          tabIndex={compactVisible ? 0 : -1}
+          aria-label={
+            menuOpen
+              ? 'Close navigation menu'
+              : 'Open navigation menu'
+          }
+        >
+          <span>MENU</span>
+          <span
+            className={styles.menuSymbol}
+            aria-hidden="true"
+          >
+            {menuOpen ? '×' : '+'}
+          </span>
+        </button>
       </div>
 
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            id="mobile-menu"
-            className={styles.mobileMenu}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+      {menuOpen && (
+        <div className={styles.menuLayer}>
+          <div
+            className={styles.menuBackdrop}
+            onClick={() =>
+              setMenuOpen(false)
+            }
+            aria-hidden="true"
+          />
+
+          <aside
+            id="portfolio-navigation-menu"
+            className={styles.menuPanel}
+            aria-label="Portfolio navigation"
           >
-            <nav aria-label="Mobile navigation">
-              <ul className={styles.mobileList} role="list">
-                {navItems.map((item, index) => (
-                  <li key={item.href}>
-                    <motion.button
-                      className={`${styles.mobileLink} ${activeSection === item.href.replace('#', '') ? styles.mobileActive : ''}`}
-                      onClick={() => scrollToSection(item.href)}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                      aria-current={activeSection === item.href.replace('#', '') ? 'page' : undefined}
-                    >
-                      {item.label}
-                    </motion.button>
-                  </li>
-                ))}
-                <li className={styles.mobileDivider} aria-hidden="true" />
-                {socialLinks.map((social, index) => (
-                  <li key={social.label}>
-                    <motion.a
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.mobileSocialLink}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: (navItems.length + index) * 0.05 }}
-                      aria-label={social.label}
-                    >
-                      {renderSocialIcon(social.icon, 20)}
-                      <span>{social.label}</span>
-                    </motion.a>
-                  </li>
-                ))}
-                <li>
-                  <motion.a
-                    href={profile.social.photography}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.mobileSocialLink}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length) * 0.05 }}
-                    aria-label="Photography"
+            <div className={styles.menuPanelTop}>
+              <span className={styles.menuEyebrow}>
+                NAVIGATION
+              </span>
+
+              <button
+                type="button"
+                className={styles.closeButton}
+                onClick={() =>
+                  setMenuOpen(false)
+                }
+                aria-label="Close navigation menu"
+              >
+                CLOSE ×
+              </button>
+            </div>
+
+            <nav className={styles.menuList}>
+              {sectionLinks.map((link) => (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  className={styles.menuItem}
+                  onClick={(event) =>
+                    handleSectionClick(
+                      event,
+                      link.id,
+                    )
+                  }
+                >
+                  <span
+                    className={styles.menuNumber}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="12" r="4"/></svg>
-                    <span>Photography</span>
-                  </motion.a>
-                </li>
-                <li>
-                  <motion.a
-                    href={profile.social.genesis}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.mobileSocialLink}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length + 1) * 0.05 }}
-                    aria-label="Genesis Lab"
+                    {link.number}
+                  </span>
+
+                  <span
+                    className={styles.menuLabel}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                    <span>Genesis Lab</span>
-                  </motion.a>
-                </li>
-<li>
-  <motion.button
-    className={styles.mobileSocialLink}
-    onClick={() => { onNavigate('resume'); setMobileOpen(false); }}
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length) * 0.05 }}
-    aria-label="Resume"
-  >
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-    <span>Resume</span>
-  </motion.button>
-</li>
-<li>
-  <motion.a
-    href={`mailto:${profile.social.email}`}
-    className={styles.mobileSocialLink}
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length + 1) * 0.05 }}
-    aria-label="Email"
-  >
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-    <span>Email</span>
-  </motion.a>
-</li>
-              </ul>
+                    {link.label}
+                  </span>
+
+                  <span
+                    className={styles.menuArrow}
+                    aria-hidden="true"
+                  >
+                    ↗
+                  </span>
+                </a>
+              ))}
+
+              <a
+                href="#resume"
+                className={`${styles.menuItem} ${styles.menuResume}`}
+                onClick={handleResume}
+              >
+                <span
+                  className={styles.menuNumber}
+                >
+                  06
+                </span>
+
+                <span
+                  className={styles.menuLabel}
+                >
+                  RESUME
+                </span>
+
+                <span
+                  className={styles.menuArrow}
+                  aria-hidden="true"
+                >
+                  ↗
+                </span>
+              </a>
             </nav>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+
+            <div className={styles.menuFooter}>
+              <a
+                href="mailto:abhivocopedia@gmail.com"
+                className={styles.menuEmail}
+              >
+                abhivocopedia@gmail.com
+              </a>
+
+              <span className={styles.menuMeta}>
+                CSE · FULL-STACK · BUILDER
+              </span>
+            </div>
+          </aside>
+        </div>
+      )}
+    </>
   )
 }
 
-function renderSocialIcon(name: string, size = 18) {
-  const icons: Record<string, JSX.Element> = {
-    github: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.305-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>,
-    linkedin: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
-    x: <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
-  }
-  return icons[name] || icons.github
-}
