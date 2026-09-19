@@ -52,99 +52,21 @@ export function Crosshair({ color = 'ink', className, style }: CrosshairProps) {
   );
 }
 
-interface StickerProps {
+interface LabelProps {
   children: React.ReactNode;
-  variant?: 'mustard' | 'green' | 'teal' | 'orange' | 'ink' | 'coral';
-  className?: string;
-}
-
-export function Sticker({ children, variant = 'mustard', className }: StickerProps) {
-  return (
-    <span className={`${styles.sticker} ${styles[variant]} ${className || ''}`}>
-      {children}
-    </span>
-  );
-}
-
-interface OrganicShapeProps {
-  variant?: 1 | 2 | 3;
+  variant?: 'default' | 'number' | 'meta';
   className?: string;
   style?: React.CSSProperties;
 }
 
-export function OrganicShape({ variant = 1, className, style }: OrganicShapeProps) {
+export function Label({ children, variant = 'default', className, style }: LabelProps) {
+  const variants: Record<string, string> = {
+    default: styles.labelDefault,
+    number: styles.labelNumber,
+    meta: styles.labelMeta,
+  };
   return (
-    <span
-      className={`${styles.organicShape} ${styles[`shape${variant}`]} ${className || ''}`}
-      style={style}
-      aria-hidden="true"
-    />
-  );
-}
-
-interface DotPatternProps {
-  color?: 'ink' | 'mustard' | 'warm-white';
-  className?: string;
-}
-
-export function DotPattern({ color = 'ink', className }: DotPatternProps) {
-  const colorClass = color === 'mustard' ? styles.accent : color === 'warm-white' ? styles.warmWhite : '';
-  return (
-    <div
-      className={`${styles.dotPattern} ${colorClass} ${className || ''}`}
-      aria-hidden="true"
-    />
-  );
-}
-
-interface HalftonePatternProps {
-  color?: 'ink' | 'mustard';
-  className?: string;
-}
-
-export function HalftonePattern({ color = 'ink', className }: HalftonePatternProps) {
-  return (
-    <div
-      className={`${styles.halftonePattern} ${color === 'mustard' ? styles.accent : ''} ${className || ''}`}
-      aria-hidden="true"
-    />
-  );
-}
-
-interface DiagonalStripesProps {
-  className?: string;
-}
-
-export function DiagonalStripes({ className }: DiagonalStripesProps) {
-  return (
-    <div className={`${styles.diagonalStripes} ${className || ''}`} aria-hidden="true" />
-  );
-}
-
-interface SparkProps {
-  className?: string;
-  style?: React.CSSProperties;
-}
-
-export function Spark({ className, style }: SparkProps) {
-  return (
-    <svg
-      className={`${styles.spark} ${className || ''}`}
-      style={style}
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M8 0.5L8.5 6.5H15.5L9.5 10.5L10.5 16.5L8 13L5.5 16.5L6.5 10.5L0.5 6.5H7.5L8 0.5Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span className={`${variants[variant]} ${className || ''}`} style={style}>{children}</span>
   );
 }
 
@@ -182,44 +104,61 @@ export function Arrow({ direction = 'right', size = 20, className, color = 'ink'
   );
 }
 
-interface ZigZagProps {
-  length?: number;
-  color?: 'ink' | 'mustard' | 'orange';
+interface StickerProps {
+  children: React.ReactNode;
+  variant?: 'mustard' | 'green' | 'teal' | 'orange' | 'ink' | 'coral';
   className?: string;
 }
 
-export function ZigZag({ length = 100, color = 'ink', className }: ZigZagProps) {
+export function Sticker({ children, variant = 'mustard', className }: StickerProps) {
   return (
-    <svg
-      className={`${styles.zigzag} ${className || ''}`}
-      width={length}
-      height="20"
-      viewBox="0 0 100 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      style={{ color: `var(--${color})` }}
-      aria-hidden="true"
-    >
-      <path d="M0 10 L10 0 L20 10 L30 0 L40 10 L50 0 L60 10 L70 0 L80 10 L90 0 L100 10" />
-    </svg>
+    <span className={`${styles.sticker} ${styles[variant]} ${className || ''}`}>
+      {children}
+    </span>
   );
 }
 
-interface LabelProps {
-  children: React.ReactNode;
-  variant?: 'default' | 'number' | 'meta';
+interface DotPatternProps {
+  color?: 'ink' | 'mustard' | 'warm-white';
+  className?: string;
+}
+
+export function DotPattern({ color = 'ink', className }: DotPatternProps) {
+  const colorClass = color === 'mustard' ? styles.accent : color === 'warm-white' ? styles.warmWhite : '';
+  return (
+    <div
+      className={`${styles.dotPattern} ${colorClass} ${className || ''}`}
+      aria-hidden="true"
+    />
+  );
+}
+
+interface HalftonePatternProps {
+  color?: 'ink' | 'mustard';
+  className?: string;
+}
+
+export function HalftonePattern({ color = 'ink', className }: HalftonePatternProps) {
+  return (
+    <div
+      className={`${styles.halftonePattern} ${color === 'mustard' ? styles.accent : ''} ${className || ''}`}
+      aria-hidden="true"
+    />
+  );
+}
+
+interface OrganicShapeProps {
+  variant?: 1 | 2 | 3;
   className?: string;
   style?: React.CSSProperties;
 }
 
-export function Label({ children, variant = 'default', className, style }: LabelProps) {
-  const variants: Record<string, string> = {
-    default: styles.labelDefault,
-    number: styles.labelNumber,
-    meta: styles.labelMeta,
-  };
+export function OrganicShape({ variant = 1, className, style }: OrganicShapeProps) {
   return (
-    <span className={`${variants[variant]} ${className || ''}`} style={style}>{children}</span>
+    <span
+      className={`${styles.organicShape} ${styles[`shape${variant}`]} ${className || ''}`}
+      style={style}
+      aria-hidden="true"
+    />
   );
 }

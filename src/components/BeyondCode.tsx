@@ -1,19 +1,20 @@
 import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
-import { Star, Label, DotPattern, DecorativeCorner, Crosshair, Sticker } from './DecorativeMarks'
+import { Label, DotPattern, Sticker } from './DecorativeMarks'
 import styles from './BeyondCode.module.css'
 
 export function BeyondCode() {
+  const marqueeItems = [
+    ...profile.vexr.lines,
+    ...profile.beyondCode,
+    ...profile.vexr.lines,
+    ...profile.beyondCode,
+  ]
+
   return (
     <section id="beyond-code" className={styles.section} aria-labelledby="beyond-title">
       <div className={styles.bgDecoration} aria-hidden="true">
         <DotPattern color="ink" />
-        <DecorativeCorner position="tl" color="mustard" style={{ top: '10%', left: '5%' }} />
-        <DecorativeCorner position="tr" color="ink" style={{ top: '10%', right: '5%' }} />
-        <DecorativeCorner position="bl" color="ink" style={{ bottom: '10%', left: '5%' }} />
-        <DecorativeCorner position="br" color="mustard" style={{ bottom: '10%', right: '5%' }} />
-        <Crosshair color="teal" style={{ top: '20%', right: '12%' }} />
-        <Crosshair color="orange" style={{ bottom: '20%', left: '12%' }} />
       </div>
 
       <div className={styles.container}>
@@ -26,9 +27,7 @@ export function BeyondCode() {
         >
           <Label variant="number">06</Label>
           <h2 id="beyond-title" className={styles.title}>BEYOND CODE</h2>
-          <div className={styles.divider} aria-hidden="true">
-            <Star size="md" color="mustard" />
-          </div>
+          <div className={styles.divider} aria-hidden="true"></div>
         </motion.div>
 
         <motion.div
@@ -40,37 +39,13 @@ export function BeyondCode() {
         >
           <div className={styles.marqueeTrack} aria-hidden="true">
             <div className={styles.marqueeContent}>
-              {profile.vexr.lines.map((line, index) => (
+              {marqueeItems.map((item, index) => (
                 <span key={index} className={styles.marqueeItem}>
-                  <Star size="lg" color="mustard" className={styles.marqueeStar} />
-                  <span className={styles.marqueeText}>{line}</span>
-                  <Star size="lg" color="mustard" className={styles.marqueeStar} />
-                </span>
-              ))}
-              <span className={styles.marqueeSeparator} aria-hidden="true">
-                <Star size="md" color="orange" />
-              </span>
-              {profile.beyondCode.map((item, index) => (
-                <span key={index} className={styles.marqueeItem}>
-                  <Sticker variant="ink" className={styles.marqueeSticker}>{item}</Sticker>
-                </span>
-              ))}
-              <span className={styles.marqueeSeparator} aria-hidden="true">
-                <Star size="md" color="orange" />
-              </span>
-              {profile.vexr.lines.map((line, index) => (
-                <span key={`repeat-${index}`} className={styles.marqueeItem}>
-                  <Star size="lg" color="mustard" className={styles.marqueeStar} />
-                  <span className={styles.marqueeText}>{line}</span>
-                  <Star size="lg" color="mustard" className={styles.marqueeStar} />
-                </span>
-              ))}
-              <span className={styles.marqueeSeparator} aria-hidden="true">
-                <Star size="md" color="orange" />
-              </span>
-              {profile.beyondCode.map((item, index) => (
-                <span key={`repeat-${item}-${index}`} className={styles.marqueeItem}>
-                  <Sticker variant="ink" className={styles.marqueeSticker}>{item}</Sticker>
+                  {profile.vexr.lines.includes(item) ? (
+                    <span className={styles.marqueeText}>{item}</span>
+                  ) : (
+                    <Sticker variant="ink" className={styles.marqueeSticker}>{item}</Sticker>
+                  )}
                 </span>
               ))}
             </div>
@@ -110,12 +85,6 @@ export function BeyondCode() {
                 ))}
               </div>
             </div>
-          </div>
-          <div className={styles.posterAccents} aria-hidden="true">
-            <Star size="lg" color="mustard" style={{ top: '10%', left: '5%' }} />
-            <Star size="sm" color="orange" style={{ top: '20%', right: '8%' }} />
-            <Star size="md" color="teal" style={{ bottom: '15%', left: '8%' }} />
-            <Star size="sm" color="green" style={{ bottom: '10%', right: '5%' }} />
           </div>
         </motion.div>
       </div>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { profile } from '../data/profile'
-import { Star } from './DecorativeMarks'
 import styles from './Navbar.module.css'
 
 const navItems = [
@@ -18,7 +17,11 @@ const socialLinks = [
   { href: profile.social.x, label: 'X', icon: 'x' }
 ]
 
-export function Navbar() {
+interface NavbarProps {
+  onNavigate: (route: 'home' | 'resume') => void
+}
+
+export function Navbar({ onNavigate }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('projects')
@@ -61,7 +64,6 @@ export function Navbar() {
         <div className={styles.navMain}>
           <a href="/" className={styles.logo} aria-label="Abhivocopedia - Home">
             <span className={styles.logoMark}>ABHIVOCOPEDIA</span>
-            <Star size="sm" color="mustard" style={{ marginLeft: '0.5rem', verticalAlign: 'middle' }} />
           </a>
 
           <nav className={styles.navLinks} aria-label="Primary navigation">
@@ -74,9 +76,6 @@ export function Navbar() {
                     aria-current={activeSection === item.href.replace('#', '') ? 'page' : undefined}
                   >
                     {item.label}
-                    {activeSection === item.href.replace('#', '') && (
-                      <Star size="sm" color="mustard" className={styles.activeStar} />
-                    )}
                   </button>
                 </li>
               ))}
@@ -101,6 +100,15 @@ export function Navbar() {
               </a>
             ))}
           </div>
+
+          <button
+            className={styles.resumeLink}
+            onClick={() => onNavigate('resume')}
+            aria-label="View Resume"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Resume</span>
+          </button>
 
           <button
             className={styles.mobileToggle}
@@ -144,7 +152,6 @@ export function Navbar() {
                       aria-current={activeSection === item.href.replace('#', '') ? 'page' : undefined}
                     >
                       {item.label}
-                      {activeSection === item.href.replace('#', '') && <Star size="sm" color="mustard" />}
                     </motion.button>
                   </li>
                 ))}
@@ -168,17 +175,60 @@ export function Navbar() {
                 ))}
                 <li>
                   <motion.a
-                    href={`mailto:${profile.social.email}`}
+                    href={profile.social.photography}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={styles.mobileSocialLink}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length) * 0.05 }}
-                    aria-label="Email"
+                    aria-label="Photography"
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                    <span>Email</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="12" r="4"/></svg>
+                    <span>Photography</span>
                   </motion.a>
                 </li>
+                <li>
+                  <motion.a
+                    href={profile.social.genesis}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.mobileSocialLink}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length + 1) * 0.05 }}
+                    aria-label="Genesis Lab"
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                    <span>Genesis Lab</span>
+                  </motion.a>
+                </li>
+<li>
+  <motion.button
+    className={styles.mobileSocialLink}
+    onClick={() => { onNavigate('resume'); setMobileOpen(false); }}
+    initial={{ opacity: 0, x: -20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length) * 0.05 }}
+    aria-label="Resume"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+    <span>Resume</span>
+  </motion.button>
+</li>
+<li>
+  <motion.a
+    href={`mailto:${profile.social.email}`}
+    className={styles.mobileSocialLink}
+    initial={{ opacity: 0, x: -20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.3, delay: (navItems.length + socialLinks.length + 1) * 0.05 }}
+    aria-label="Email"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    <span>Email</span>
+  </motion.a>
+</li>
               </ul>
             </nav>
           </motion.div>

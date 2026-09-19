@@ -157,16 +157,7 @@ function SkillFlipCard({ category, isFlipped, onFlip, onKeyDown, index }: SkillF
                 transition={{ duration: 0.3 }}
               >
                 <div className={styles.cardBack}>
-                  <div className={styles.backHeader}>
-                    <h3 className={styles.backTitle}>{category.category}</h3>
-                    <button
-                      className={styles.closeBtn}
-                      onClick={(e) => { e.stopPropagation(); onFlip(index); }}
-                      aria-label="Close card"
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
-                  </div>
+                  <h3 className={styles.backTitle}>{category.category}</h3>
                   <p className={styles.backDescription}>{category.description}</p>
                   <ul className={styles.backTechList} role="list">
                     {category.technologies.map((tech, i) => (
