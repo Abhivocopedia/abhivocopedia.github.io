@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styles from './Navbar.module.css'
 
 type AppRoute = 'home' | 'resume'
@@ -43,18 +39,14 @@ const socialLinks = [
   },
 ]
 
-export function Navbar({
-  onNavigate,
-}: NavbarProps) {
+export function Navbar({ onNavigate }: NavbarProps) {
   const [collapsed, setCollapsed] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const media = window.matchMedia(
-      '(max-width: 760px)',
-    )
+    const media = window.matchMedia('(max-width: 760px)')
 
     const syncMobile = () => {
       setIsMobile(media.matches)
@@ -64,10 +56,7 @@ export function Navbar({
     media.addEventListener?.('change', syncMobile)
 
     return () => {
-      media.removeEventListener?.(
-        'change',
-        syncMobile,
-      )
+      media.removeEventListener?.('change', syncMobile)
     }
   }, [])
 
@@ -89,9 +78,7 @@ export function Navbar({
       })
     }
 
-    window.addEventListener('scroll', onScroll, {
-      passive: true,
-    })
+    window.addEventListener('scroll', onScroll, { passive: true })
 
     return () => {
       window.removeEventListener('scroll', onScroll)
@@ -101,6 +88,8 @@ export function Navbar({
       }
     }
   }, [])
+
+  const compactVisible = collapsed || isMobile
 
   useEffect(() => {
     if (!menuOpen) return
@@ -114,47 +103,36 @@ export function Navbar({
       }
     }
 
-    const previousOverflow =
-      document.body.style.overflow
+    const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
 
-    document.addEventListener(
-      'keydown',
-      onKeyDown,
-    )
+    document.addEventListener('keydown', onKeyDown)
 
     return () => {
-      document.body.style.overflow =
-        previousOverflow
-      document.removeEventListener(
-        'keydown',
-        onKeyDown,
-      )
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onKeyDown)
     }
   }, [menuOpen])
 
-  const scrollToSection = (id: string) => {
-    const element =
-      document.getElementById(id)
+  useEffect(() => {
+    if (!compactVisible && menuOpen) {
+      setMenuOpen(false)
+    }
+  }, [compactVisible, menuOpen])
 
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id)
     if (!element) return
 
     const targetTop =
-      element.getBoundingClientRect().top +
-      window.scrollY -
-      86
+      element.getBoundingClientRect().top + window.scrollY - 78
 
     window.scrollTo({
       top: Math.max(0, targetTop),
       behavior: 'smooth',
     })
 
-    window.history.replaceState(
-      null,
-      '',
-      `#${id}`,
-    )
-
+    window.history.replaceState(null, '', `#${id}`)
     setMenuOpen(false)
   }
 
@@ -166,16 +144,13 @@ export function Navbar({
     scrollToSection(id)
   }
 
-  const handleHomeClick = (
-    event?: React.MouseEvent,
-  ) => {
+  const handleHomeClick = (event?: React.MouseEvent) => {
     event?.preventDefault()
 
     window.history.replaceState(
       null,
       '',
-      window.location.pathname +
-        window.location.search,
+      window.location.pathname + window.location.search,
     )
 
     window.scrollTo({
@@ -186,9 +161,7 @@ export function Navbar({
     setMenuOpen(false)
   }
 
-  const handleResume = (
-    event: React.MouseEvent,
-  ) => {
+  const handleResume = (event: React.MouseEvent) => {
     event.preventDefault()
     setMenuOpen(false)
 
@@ -199,7 +172,9 @@ export function Navbar({
     }
   }
 
-  const compactVisible = collapsed || isMobile
+  const toggleMenu = () => {
+    setMenuOpen((open) => !open)
+  }
 
   return (
     <>
@@ -227,14 +202,9 @@ export function Navbar({
                 key={link.id}
                 href={`#${link.id}`}
                 onClick={(event) =>
-                  handleSectionClick(
-                    event,
-                    link.id,
-                  )
+                  handleSectionClick(event, link.id)
                 }
-                className={
-                  styles.navLink
-                }
+                className={styles.navLink}
               >
                 {link.label}
               </a>
@@ -280,50 +250,42 @@ export function Navbar({
         </div>
       </header>
 
-      <div
-        className={`${styles.compactBar} ${
-          compactVisible ? styles.compactVisible : ''
-        }`}
-        aria-hidden={!compactVisible}
-      >
-        <span className={styles.compactBrand}>
-          ABHIVOCOPEDIA
-        </span>
-
-        <button
-          ref={menuButtonRef}
-          type="button"
-          className={styles.menuButton}
-          onClick={() =>
-            setMenuOpen((open) => !open)
-          }
-          aria-expanded={menuOpen}
-          aria-controls="portfolio-navigation-menu"
-          tabIndex={compactVisible ? 0 : -1}
-          aria-label={
-            menuOpen
-              ? 'Close navigation menu'
-              : 'Open navigation menu'
-          }
+      {compactVisible && (
+        <div
+          className={`${styles.compactBar} ${
+            menuOpen ? styles.compactBarOpen : ''
+          }`}
         >
-          <span>MENU</span>
-          <span
-            className={styles.menuSymbol}
-            aria-hidden="true"
-          >
-            {menuOpen ? '×' : '+'}
-          </span>
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div className={styles.menuLayer}>
-          <div
-            className={styles.menuBackdrop}
-            onClick={() =>
-              setMenuOpen(false)
+          <button
+            ref={menuButtonRef}
+            type="button"
+            className={`${styles.menuButton} ${
+              menuOpen ? styles.menuButtonOpen : ''
+            }`}
+            onClick={toggleMenu}
+            aria-expanded={menuOpen}
+            aria-controls="portfolio-navigation-menu"
+            aria-label={
+              menuOpen
+                ? 'Close navigation menu'
+                : 'Open navigation menu'
             }
-            aria-hidden="true"
+          >
+            <span className={styles.menuText}>MENU</span>
+            <span className={styles.menuSymbol} aria-hidden="true">
+              {menuOpen ? '×' : '+'}
+            </span>
+          </button>
+        </div>
+      )}
+
+      {compactVisible && menuOpen && (
+        <div className={styles.menuLayer}>
+          <button
+            type="button"
+            className={styles.menuBackdrop}
+            onClick={toggleMenu}
+            aria-label="Close navigation menu"
           />
 
           <aside
@@ -339,9 +301,7 @@ export function Navbar({
               <button
                 type="button"
                 className={styles.closeButton}
-                onClick={() =>
-                  setMenuOpen(false)
-                }
+                onClick={toggleMenu}
                 aria-label="Close navigation menu"
               >
                 CLOSE ×
@@ -355,28 +315,18 @@ export function Navbar({
                   href={`#${link.id}`}
                   className={styles.menuItem}
                   onClick={(event) =>
-                    handleSectionClick(
-                      event,
-                      link.id,
-                    )
+                    handleSectionClick(event, link.id)
                   }
                 >
-                  <span
-                    className={styles.menuNumber}
-                  >
+                  <span className={styles.menuNumber}>
                     {link.number}
                   </span>
 
-                  <span
-                    className={styles.menuLabel}
-                  >
+                  <span className={styles.menuLabel}>
                     {link.label}
                   </span>
 
-                  <span
-                    className={styles.menuArrow}
-                    aria-hidden="true"
-                  >
+                  <span className={styles.menuArrow} aria-hidden="true">
                     ↗
                   </span>
                 </a>
@@ -387,22 +337,11 @@ export function Navbar({
                 className={`${styles.menuItem} ${styles.menuResume}`}
                 onClick={handleResume}
               >
-                <span
-                  className={styles.menuNumber}
-                >
-                  06
-                </span>
+                <span className={styles.menuNumber}>06</span>
 
-                <span
-                  className={styles.menuLabel}
-                >
-                  RESUME
-                </span>
+                <span className={styles.menuLabel}>RESUME</span>
 
-                <span
-                  className={styles.menuArrow}
-                  aria-hidden="true"
-                >
+                <span className={styles.menuArrow} aria-hidden="true">
                   ↗
                 </span>
               </a>
