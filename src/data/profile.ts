@@ -4,6 +4,7 @@ export const profile = {
   tagline: 'CSE Student · Full-Stack Developer · Independent Builder',
   location: 'Karnataka, India',
   heroStatement: 'I BUILD SYSTEMS THAT TURN IDEAS INTO WORKING PRODUCTS.',
+  profilePhoto: '/images/profile/abhinandana.webp',
   bio: 'I enjoy turning ideas into working products — from web applications and AI-powered tools to cloud deployments and experimental systems.',
   themes: [
     'Software Engineering',

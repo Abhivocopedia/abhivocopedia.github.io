@@ -1,15 +1,20 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { education, EducationStation } from '../data/education'
+import { Star, Arrow, Label, Crosshair, Sticker, DotPattern, DecorativeCorner } from './DecorativeMarks'
 import styles from './EducationTrain.module.css'
 
 export function EducationTrain() {
   const [activeIndex, setActiveIndex] = useState(3)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const [cardWidth, setCardWidth] = useState(320)
+  const [gap, setGap] = useState(48)
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState(0)
+  const [scrollStart, setScrollStart] = useState(0)
+
   const trackRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [cardWidth, setCardWidth] = useState(300)
-  const [gap, setGap] = useState(48)
 
   const handleScroll = useCallback(() => {
     if (containerRef.current) {
@@ -21,7 +26,7 @@ export function EducationTrain() {
     const container = containerRef.current
     if (!container) return
 
-    const cards = container.querySelectorAll('.station-card')
+    const cards = container.querySelectorAll('.stationCard')
     if (cards.length > 0) {
       const firstCard = cards[0] as HTMLElement
       const style = getComputedStyle(container)
@@ -35,14 +40,15 @@ export function EducationTrain() {
   }, [handleScroll])
 
   useEffect(() => {
-    if (!trackRef.current) return
+    if (!containerRef.current) return
 
-    const cards = containerRef.current?.querySelectorAll('.station-card')
+    const cards = containerRef.current.querySelectorAll('.stationCard')
+    const container = containerRef.current
 
-    if (!containerRef.current || !cards) return
+    if (!cards.length) return
 
-    const containerWidth = containerRef.current.offsetWidth
-    const scrollLeft = containerRef.current.scrollLeft
+    const containerWidth = container.offsetWidth
+    const scrollLeft = container.scrollLeft
     const centerPoint = scrollLeft + containerWidth / 2
 
     let closestIndex = 0
@@ -50,7 +56,7 @@ export function EducationTrain() {
 
     cards.forEach((card, index) => {
       const cardRect = card.getBoundingClientRect()
-      const containerRect = containerRef.current!.getBoundingClientRect()
+      const containerRect = container.getBoundingClientRect()
       const cardCenter = cardRect.left + cardRect.width / 2 - containerRect.left
       const distance = Math.abs(cardCenter - centerPoint)
       if (distance < minDistance) {
@@ -84,24 +90,95 @@ export function EducationTrain() {
     }
   }
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!containerRef.current) return
+    setIsDragging(true)
+    setDragStart(e.clientX)
+    setScrollStart(containerRef.current.scrollLeft)
+    containerRef.current.style.scrollBehavior = 'auto'
+    containerRef.current.style.cursor = 'grabbing'
+  }
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (!isDragging || !containerRef.current) return
+    const delta = e.clientX - dragStart
+    containerRef.current.scrollLeft = scrollStart - delta
+  }
+
+  const handleMouseUp = () => {
+    if (!containerRef.current) return
+    setIsDragging(false)
+    containerRef.current.style.scrollBehavior = 'smooth'
+    containerRef.current.style.cursor = 'grab'
+  }
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove)
+        window.removeEventListener('mouseup', handleMouseUp)
+      }
+    }
+  }, [isDragging, dragStart, scrollStart])
+
+  const progress = education.length > 1 ? activeIndex / (education.length - 1) : 0
+
   return (
     <section id="education" className={styles.section} aria-labelledby="education-title">
-      <div className={styles.container}>
-        <div className={styles.header} data-reveal>
-          <span className={styles.sectionNumber}>02</span>
-          <h2 id="education-title" className={styles.title}>EDUCATION</h2>
-          <div className={styles.divider} aria-hidden="true"></div>
-          <p className={styles.subtitle}>Horizontal journey from SSLC to CSE Engineering</p>
-        </div>
+      <div className={styles.bgDecoration} aria-hidden="true">
+        <DotPattern color="ink" />
+        <DecorativeCorner position="tl" color="mustard" style={{ top: '5%', left: '3%' }} />
+        <DecorativeCorner position="tr" color="ink" style={{ top: '5%', right: '3%' }} />
+        <DecorativeCorner position="bl" color="ink" style={{ bottom: '5%', left: '3%' }} />
+        <DecorativeCorner position="br" color="mustard" style={{ bottom: '5%', right: '3%' }} />
+        <Crosshair color="orange" style={{ top: '12%', left: '8%' }} />
+        <Crosshair color="mustard" style={{ bottom: '15%', right: '10%' }} />
+      </div>
 
-        <div className={styles.trainWrapper} data-reveal data-reveal-delay="1">
-          <div className={styles.trackContainer} ref={containerRef} onScroll={handleScroll} role="region" aria-label="Education timeline" tabIndex={0}>
+      <div className={styles.container}>
+        <motion.div
+          className={styles.header}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <Label variant="number">02</Label>
+          <h2 id="education-title" className={styles.title}>EDUCATION</h2>
+          <div className={styles.divider} aria-hidden="true">
+            <Star size="md" color="mustard" />
+          </div>
+          <p className={styles.subtitle}>Horizontal journey from SSLC to CSE Engineering</p>
+        </motion.div>
+
+        <motion.div
+          className={styles.trainWrapper}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <div className={styles.trackContainer} ref={containerRef} onScroll={handleScroll} role="region" aria-label="Education timeline" tabIndex={0} onMouseDown={handleMouseDown} style={{ cursor: isDragging ? 'grabbing' : 'grab' }}>
             <div className={styles.track} ref={trackRef}>
               <div className={styles.rail} aria-hidden="true">
                 <div className={styles.railLine}></div>
-                <div className={styles.railTies} aria-hidden="true">
-                  {education.map((_, i) => <div key={i} className={styles.railTie}></div>)}
+                <div className={styles.railTies}>
+                  {education.map((_, i) => (
+                    <div key={i} className={styles.railTie}></div>
+                  ))}
                 </div>
+              </div>
+
+              <div className={styles.progressTrack} aria-hidden="true">
+                <motion.div
+                  className={styles.progressFill}
+                  style={{ width: `${progress * 100}%` }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress * 100}%` }}
+                  transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                />
               </div>
 
               <div className={styles.stations} role="list" aria-label="Education stations">
@@ -122,22 +199,21 @@ export function EducationTrain() {
             </div>
           </div>
 
+          <div className={styles.scrollHint} aria-hidden="true">
+            <Label variant="meta">DRAG OR SCROLL</Label>
+            <Arrow direction="right" size={20} color="mustard" />
+          </div>
+
           <div className={styles.cardsContainer} role="list" aria-label="Education details">
             {education.map((station, index) => (
               <StationCard
                 key={station.id}
                 station={station}
-                index={index}
                 isActive={index === activeIndex}
               />
             ))}
           </div>
-
-          <div className={styles.scrollHint} aria-hidden="true">
-            <span>SCROLL OR DRAG →</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
@@ -162,12 +238,23 @@ function StationNode({ station, index, isActive, isCurrent, onKeyDown, scrollToS
       aria-label={`${station.label}: ${station.institution}`}
       onClick={() => scrollToStation(index)}
       onKeyDown={(e) => onKeyDown(e, index)}
+      style={{ '--card-color': station.color } as React.CSSProperties}
     >
       <div className={styles.nodeOuter} aria-hidden="true">
         <div className={styles.nodeInner}></div>
+        <div className={styles.nodeRing} aria-hidden="true"></div>
       </div>
       <span className={styles.nodeLabel}>{station.label}</span>
       {isCurrent && <span className={styles.currentBadge}>CURRENT</span>}
+      {isActive && (
+        <motion.div
+          className={styles.activePulse}
+          initial={{ scale: 0.8, opacity: 0.5 }}
+          animate={{ scale: 1.4, opacity: 0 }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeOut' }}
+          aria-hidden="true"
+        />
+      )}
     </div>
   )
 }
@@ -178,29 +265,39 @@ interface TrainEngineProps {
 }
 
 function TrainEngine({ activeIndex, totalStations }: TrainEngineProps) {
-  const position = (activeIndex / Math.max(totalStations - 1, 1)) * 100
+  const position = totalStations > 1 ? (activeIndex / (totalStations - 1)) * 100 : 0
 
   return (
     <motion.div
       className={styles.engine}
-      style={{ left: `calc(${position}% - 40px)` }}
-      animate={{ left: `calc(${position}% - 40px)` }}
-      transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+      style={{ left: `calc(${position}% - 50px)` }}
+      animate={{ left: `calc(${position}% - 50px)` }}
+      transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
       aria-hidden="true"
     >
       <div className={styles.engineBody}>
-        <div className={styles.engineCab}></div>
-        <div className={styles.engineBoiler}></div>
-        <div className={styles.engineWheels} aria-hidden="true">
-          <div className={styles.wheel}></div>
-          <div className={styles.wheel}></div>
-          <div className={styles.wheel}></div>
-        </div>
         <div className={styles.engineSmoke} aria-hidden="true">
-          <div className={styles.smokePuff}></div>
-          <div className={styles.smokePuff}></div>
-          <div className={styles.smokePuff}></div>
+          <motion.div className={styles.smokePuff} animate={{ y: [-20, -40], opacity: [0.6, 0] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0 }} />
+          <motion.div className={styles.smokePuff} animate={{ y: [-20, -40], opacity: [0.6, 0] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0.3 }} />
+          <motion.div className={styles.smokePuff} animate={{ y: [-20, -40], opacity: [0.6, 0] }} transition={{ duration: 1.2, repeat: Infinity, delay: 0.6 }} />
         </div>
+        <div className={styles.engineCab}>
+          <div className={styles.engineLight} aria-hidden="true"></div>
+        </div>
+        <div className={styles.engineBoiler}>
+          <div className={styles.engineGauge} aria-hidden="true">
+            <Star size="sm" color="mustard" />
+          </div>
+        </div>
+        <div className={styles.engineWheels} aria-hidden="true">
+          <motion.div className={styles.wheel} animate={{ rotate: 360 }} transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }} />
+          <motion.div className={styles.wheel} animate={{ rotate: 360 }} transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }} />
+          <motion.div className={styles.wheel} animate={{ rotate: 360 }} transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }} />
+        </div>
+        <div className={styles.engineCowcatcher} aria-hidden="true"></div>
+      </div>
+      <div className={styles.engineLabel}>
+        <Label variant="number">ENGINE</Label>
       </div>
     </motion.div>
   )
@@ -208,21 +305,25 @@ function TrainEngine({ activeIndex, totalStations }: TrainEngineProps) {
 
 interface StationCardProps {
   station: EducationStation
-  index: number
   isActive: boolean
 }
 
-function StationCard({ station, index: _index, isActive }: StationCardProps) {
+function StationCard({ station, isActive }: StationCardProps) {
   return (
     <div style={{ '--card-color': station.color } as React.CSSProperties} className={styles.cardWrapper}>
       <motion.div
         className={`${styles.stationCard} ${isActive ? styles.cardActive : ''}`}
         role="listitem"
         initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: isActive ? 1 : 0.4, y: 0, scale: isActive ? 1 : 0.98 }}
+        animate={{ opacity: isActive ? 1 : 0.5, y: 0, scale: isActive ? 1 : 0.97 }}
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
-        <div className={styles.cardNumber}>{station.label}</div>
+        <div className={styles.cardTop}>
+          <div className={styles.cardNumberWrapper}>
+            <Label variant="number">{station.label}</Label>
+          </div>
+          {station.isCurrent && <Sticker variant="mustard" className={styles.currentSticker}>CURRENT</Sticker>}
+        </div>
         <h3 className={styles.cardTitle}>{station.institution}</h3>
         <ul className={styles.cardDetails} role="list">
           {station.details.map((detail, i) => (
@@ -230,7 +331,7 @@ function StationCard({ station, index: _index, isActive }: StationCardProps) {
           ))}
         </ul>
         <div className={styles.cardPeriod}>{station.period}</div>
-        {isActive && <div className={styles.activeIndicator} aria-hidden="true"></div>}
+        <div className={styles.cardAccent} aria-hidden="true"></div>
       </motion.div>
     </div>
   )

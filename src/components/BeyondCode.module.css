@@ -1,77 +1,268 @@
 .section {
-  padding: 4rem 0;
-  background: #FFFDF6;
-  border-top: 1px solid rgba(23, 23, 23, 0.08);
-  border-bottom: 1px solid rgba(23, 23, 23, 0.08);
+  position: relative;
+  padding: var(--space-5xl) 0;
+  background: var(--ink);
+  color: var(--warm-white);
+  overflow: hidden;
+}
+
+.bgDecoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .container {
-  max-width: 1200px;
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--container-padding);
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
-}
-
-.sectionNumber {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #E0AE3E;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 0.5rem;
-  display: block;
+  margin-bottom: var(--space-3xl);
 }
 
 .title {
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: #171717;
+  color: var(--warm-white);
+  line-height: 1;
 }
 
 .divider {
-  width: 60px;
-  height: 3px;
-  background: #E0AE3E;
-  margin: 1rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
 }
 
-.strip {
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  max-width: 150px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--mustard), transparent);
+}
+
+.marqueeWrapper {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--space-3xl);
+  padding: var(--space-lg) 0;
+  border-top: 3px solid rgba(255, 253, 246, 0.1);
+  border-bottom: 3px solid rgba(255, 253, 246, 0.1);
+}
+
+.marqueeWrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--orange), var(--mustard), var(--deep-green), var(--teal), var(--orange));
+  background-size: 200% 100%;
+  animation: marqueeBorder 8s linear infinite;
+}
+
+@keyframes marqueeBorder {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeWrapper::before {
+    animation: none;
+  }
+}
+
+.marqueeTrack {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.marqueeContent {
+  display: inline-flex;
+  animation: marquee 40s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeContent {
+    animation: none;
+  }
+}
+
+.marqueeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 0 var(--space-xl);
+  white-space: nowrap;
+}
+
+.marqueeStar {
+  flex-shrink: 0;
+  animation: starRotate 3s linear infinite;
+}
+
+@keyframes starRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marqueeStar {
+    animation: none;
+  }
+}
+
+.marqueeText {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--warm-white);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.marqueeSticker {
+  font-size: 0.875rem;
+  padding: var(--space-sm) var(--space-lg);
+}
+
+.marqueeSeparator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--space-xl);
+  color: var(--orange);
+}
+
+.vexrPoster {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+}
+
+.posterContent {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(135deg, var(--ink) 0%, var(--deep-green) 100%);
+  border: 3px solid var(--mustard);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3xl) var(--space-2xl);
+  text-align: center;
+}
+
+.posterTop {
+  margin-bottom: var(--space-2xl);
+}
+
+.posterLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+.posterLine {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--warm-white);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.posterBottom {
+  padding-top: var(--space-xl);
+  border-top: 1px solid rgba(255, 253, 246, 0.1);
+}
+
+.posterTags {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
-  font-weight: 500;
-  color: #171717;
-  letter-spacing: -0.01em;
+  gap: var(--space-md);
 }
 
-.separator {
-  color: #E0AE3E;
-  font-weight: 300;
+.posterTag {
+  font-size: 0.875rem;
+  padding: var(--space-sm) var(--space-xl);
+  font-weight: 600;
 }
 
-.item {
-  display: inline-flex;
-  align-items: center;
-  white-space: nowrap;
+.posterAccents {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.posterAccents .star {
+  position: absolute;
+  opacity: 0.15;
+  animation: floatAccent 6s ease-in-out infinite;
+}
+
+.posterAccents .star:nth-child(1) { animation-delay: 0s; }
+.posterAccents .star:nth-child(2) { animation-delay: 1.5s; }
+.posterAccents .star:nth-child(3) { animation-delay: 3s; }
+.posterAccents .star:nth-child(4) { animation-delay: 4.5s; }
+
+@keyframes floatAccent {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(10px, -10px) rotate(90deg); }
+  50% { transform: translate(-5px, 10px) rotate(180deg); }
+  75% { transform: translate(10px, 5px) rotate(270deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .posterAccents .star {
+    animation: none;
+  }
 }
 
 @media (max-width: 768px) {
   .section {
-    padding: 3rem 0;
+    padding: var(--space-4xl) 0;
   }
 
-  .strip {
-    gap: 0.75rem;
+  .marqueeText {
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
+  }
+
+  .marqueeItem {
+    padding: 0 var(--space-lg);
+  }
+
+  .posterContent {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .posterLine {
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+  }
+
+  .posterTag {
+    font-size: 0.75rem;
+    padding: var(--space-xs) var(--space-md);
   }
 }

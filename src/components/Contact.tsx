@@ -1,30 +1,84 @@
 import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
+import { Star, Arrow, Label, Crosshair, DotPattern, DecorativeCorner, OrganicShape } from './DecorativeMarks'
 import styles from './Contact.module.css'
 
-export function Contact() {
-  const links = [
-    { label: 'GitHub', href: profile.social.github, icon: 'github' },
-    { label: 'LinkedIn', href: profile.social.linkedin, icon: 'linkedin' },
-    { label: 'Instagram', href: profile.social.instagram, icon: 'instagram' },
-    { label: 'YouTube', href: profile.social.youtube, icon: 'youtube' },
-    { label: 'X', href: profile.social.x, icon: 'x' },
-    { label: 'Photography', href: profile.social.photography, icon: 'camera' },
-    { label: 'Email', href: `mailto:${profile.social.email}`, icon: 'mail' }
-  ]
+const socialLinks = [
+  { label: 'GitHub', href: profile.social.github, icon: 'github', color: '#171717' },
+  { label: 'LinkedIn', href: profile.social.linkedin, icon: 'linkedin', color: '#0A66C2' },
+  { label: 'Instagram', href: profile.social.instagram, icon: 'instagram', color: '#E1306C' },
+  { label: 'YouTube', href: profile.social.youtube, icon: 'youtube', color: '#FF0000' },
+  { label: 'X', href: profile.social.x, icon: 'x', color: '#171717' },
+  { label: 'Photography', href: profile.social.photography, icon: 'camera', color: '#274D3A' },
+]
 
+export function Contact() {
   return (
     <section id="contact" className={styles.section} aria-labelledby="contact-title">
-      <div className={styles.container}>
-        <div className={styles.header} data-reveal>
-          <span className={styles.sectionNumber}>07</span>
-          <h2 id="contact-title" className={styles.title}>CONTACT</h2>
-          <div className={styles.divider} aria-hidden="true"></div>
-          <p className={styles.subtitle}>Open to opportunities, collaborations, and conversations</p>
-        </div>
+      <div className={styles.bgDecoration} aria-hidden="true">
+        <DotPattern color="warm-white" />
+        <OrganicShape variant={1} style={{ top: '5%', right: '5%' }} />
+        <OrganicShape variant={2} style={{ bottom: '10%', left: '3%' }} />
+        <DecorativeCorner position="tl" color="mustard" style={{ top: '8%', left: '4%' }} />
+        <DecorativeCorner position="tr" color="warm-white" style={{ top: '8%', right: '4%' }} />
+        <DecorativeCorner position="bl" color="warm-white" style={{ bottom: '8%', left: '4%' }} />
+        <DecorativeCorner position="br" color="mustard" style={{ bottom: '8%', right: '4%' }} />
+        <Crosshair color="orange" style={{ top: '15%', left: '10%' }} />
+        <Crosshair color="teal" style={{ bottom: '15%', right: '10%' }} />
+      </div>
 
-        <div className={styles.grid} role="list" aria-label="Contact links">
-          {links.map((link, index) => (
+      <div className={styles.container}>
+        <motion.div
+          className={styles.header}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <Label variant="number">07</Label>
+          <h2 id="contact-title" className={styles.title}>CONTACT</h2>
+          <div className={styles.divider} aria-hidden="true">
+            <Star size="md" color="mustard" />
+          </div>
+          <p className={styles.subtitle}>Open to opportunities, collaborations, and conversations</p>
+        </motion.div>
+
+        <motion.div
+          className={styles.ctaBanner}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <div className={styles.bannerContent}>
+            <div className={styles.bannerText}>
+              <Label variant="meta" style={{ color: 'var(--mustard)' }}>LET'S BUILD</Label>
+              <h3 className={styles.bannerTitle}>Ready to create something that matters?</h3>
+              <p className={styles.bannerDesc}>I'm always open to discussing new projects, creative ideas, or just chatting about software and systems.</p>
+            </div>
+            <div className={styles.bannerActions}>
+              <a href={`mailto:${profile.social.email}`} className={`btn btn-primary ${styles.bannerBtn}`}>
+                Start a Conversation
+                <Arrow direction="right" size={18} color="warm-white" />
+              </a>
+              <a href="#projects" className={`btn btn-ghost ${styles.bannerBtn}`}>
+                View Work First
+                <Arrow direction="right" size={18} color="warm-white" />
+              </a>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className={styles.grid}
+          role="list"
+          aria-label="Contact links"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          {socialLinks.map((link, index) => (
             <motion.a
               key={link.label}
               href={link.href}
@@ -32,28 +86,39 @@ export function Contact() {
               rel={link.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
               className={styles.card}
               role="listitem"
+              style={{ '--link-color': link.color } as React.CSSProperties}
               initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.06 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 + index * 0.06 }}
               aria-label={link.label}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               <div className={styles.cardIcon} aria-hidden="true">
                 {renderIcon(link.icon)}
               </div>
-              <span className={styles.cardLabel}>{link.label}</span>
-              <svg className={styles.cardArrow} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              <div className={styles.cardInfo}>
+                <span className={styles.cardLabel}>{link.label}</span>
+                <span className={styles.cardHint}>CONNECT</span>
+              </div>
+              <Arrow direction="right" size={20} color="ink" className={styles.cardArrow} />
             </motion.a>
           ))}
-        </div>
+        </motion.div>
 
-        <div className={styles.emailDirect} data-reveal data-reveal-delay="2">
-          <p className={styles.emailLabel}>DIRECT EMAIL</p>
+        <motion.div
+          className={styles.emailDirect}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6, delay: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        >
+          <Label variant="meta">DIRECT EMAIL</Label>
           <a href={`mailto:${profile.social.email}`} className={styles.emailLink}>
             {profile.social.email}
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <Arrow direction="right" size={18} color="mustard" />
           </a>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
@@ -67,7 +132,6 @@ function renderIcon(name: string) {
     youtube: <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>,
     x: <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>,
     camera: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="12" r="4"/></svg>,
-    mail: <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
   }
   return icons[name] || icons.github
 }
