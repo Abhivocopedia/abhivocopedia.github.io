@@ -1,503 +1,109 @@
 .section {
   position: relative;
-  padding: 0 0 var(--space-5xl);
+  padding: var(--space-5xl) 0;
   background: var(--ink);
   color: var(--warm-white);
   overflow: hidden;
 }
 
+.bgDecoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.25;
+}
+
 .container {
   position: relative;
-  z-index: 2;
-  max-width: var(--container-max);
+  z-index: 1;
+  width: min(
+    var(--container-max),
+    calc(100% - (var(--container-padding) * 2))
+  );
   margin: 0 auto;
-  padding: 0 var(--container-padding);
-}
-
-.topMarquee {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
-  border-top: 1px solid rgba(255, 253, 246, 0.12);
-  border-bottom: 1px solid rgba(255, 253, 246, 0.12);
-  padding: 18px 0;
-  background: #151515;
-}
-
-.topMarquee::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-
-  background: linear-gradient(
-    90deg,
-    var(--orange),
-    var(--mustard),
-    var(--deep-green),
-    var(--teal),
-    var(--orange)
-  );
-
-  background-size: 200% 100%;
-  animation: marqueeBorder 8s linear infinite;
-}
-
-.marqueeTrack {
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.marqueeContent {
-  display: inline-flex;
-  width: max-content;
-  animation: topMarquee 24s linear infinite;
-  will-change: transform;
-}
-
-.marqueeItem {
-  flex: 0 0 auto;
-
-  display: inline-flex;
-  align-items: center;
-
-  padding: 0 clamp(18px, 3vw, 44px);
-
-  font-family: var(--font-display);
-  font-size: clamp(1rem, 2vw, 1.7rem);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-
-  text-transform: uppercase;
-
-  color: var(--warm-white);
-}
-
-.marqueeItem::after {
-  content: '✦';
-
-  margin-left: clamp(
-    18px,
-    3vw,
-    44px
-  );
-
-  color: var(--mustard);
-  font-size: 0.8em;
 }
 
 .header {
   text-align: center;
-  padding: var(--space-4xl) 0
-    var(--space-xl);
-}
-
-.sectionNumber {
-  display: inline-block;
-
-  margin-bottom: var(--space-md);
-
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-
-  color: var(--mustard);
-
-  text-transform: uppercase;
+  margin-bottom: var(--space-3xl);
 }
 
 .title {
-  margin: 0;
-
+  margin-top: var(--space-sm);
   font-family: var(--font-display);
-  font-size: clamp(
-    3rem,
-    8vw,
-    7rem
-  );
-
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.045em;
-
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
   color: var(--warm-white);
 }
 
-.subtitle {
-  max-width: 58ch;
-
+.divider {
+  width: min(260px, 60vw);
+  height: 2px;
   margin: var(--space-lg) auto 0;
-
-  color: rgba(
-    255,
-    253,
-    246,
-    0.68
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--mustard),
+    transparent
   );
-
-  font-family: var(--font-body);
-
-  font-size: clamp(
-    0.95rem,
-    1.7vw,
-    1.08rem
-  );
-
-  line-height: 1.65;
 }
 
-.memoryMeta {
+.subtitle {
+  margin-top: var(--space-lg);
+  color: rgba(255, 253, 246, 0.62);
+  font-family: var(--font-body);
+  font-size: 1rem;
+}
+
+/* =========================================================
+   MOVING MARQUEE
+========================================================= */
+
+.marqueeWrapper {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  margin-bottom: clamp(3rem, 7vw, 6rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.marqueeTrack {
+  width: max-content;
+  animation: marqueeMove 22s linear infinite;
+}
+
+.marqueeContent {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: 1.1rem 0;
+  white-space: nowrap;
+}
 
-  gap: var(--space-md);
-
-  margin-bottom: var(--space-lg);
-  padding: 0 2px;
-
-  color: rgba(
-    255,
-    253,
-    246,
-    0.62
-  );
-
+.marqueeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  color: rgba(255, 253, 246, 0.82);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.memoryWall {
-  position: relative;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(
-      4,
-      minmax(0, 1fr)
-    );
-
-  gap: clamp(
-    8px,
-    1vw,
-    14px
-  );
-
-  height: clamp(
-    620px,
-    78vh,
-    930px
-  );
-
-  overflow: hidden;
-
-  border-radius: 14px;
-
-  background: #101010;
-
-  border: 1px solid
-    rgba(
-      255,
-      253,
-      246,
-      0.1
-    );
-
-  box-shadow:
-    0 24px 70px
-    rgba(0, 0, 0, 0.26);
-}
-
-.memoryWall::before,
-.memoryWall::after {
-  content: '';
-
-  position: absolute;
-  left: 0;
-  right: 0;
-
-  z-index: 4;
-
-  pointer-events: none;
-}
-
-.memoryWall::before {
-  top: 0;
-  height: 18%;
-
-  background: linear-gradient(
-    180deg,
-    rgba(16, 16, 16, 0.95),
-    transparent
-  );
-}
-
-.memoryWall::after {
-  bottom: 0;
-  height: 22%;
-
-  background: linear-gradient(
-    0deg,
-    rgba(16, 16, 16, 0.97),
-    transparent
-  );
-}
-
-.memoryColumn {
-  min-width: 0;
-  height: max-content;
-
-  animation:
-    wallFloat
-    7s
-    ease-in-out
-    infinite;
-
-  will-change: transform;
-}
-
-.memoryColumn.reverse {
-  animation-name:
-    wallFloatReverse;
-}
-
-.memoryTrack {
-  display: flex;
-  flex-direction: column;
-
-  width: 100%;
-
-  animation:
-    memoryUp
-    26s
-    linear
-    infinite;
-
-  will-change: transform;
-}
-
-.memoryColumn.reverse
-  .memoryTrack {
-  animation-name:
-    memoryDown;
-}
-
-.memorySet {
-  display: flex;
-  flex-direction: column;
-
-  gap: clamp(
-    8px,
-    1vw,
-    14px
-  );
-
-  flex: 0 0 auto;
-}
-
-.memoryFigure {
-  position: relative;
-
-  margin: 0;
-
-  width: 100%;
-
-  aspect-ratio: 4 / 3;
-
-  overflow: hidden;
-
-  border-radius: 12px;
-
-  background: #1b1b1b;
-
-  border: 1px solid
-    rgba(
-      255,
-      253,
-      246,
-      0.09
-    );
-
-  box-shadow:
-    0 8px 20px
-    rgba(
-      0,
-      0,
-      0,
-      0.18
-    );
-}
-
-.memoryFigure.portrait {
-  aspect-ratio: 4 / 5;
-}
-
-.memoryImage {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  transform: scale(1.015);
-
-  filter:
-    saturate(0.96)
-    contrast(1.03);
-
-  transition:
-    transform 450ms ease,
-    filter 450ms ease;
-}
-
-.memoryFigure:hover
-  .memoryImage {
-  transform: scale(1.06);
-
-  filter:
-    saturate(1.05)
-    contrast(1.05);
-}
-
-.wallVignette {
-  position: absolute;
-  inset: 0;
-
-  z-index: 5;
-
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 0, 0, 0.14),
-      transparent 12%,
-      transparent 88%,
-      rgba(0, 0, 0, 0.14)
-    ),
-    linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.12),
-      transparent 15%,
-      transparent 82%,
-      rgba(0, 0, 0, 0.16)
-    );
-}
-
-.photoHint {
-  margin: var(--space-md) 0 0;
-
-  text-align: center;
-
-  color: rgba(
-    255,
-    253,
-    246,
-    0.5
-  );
-
-  font-family: var(--font-mono);
-  font-size: 0.67rem;
-  line-height: 1.6;
-}
-
-.photoHint code {
-  color: var(--mustard);
-  font-family: inherit;
-}
-
-.emptyState {
-  min-height: 400px;
-
-  display: grid;
-
-  place-items: center;
-
-  align-content: center;
-
-  gap: 10px;
-
-  padding: var(--space-3xl);
-
-  text-align: center;
-
-  border:
-    1px dashed
-    rgba(
-      255,
-      253,
-      246,
-      0.24
-    );
-
-  border-radius: 14px;
-
-  background:
-    rgba(
-      255,
-      253,
-      246,
-      0.025
-    );
-
-  color:
-    rgba(
-      255,
-      253,
-      246,
-      0.6
-    );
-
-  font-family: var(--font-mono);
-}
-
-.emptyState span {
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-}
-
-.emptyState strong {
+.marqueeDot {
   color: var(--mustard);
   font-size: 1rem;
 }
 
-.emptyState small {
-  font-size: 0.62rem;
-  opacity: 0.7;
-}
-
-.srOnly {
-  position: absolute;
-
-  width: 1px;
-  height: 1px;
-
-  padding: 0;
-  margin: -1px;
-
-  overflow: hidden;
-
-  clip: rect(
-    0,
-    0,
-    0,
-    0
-  );
-
-  white-space: nowrap;
-  border: 0;
-}
-
-@keyframes topMarquee {
+@keyframes marqueeMove {
   from {
     transform: translateX(0);
   }
@@ -507,139 +113,236 @@
   }
 }
 
-@keyframes memoryUp {
-  from {
-    transform: translateY(0);
-  }
+/* =========================================================
+   MEMORY WALL
+========================================================= */
 
-  to {
-    transform: translateY(-50%);
-  }
+.memorySection {
+  width: 100%;
 }
 
-@keyframes memoryDown {
-  from {
-    transform: translateY(-50%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
+.memoryHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.75rem;
 }
 
-@keyframes wallFloat {
+.memoryTitle {
+  margin-top: 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
+.memoryCount {
+  flex-shrink: 0;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  color: rgba(255, 253, 246, 0.62);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+}
+
+/*
+  Masonry-style wall.
+
+  Browser automatically decides portrait/landscape from
+  natural image dimensions, then applies:
+  Portrait  = 4:5
+  Landscape = 3:2
+*/
+
+.memoryWall {
+  column-count: 4;
+  column-gap: clamp(0.8rem, 1.6vw, 1.4rem);
+}
+
+.memoryCard {
+  position: relative;
+  width: 100%;
+  margin: 0 0 clamp(0.8rem, 1.6vw, 1.4rem);
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  animation: memoryFloat 7s ease-in-out infinite;
+  animation-delay: var(--float-delay);
+}
+
+.memoryCard::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  pointer-events: none;
+  transition:
+    border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.memoryCard:hover {
+  animation-play-state: paused;
+  z-index: 4;
+}
+
+.memoryCard:hover::after {
+  border-color: rgba(224, 174, 62, 0.72);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.32),
+    0 0 0 1px rgba(224, 174, 62, 0.12);
+}
+
+.memoryImageWrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #151515;
+}
+
+.memoryCard.portrait .memoryImageWrap {
+  aspect-ratio: 4 / 5;
+}
+
+.memoryCard.landscape .memoryImageWrap {
+  aspect-ratio: 3 / 2;
+}
+
+.memoryCard:not(.portrait):not(.landscape) .memoryImageWrap {
+  aspect-ratio: 3 / 2;
+}
+
+.memoryImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0) contrast(1.02);
+  transform: scale(1.015);
+  transition:
+    filter 0.45s ease,
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.memoryCard:hover .memoryImage {
+  filter: saturate(1) contrast(1.04);
+  transform: scale(1.055);
+}
+
+.memoryOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0.7rem;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.3),
+      transparent 28%,
+      transparent 68%,
+      rgba(0, 0, 0, 0.28)
+    );
+}
+
+.memoryOverlay span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  color: var(--warm-white);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes memoryFloat {
   0%,
   100% {
-    transform: translateY(4px);
+    transform: translate3d(0, 0, 0) rotate(0deg);
   }
 
   50% {
-    transform: translateY(-4px);
+    transform: translate3d(
+      0,
+      -7px,
+      0
+    ) rotate(0.15deg);
   }
 }
 
-@keyframes wallFloatReverse {
-  0%,
-  100% {
-    transform: translateY(-4px);
-  }
+/* =========================================================
+   RESPONSIVE
+========================================================= */
 
-  50% {
-    transform: translateY(4px);
-  }
-}
-
-@keyframes marqueeBorder {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
   .memoryWall {
-    grid-template-columns:
-      repeat(
-        3,
-        minmax(0, 1fr)
-      );
+    column-count: 3;
   }
 }
 
-@media (max-width: 640px) {
-  .section {
-    padding-bottom:
-      var(--space-4xl);
-  }
-
-  .topMarquee {
-    padding: 14px 0;
-  }
-
-  .header {
-    padding-top:
-      var(--space-3xl);
-  }
-
-  .memoryMeta {
+@media (max-width: 760px) {
+  .memoryHeading {
     align-items: flex-start;
     flex-direction: column;
-
-    gap: 7px;
+    gap: 0.8rem;
   }
 
   .memoryWall {
-    grid-template-columns:
-      repeat(
-        2,
-        minmax(0, 1fr)
-      );
-
-    height: 610px;
-
-    border-radius: 10px;
-
-    gap: 7px;
+    column-count: 2;
   }
 
-  .memorySet {
-    gap: 7px;
+  .memoryCard {
+    margin-bottom: 0.8rem;
   }
 
-  .memoryFigure {
-    border-radius: 9px;
+  .memoryImageWrap {
+    border-radius: 14px;
   }
 
-  .marqueeContent {
-    animation-duration: 18s;
+  .memoryCard::after {
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 460px) {
+  .memoryWall {
+    column-count: 1;
   }
 
-  .memoryTrack {
-    animation-duration: 21s;
+  .memoryTitle {
+    font-size: 2rem;
+  }
+
+  .memoryCount {
+    font-size: 0.58rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marqueeContent,
-  .memoryTrack,
-  .memoryColumn,
-  .topMarquee::before {
+  .marqueeTrack {
     animation: none;
   }
 
-  .memoryTrack {
-    transform: none;
+  .memoryCard {
+    animation: none;
   }
 
-  .memoryColumn:nth-child(n + 3) {
-    display: none;
-  }
-
-  .memoryFigure:hover
-    .memoryImage {
-    transform: none;
+  .memoryImage {
+    transition: none;
   }
 }

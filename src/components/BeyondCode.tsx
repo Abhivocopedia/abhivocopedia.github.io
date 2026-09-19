@@ -1,160 +1,105 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
 import { memories } from '../data/memories.generated'
+import {
+  Label,
+  DotPattern,
+  Sticker,
+} from './DecorativeMarks'
 import styles from './BeyondCode.module.css'
 
-type Memory = (typeof memories)[number]
+type MemoryOrientation =
+  | 'portrait'
+  | 'landscape'
 
-const DESKTOP_COLUMNS = 4
-const TABLET_COLUMNS = 3
-const MOBILE_COLUMNS = 2
-
-function getColumnCount(width: number) {
-  if (width <= 640) return MOBILE_COLUMNS
-  if (width <= 980) return TABLET_COLUMNS
-  return DESKTOP_COLUMNS
-}
-
-function useColumnCount() {
-  const [columnCount, setColumnCount] = useState(() => {
-    if (typeof window === 'undefined') return DESKTOP_COLUMNS
-    return getColumnCount(window.innerWidth)
-  })
-
-  useEffect(() => {
-    const update = () => {
-      setColumnCount(getColumnCount(window.innerWidth))
-    }
-
-    update()
-
-    window.addEventListener('resize', update, {
-      passive: true,
-    })
-
-    return () => {
-      window.removeEventListener('resize', update)
-    }
-  }, [])
-
-  return columnCount
-}
-
-function splitIntoColumns(
-  items: readonly Memory[],
-  count: number,
-) {
-  const columns: Memory[][] = Array.from(
-    { length: count },
-    () => [],
-  )
-
-  items.forEach((item, index) => {
-    columns[index % count].push(item)
-  })
-
-  return columns
-}
-
-function humanizeFilename(value: string) {
-  return value
-    .replace(/\.[^/.]+$/, '')
-    .replace(/[_-]+/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
-
-function MemorySet({
-  items,
-  columnIndex,
+function MemoryPhoto({
+  src,
+  name,
+  index,
 }: {
-  items: readonly Memory[]
-  columnIndex: number
+  src: string
+  name: string
+  index: number
 }) {
-  return (
-    <div
-      className={styles.memorySet}
-      aria-hidden="true"
-    >
-      {items.map((memory, index) => {
-        const portrait =
-          (index + columnIndex) % 5 === 1
+  const [orientation, setOrientation] =
+    useState<MemoryOrientation | null>(null)
 
-        return (
-          <figure
-            key={`${memory.src}-${columnIndex}-${index}`}
-            className={`${styles.memoryFigure} ${
-              portrait ? styles.portrait : ''
-            }`}
-          >
-            <img
-              src={memory.src}
-              alt=""
-              className={styles.memoryImage}
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-            />
-          </figure>
-        )
-      })}
-    </div>
-  )
-}
+  const handleLoad = (
+    event: React.SyntheticEvent<HTMLImageElement>,
+  ) => {
+    const image = event.currentTarget
 
-function MemoryColumn({
-  items,
-  columnIndex,
-}: {
-  items: readonly Memory[]
-  columnIndex: number
-}) {
-  const reverse = columnIndex % 2 === 1
+    setOrientation(
+      image.naturalHeight > image.naturalWidth
+        ? 'portrait'
+        : 'landscape',
+    )
+  }
+
+  const cardClass = orientation
+    ? `${styles.memoryCard} ${
+        orientation === 'portrait'
+          ? styles.portrait
+          : styles.landscape
+      }`
+    : styles.memoryCard
 
   return (
-    <div
-      className={`${styles.memoryColumn} ${
-        reverse ? styles.reverse : ''
-      }`}
-      style={{
-        animationDelay: `${columnIndex * -1.7}s`,
+    <motion.figure
+      className={cardClass}
+      initial={{
+        opacity: 0,
+        y: 20,
       }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        margin: '-40px',
+      }}
+      transition={{
+        duration: 0.65,
+        delay: Math.min(index * 0.04, 0.3),
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      style={
+        {
+          '--float-delay': `${(index % 6) * -0.7}s`,
+        } as CSSProperties
+      }
     >
-      <div className={styles.memoryTrack}>
-        <MemorySet
-          items={items}
-          columnIndex={columnIndex}
+      <div className={styles.memoryImageWrap}>
+        <img
+          src={src}
+          alt={name}
+          className={styles.memoryImage}
+          loading={index < 4 ? 'eager' : 'lazy'}
+          decoding="async"
+          onLoad={handleLoad}
         />
 
-        <MemorySet
-          items={items}
-          columnIndex={columnIndex}
-        />
+        <div
+          className={styles.memoryOverlay}
+          aria-hidden="true"
+        >
+          <span>{String(index + 1).padStart(2, '0')}</span>
+        </div>
       </div>
-    </div>
+    </motion.figure>
   )
 }
 
 export function BeyondCode() {
-  const columnCount = useColumnCount()
-
-  const columns = useMemo(
-    () =>
-      splitIntoColumns(
-        memories,
-        columnCount,
-      ),
-    [columnCount],
-  )
-
-  const hasMemories = memories.length > 0
-
-  const memoryCountLabel = `${memories.length} ${
-    Number(memories.length) === 1
-      ? 'MEMORY'
-      : 'MEMORIES'
-  }`
+  const marqueeItems = [
+    ...profile.vexr.lines,
+    ...profile.beyondCode,
+    ...profile.vexr.lines,
+    ...profile.beyondCode,
+  ]
 
   return (
     <section
@@ -163,78 +108,19 @@ export function BeyondCode() {
       aria-labelledby="beyond-title"
     >
       <div
-        className={styles.topMarquee}
-        aria-label="Beyond code interests"
+        className={styles.bgDecoration}
+        aria-hidden="true"
       >
-        <div
-          className={styles.marqueeTrack}
-          aria-hidden="true"
-        >
-          <div className={styles.marqueeContent}>
-            {profile.beyondCode.map((item) => (
-              <span
-                key={`a-${item}`}
-                className={styles.marqueeItem}
-              >
-                {item}
-              </span>
-            ))}
-
-            {profile.beyondCode.map((item) => (
-              <span
-                key={`b-${item}`}
-                className={styles.marqueeItem}
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
+        <DotPattern color="ink" />
       </div>
 
       <div className={styles.container}>
-        <motion.header
+        {/* HEADER */}
+        <motion.div
           className={styles.header}
           initial={{
             opacity: 0,
-            y: 24,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          viewport={{
-            once: true,
-            margin: '-60px',
-          }}
-          transition={{
-            duration: 0.65,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-        >
-          <span className={styles.sectionNumber}>
-            06 / BEYOND CODE
-          </span>
-
-          <h2
-            id="beyond-title"
-            className={styles.title}
-          >
-            <span>MEMORIES</span>
-          </h2>
-
-          <p className={styles.subtitle}>
-            A moving archive of stages,
-            performances, people, and moments
-            beyond the screen.
-          </p>
-        </motion.header>
-
-        <motion.div
-          className={styles.memoryMeta}
-          initial={{
-            opacity: 0,
-            y: 16,
+            y: 30,
           }}
           whileInView={{
             opacity: 1,
@@ -245,94 +131,129 @@ export function BeyondCode() {
             margin: '-50px',
           }}
           transition={{
-            duration: 0.55,
-            delay: 0.08,
+            duration: 0.6,
+            ease: [0.25, 0.46, 0.45, 0.94],
           }}
         >
-          <span>
-            PERFORM · CREATE · REMEMBER
-          </span>
+          <Label variant="number">06</Label>
 
-          <span>
-            {memoryCountLabel}
-          </span>
+          <h2
+            id="beyond-title"
+            className={styles.title}
+          >
+            BEYOND CODE
+          </h2>
+
+          <div
+            className={styles.divider}
+            aria-hidden="true"
+          />
+
+          <p className={styles.subtitle}>
+            The things that happen beyond the screen.
+          </p>
         </motion.div>
 
-        {hasMemories ? (
-          <motion.div
-            className={styles.memoryWall}
-            initial={{
-              opacity: 0,
-              y: 24,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              margin: '-40px',
-            }}
-            transition={{
-              duration: 0.7,
-              delay: 0.12,
-            }}
-            aria-label="Moving memories photo wall"
+        {/* TOP MOVING MARQUEE */}
+        <motion.div
+          className={styles.marqueeWrapper}
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            margin: '-50px',
+          }}
+          transition={{
+            duration: 0.6,
+            delay: 0.1,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }}
+        >
+          <div
+            className={styles.marqueeTrack}
+            aria-hidden="true"
           >
-            {columns.map(
-              (
-                items,
-                columnIndex,
-              ) => (
-                <MemoryColumn
-                  key={`column-${columnIndex}`}
-                  items={items}
-                  columnIndex={columnIndex}
-                />
-              ),
-            )}
+            <div className={styles.marqueeContent}>
+              {marqueeItems.map((item, index) => (
+                <span
+                  key={`${item}-${index}`}
+                  className={styles.marqueeItem}
+                >
+                  {profile.vexr.lines.includes(item) ? (
+                    <Sticker
+                     
+                    >
+                      {item}
+                    </Sticker>
+                  ) : (
+                    item
+                  )}
 
-            <div
-              className={styles.wallVignette}
-              aria-hidden="true"
-            />
-          </motion.div>
-        ) : (
-          <div className={styles.emptyState}>
-            <span>
-              ADD PHOTOS TO
-            </span>
-
-            <strong>
-              public/images/memories/
-            </strong>
-
-            <small>
-              JPG · JPEG · PNG · WEBP · AVIF ·
-              GIF · BMP · SVG
-            </small>
+                  <span className={styles.marqueeDot}>
+                    •
+                  </span>
+                </span>
+              ))}
+            </div>
           </div>
-        )}
+        </motion.div>
 
-        <p className={styles.photoHint}>
-          Add as many photos as you like inside{' '}
-          <code>
-            public/images/memories/
-          </code>
-          . The build scanner picks them up
-          automatically.
-        </p>
+        {/* MEMORY WALL */}
+        <motion.div
+          className={styles.memorySection}
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            margin: '-50px',
+          }}
+          transition={{
+            duration: 0.65,
+            delay: 0.15,
+          }}
+        >
+          <div className={styles.memoryHeading}>
+            <div>
+              <Label variant="meta">
+                MEMORY WALL
+              </Label>
 
-        <span className={styles.srOnly}>
-          Memory filenames:{' '}
-          {memories
-            .map((memory) =>
-              humanizeFilename(
-                memory.name,
-              ),
-            )
-            .join(', ')}
-        </span>
+              <h3 className={styles.memoryTitle}>
+                LIFE IN FRAMES
+              </h3>
+            </div>
+
+            <span className={styles.memoryCount}>
+              {memories.length} FRAME
+              {Number(memories.length) === 1
+                ? ''
+                : 'S'}
+            </span>
+          </div>
+
+          <div className={styles.memoryWall}>
+            {memories.map((memory, index) => (
+              <MemoryPhoto
+                key={memory.src}
+                src={memory.src}
+                name={memory.name}
+                index={index}
+              />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   )

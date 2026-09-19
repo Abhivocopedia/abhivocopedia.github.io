@@ -4,10 +4,6 @@
 
 export const memories = [
   {
-    "src": "/images/memories/DSC00121.jpg.jpeg",
-    "name": "DSC00121.jpg.jpeg"
-  },
-  {
     "src": "/images/memories/DSC00297_1.jpg.jpeg",
     "name": "DSC00297_1.jpg.jpeg"
   },
@@ -34,6 +30,34 @@ export const memories = [
   {
     "src": "/images/memories/IMG_20260605_140910.jpg.jpeg",
     "name": "IMG_20260605_140910.jpg.jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.51.jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.51.jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.52%20(1).jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.52 (1).jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.52.jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.52.jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.53.jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.53.jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.56%20(1).jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.56 (1).jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.56%20(2).jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.56 (2).jpeg"
+  },
+  {
+    "src": "/images/memories/WhatsApp%20Image%202026-09-19%20at%2020.46.56.jpeg",
+    "name": "WhatsApp Image 2026-09-19 at 20.46.56.jpeg"
   }
 ] as const
 
