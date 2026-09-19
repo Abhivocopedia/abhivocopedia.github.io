@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
-import { Star, Arrow, DotPattern, Sticker, Label } from './DecorativeMarks'
+import { Star, Arrow, OrganicShape, DotPattern, DecorativeCorner, Crosshair, Sticker, Label } from './DecorativeMarks'
 import styles from './Hero.module.css'
 
 export function Hero() {
@@ -10,6 +10,15 @@ export function Hero() {
     <section className={styles.hero} aria-labelledby="hero-title">
       <div className={styles.bgDecoration} aria-hidden="true">
         <DotPattern color="ink" />
+        <OrganicShape variant={1} style={{ top: '5%', right: '3%' }} />
+        <OrganicShape variant={2} style={{ bottom: '10%', left: '2%' }} />
+        <OrganicShape variant={3} style={{ top: '45%', right: '40%' }} />
+        <DecorativeCorner position="tl" color="ink" style={{ top: '15%', left: '8%' }} />
+        <DecorativeCorner position="tr" color="mustard" style={{ top: '20%', right: '10%' }} />
+        <DecorativeCorner position="bl" color="mustard" style={{ bottom: '15%', left: '12%' }} />
+        <DecorativeCorner position="br" color="ink" style={{ bottom: '20%', right: '8%' }} />
+        <Crosshair color="mustard" style={{ top: '12%', left: '15%' }} />
+        <Crosshair color="ink" style={{ bottom: '18%', right: '18%' }} />
       </div>
 
       <div className={styles.container}>
@@ -114,10 +123,6 @@ export function Hero() {
               Get In Touch
               <Arrow direction="right" size={18} color="ink" />
             </a>
-            <a href="/resume" className={`btn btn-ghost ${styles.ctaGhost}`}>
-              View Resume
-              <Arrow direction="right" size={18} color="ink" />
-            </a>
           </motion.div>
         </div>
 
@@ -192,6 +197,24 @@ export default builder;`}</code></pre>
                 </div>
               </div>
             )}
+
+            <div className={styles.floatingElements} aria-hidden="true">
+              <div className={styles.floatItem} style={{ top: '-20px', right: '-30px' }}>
+                <Star size="lg" color="mustard" />
+              </div>
+              <div className={styles.floatItem} style={{ top: '30%', right: '-50px' }}>
+                <Crosshair color="orange" style={{ width: '32px', height: '32px' }} />
+              </div>
+              <div className={styles.floatItem} style={{ bottom: '40%', left: '-40px' }}>
+                <Star size="md" color="teal" />
+              </div>
+              <div className={styles.floatItem} style={{ bottom: '-20px', left: '-20px' }}>
+                <Arrow direction="right" size={28} color="orange" />
+              </div>
+              <div className={styles.floatItem} style={{ top: '50%', left: '-60px' }}>
+                <Label variant="number">01</Label>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
