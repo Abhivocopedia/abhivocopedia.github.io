@@ -50,5 +50,32 @@ export const projects: Project[] = [
     githubUrl: 'ADD LINK',
     color: '#2C7C7A',
     featured: true
+  },
+  {
+    id: 'nova-assistant',
+    number: '04',
+    category: 'AI / SYSTEMS',
+    title: 'Nova Assistant',
+    description: 'Personal AI assistant concept for PC interaction, speech, memory, and automation.',
+    tech: ['Python', 'FastAPI', 'PyTorch', 'OpenCV', 'WebSockets'],
+    liveUrl: undefined,
+    githubUrl: 'ADD LINK',
+    color: '#171717',
+    featured: true
+  },
+  {
+    id: 'weighnix',
+    number: '05',
+    category: 'HARDWARE + CLOUD',
+    title: 'Weighnix',
+    description: 'Smart Home Cylinder Management System — DSU DevHack 2.0 Vultr Best Build.',
+    tech: ['C++', 'Python', 'AWS', 'Docker', 'MQTT', 'React'],
+    liveUrl: 'ADD LINK',
+    githubUrl: 'ADD LINK',
+    color: '#C85C38',
+    featured: true,
+    contribution: 'Hardware Development + Cloud Assistance',
+    team: 'TheAPIcalypse',
+    award: 'DSU DevHack 2.0 — Vultr Best Build'
   }
 ]

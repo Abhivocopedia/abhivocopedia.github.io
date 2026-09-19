@@ -13,6 +13,7 @@ import { Resume } from './components/Resume'
 import { CopyProtection } from './components/CopyProtection'
 import { soundFX } from './lib/SoundFX'
 import './styles/globals.css'
+import { MemoryMusic } from './components/MemoryMusic'
 
 type Route = 'home' | 'resume'
 
@@ -158,6 +159,7 @@ function App() {
   return (
     <>
       <CopyProtection />
+        <MemoryMusic />
 
       {!isResume && (
         <Navbar onNavigate={navigate} />
