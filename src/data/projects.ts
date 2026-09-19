@@ -22,7 +22,7 @@ export const projects: Project[] = [
     title: 'Genesis',
     description: 'Experimental engineering project focused on building and exploring a modern digital product.',
     tech: ['React', 'TypeScript', 'Node.js', 'Docker'],
-    liveUrl: 'https://genesis-lab.vercel.app',
+    liveUrl: 'https://genesis-lab-nu.vercel.app',
     githubUrl: 'ADD LINK',
     color: '#274D3A',
     featured: true
