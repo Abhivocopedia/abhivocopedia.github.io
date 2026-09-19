@@ -1,94 +1,161 @@
 import { useEffect, useRef } from 'react'
 
 const MUSIC_SRC = '/music/music.mp3'
+
 const MAX_VOLUME = 0.6
 const FADE_DISTANCE = 900
+const MUSIC_STORAGE_KEY = 'portfolio-music-enabled'
+const MUSIC_EVENT = 'portfolio-music-change'
 
-type WindowWithAudioFlag = Window & {
-  __portfolioAudioEnabled?: boolean
+type MusicWindow = Window & {
+  __portfolioMusicEnabled?: boolean
 }
 
-function readAudioPreference() {
-  const win = window as WindowWithAudioFlag
-
-  if (typeof win.__portfolioAudioEnabled === 'boolean') {
-    return win.__portfolioAudioEnabled
+function getMusicPreference() {
+  if (typeof window === 'undefined') {
+    return true
   }
 
-  const keys = [
-    'portfolio-audio-enabled',
-    'portfolio-sound-enabled',
-    'audio-enabled',
-    'sound-enabled',
-    'audioEnabled',
-    'soundEnabled',
-  ]
+  const win = window as MusicWindow
 
-  for (const key of keys) {
-    const value = window.localStorage.getItem(key)
-
-    if (value === 'true') {
-      return true
-    }
-
-    if (value === 'false') {
-      return false
-    }
+  if (typeof win.__portfolioMusicEnabled === 'boolean') {
+    return win.__portfolioMusicEnabled
   }
 
-  // Default:
-  // audio is off until the existing sound control enables it.
-  return false
+  const stored =
+    window.localStorage.getItem(MUSIC_STORAGE_KEY)
+
+  if (stored === 'true') {
+    return true
+  }
+
+  if (stored === 'false') {
+    return false
+  }
+
+  // Default ON.
+  return true
 }
 
-function clamp(value: number, min: number, max: number) {
+function clamp(
+  value: number,
+  min: number,
+  max: number,
+) {
   return Math.min(max, Math.max(min, value))
 }
 
 function smoothstep(value: number) {
   const x = clamp(value, 0, 1)
+
   return x * x * (3 - 2 * x)
 }
 
 function calculateSectionProximity(
   section: HTMLElement,
 ) {
-  const rect = section.getBoundingClientRect()
-  const viewportHeight = window.innerHeight
+  const rect =
+    section.getBoundingClientRect()
+
+  const viewportHeight =
+    window.innerHeight
+
+  if (rect.bottom <= 0) {
+    return 0
+  }
+
+  if (rect.top >= viewportHeight) {
+    return 0
+  }
 
   const sectionCenter =
     rect.top + rect.height / 2
 
-  const viewportCenter = viewportHeight / 2
+  const viewportCenter =
+    viewportHeight / 2
 
-  const distance = Math.abs(
-    sectionCenter - viewportCenter,
-  )
+  const distance =
+    Math.abs(
+      sectionCenter -
+        viewportCenter,
+    )
+
+  const range =
+    viewportHeight / 2 +
+    FADE_DISTANCE
 
   const normalized =
-    1 - distance / (viewportHeight / 2 + FADE_DISTANCE)
+    1 - distance / range
 
   return smoothstep(normalized)
 }
 
+export function setPortfolioMusicEnabled(
+  enabled: boolean,
+) {
+  if (
+    typeof window === 'undefined'
+  ) {
+    return
+  }
+
+  const win =
+    window as MusicWindow
+
+  win.__portfolioMusicEnabled =
+    enabled
+
+  window.localStorage.setItem(
+    MUSIC_STORAGE_KEY,
+    String(enabled),
+  )
+
+  window.dispatchEvent(
+    new Event(MUSIC_EVENT),
+  )
+}
+
+export function getPortfolioMusicEnabled() {
+  return getMusicPreference()
+}
+
 export function MemoryMusic() {
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const sectionRef = useRef<HTMLElement | null>(null)
-  const animationFrameRef = useRef<number | null>(null)
-  const targetVolumeRef = useRef(0)
-  const enabledRef = useRef(false)
-  const startedRef = useRef(false)
+  const audioRef =
+    useRef<HTMLAudioElement | null>(null)
+
+  const sectionRef =
+    useRef<HTMLElement | null>(null)
+
+  const frameRef =
+    useRef<number | null>(null)
+
+  const enabledRef =
+    useRef(true)
+
+  const startedRef =
+    useRef(false)
+
+  const targetVolumeRef =
+    useRef(0)
 
   useEffect(() => {
-    const section = document.getElementById('beyond-code')
+    const section =
+      document.getElementById(
+        'beyond-code',
+      )
 
     if (!section) {
+      console.warn(
+        '[MemoryMusic] #beyond-code section not found.',
+      )
+
       return
     }
 
     sectionRef.current = section
 
-    const audio = new Audio(MUSIC_SRC)
+    const audio =
+      new Audio(MUSIC_SRC)
 
     audio.loop = true
     audio.preload = 'auto'
@@ -96,38 +163,48 @@ export function MemoryMusic() {
 
     audioRef.current = audio
 
-    const syncEnabledState = () => {
-      enabledRef.current = readAudioPreference()
+    enabledRef.current =
+      getMusicPreference()
 
-      if (!enabledRef.current) {
-        targetVolumeRef.current = 0
+    const stopPlayback = () => {
+      targetVolumeRef.current = 0
 
-        if (audioRef.current) {
-          audioRef.current.pause()
-        }
+      audio.pause()
 
-        startedRef.current = false
-      }
+      audio.currentTime = 0
+
+      startedRef.current = false
     }
 
-    const startPlayback = async () => {
-      if (!enabledRef.current) {
-        return
-      }
+    const startPlayback =
+      async () => {
+        if (
+          !enabledRef.current
+        ) {
+          return
+        }
 
-      if (!startedRef.current) {
+        if (startedRef.current) {
+          return
+        }
+
         try {
           await audio.play()
-          startedRef.current = true
+
+          startedRef.current =
+            true
         } catch {
-          // Browser autoplay policy can reject playback.
-          // Playback will retry after the next user interaction.
+          // Browser blocked playback.
+          // The next user interaction will retry.
+          startedRef.current =
+            false
         }
       }
-    }
 
     const updateVolume = () => {
-      if (!sectionRef.current || !audioRef.current) {
+      if (
+        !sectionRef.current
+      ) {
         return
       }
 
@@ -136,10 +213,13 @@ export function MemoryMusic() {
           sectionRef.current,
         )
 
-      targetVolumeRef.current =
+      const targetVolume =
         enabledRef.current
           ? proximity * MAX_VOLUME
           : 0
+
+      targetVolumeRef.current =
+        targetVolume
 
       if (
         enabledRef.current &&
@@ -148,119 +228,176 @@ export function MemoryMusic() {
         void startPlayback()
       }
 
-      animationFrameRef.current =
-        requestAnimationFrame(updateVolume)
-
-      const currentVolume = audioRef.current.volume
-      const targetVolume = targetVolumeRef.current
+      const currentVolume =
+        audio.volume
 
       const nextVolume =
         currentVolume +
-        (targetVolume - currentVolume) * 0.08
+        (
+          targetVolume -
+          currentVolume
+        ) *
+          0.08
 
-      audioRef.current.volume =
-        clamp(nextVolume, 0, MAX_VOLUME)
+      audio.volume =
+        clamp(
+          nextVolume,
+          0,
+          MAX_VOLUME,
+        )
 
       if (
         !enabledRef.current &&
-        audioRef.current.volume < 0.005
+        audio.volume < 0.005
       ) {
-        audioRef.current.volume = 0
-        audioRef.current.pause()
-        startedRef.current = false
+        stopPlayback()
       }
+
+      frameRef.current =
+        requestAnimationFrame(
+          updateVolume,
+        )
     }
 
-    const handleInteraction = () => {
-      if (enabledRef.current) {
-        void startPlayback()
+    const handleUserInteraction =
+      () => {
+        if (
+          !enabledRef.current
+        ) {
+          return
+        }
+
+        const proximity =
+          sectionRef.current
+            ? calculateSectionProximity(
+                sectionRef.current,
+              )
+            : 0
+
+        if (proximity > 0.01) {
+          void startPlayback()
+        }
       }
-    }
 
-    const handleStorage = () => {
-      syncEnabledState()
+    const syncPreference =
+      () => {
+        enabledRef.current =
+          getMusicPreference()
 
-      if (enabledRef.current) {
-        handleInteraction()
+        if (
+          !enabledRef.current
+        ) {
+          stopPlayback()
+          return
+        }
+
+        handleUserInteraction()
       }
-    }
 
-    const handleAudioPreference = () => {
-      syncEnabledState()
+    const handleVisibility =
+      () => {
+        if (
+          document.hidden
+        ) {
+          audio.pause()
+          return
+        }
 
-      if (enabledRef.current) {
-        handleInteraction()
+        if (
+          enabledRef.current
+        ) {
+          handleUserInteraction()
+        }
       }
-    }
-
-    syncEnabledState()
-
-    window.addEventListener(
-      'scroll',
-      handleInteraction,
-      { passive: true },
-    )
 
     window.addEventListener(
       'pointerdown',
-      handleInteraction,
-      { passive: true },
+      handleUserInteraction,
+      {
+        passive: true,
+      },
     )
 
     window.addEventListener(
       'keydown',
-      handleInteraction,
+      handleUserInteraction,
+    )
+
+    window.addEventListener(
+      'touchstart',
+      handleUserInteraction,
+      {
+        passive: true,
+      },
+    )
+
+    window.addEventListener(
+      'portfolio-music-change',
+      syncPreference,
     )
 
     window.addEventListener(
       'storage',
-      handleStorage,
+      syncPreference,
     )
 
-    window.addEventListener(
-      'portfolio-audio-change',
-      handleAudioPreference,
+    document.addEventListener(
+      'visibilitychange',
+      handleVisibility,
     )
 
-    animationFrameRef.current =
-      requestAnimationFrame(updateVolume)
+    frameRef.current =
+      requestAnimationFrame(
+        updateVolume,
+      )
 
     return () => {
       if (
-        animationFrameRef.current !== null
+        frameRef.current !== null
       ) {
         cancelAnimationFrame(
-          animationFrameRef.current,
+          frameRef.current,
         )
       }
 
       window.removeEventListener(
-        'scroll',
-        handleInteraction,
-      )
-
-      window.removeEventListener(
         'pointerdown',
-        handleInteraction,
+        handleUserInteraction,
       )
 
       window.removeEventListener(
         'keydown',
-        handleInteraction,
+        handleUserInteraction,
+      )
+
+      window.removeEventListener(
+        'touchstart',
+        handleUserInteraction,
+      )
+
+      window.removeEventListener(
+        'portfolio-music-change',
+        syncPreference,
       )
 
       window.removeEventListener(
         'storage',
-        handleStorage,
+        syncPreference,
       )
 
-      window.removeEventListener(
-        'portfolio-audio-change',
-        handleAudioPreference,
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibility,
       )
 
       audio.pause()
-      audio.src = ''
+
+      audio.removeAttribute(
+        'src',
+      )
+
+      audio.load()
+
       audioRef.current = null
     }
   }, [])
