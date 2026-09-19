@@ -117,11 +117,13 @@
 }
 
 .cardFace[data-side="back"] {
-  background: var(--warm-white);
-  color: var(--ink);
-  border: 3px solid rgba(23, 23, 23, 0.1);
+  background: var(--card-color, var(--ink));
+  color: var(--warm-white);
+  border: 3px solid var(--card-color, var(--ink));
   transform: rotateY(180deg);
-  box-shadow: var(--shadow-lg);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 253, 246, 0.1) inset;
 }
 
 .cardFront {
@@ -255,14 +257,14 @@
   font-family: var(--font-display);
   font-size: 1.375rem;
   font-weight: 700;
-  color: var(--card-color, var(--ink));
+  color: var(--warm-white);
   line-height: 1.2;
 }
 
 .backDescription {
   font-family: var(--font-body);
   font-size: 0.9375rem;
-  color: var(--ink-muted);
+  color: rgba(255, 253, 246, 0.8);
   text-align: left;
   line-height: 1.6;
   margin-bottom: var(--space-md);
@@ -284,9 +286,9 @@
   gap: var(--space-md);
   font-family: var(--font-body);
   font-size: 0.875rem;
-  color: var(--ink);
+  color: var(--warm-white);
   padding: var(--space-sm) var(--space-md);
-  background: rgba(23, 23, 23, 0.04);
+  background: rgba(255, 253, 246, 0.1);
   border-radius: var(--radius-md);
   text-align: left;
   transition: all var(--transition-fast);
@@ -294,9 +296,9 @@
 }
 
 .backTechItem:hover {
-  background: rgba(23, 23, 23, 0.08);
+  background: rgba(255, 253, 246, 0.15);
   transform: translateX(6px);
-  border-color: var(--card-color, var(--ink));
+  border-color: var(--mustard);
 }
 
 .techDot {

@@ -14,7 +14,8 @@ export function EducationTrain() {
   const sectionRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
-  
+  const stationNodeRefs = useRef<(HTMLDivElement | null)[]>([])
+  const engineRef = useRef<HTMLDivElement>(null)
 
   const measureStationPositions = useCallback(() => {
     if (!trackRef.current) return
@@ -120,6 +121,9 @@ export function EducationTrain() {
 
   const translateX = getTrainPosition()
 
+  // Side alternation: SSLC(top), PUC(bottom), ECE(top), CSE(bottom)
+  const getCardSide = (index: number) => index % 2 === 0 ? 'top' : 'bottom'
+
   return (
     <section id="education" ref={sectionRef} className={styles.section} aria-labelledby="education-title">
       <div className={styles.bgDecoration} aria-hidden="true">
@@ -149,21 +153,21 @@ export function EducationTrain() {
             >
               <div className={styles.rail} aria-hidden="true">
                 <div className={styles.railLine}></div>
+                <div className={styles.progressTrack} aria-hidden="true">
+                  <motion.div
+                    className={styles.progressFill}
+                    style={{ width: `${progress * 100}%` }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress * 100}%` }}
+                    transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                  />
+                </div>
+                <div className={styles.railLine}></div>
                 <div className={styles.railTies}>
                   {education.map((_, i) => (
                     <div key={i} className={styles.railTie}></div>
                   ))}
                 </div>
-              </div>
-
-              <div className={styles.progressTrack} aria-hidden="true">
-                <motion.div
-                  className={styles.progressFill}
-                  style={{ width: `${progress * 100}%` }}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress * 100}%` }}
-                  transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-                />
               </div>
 
               <div className={styles.stations} role="list" aria-label="Education stations">
@@ -174,11 +178,13 @@ export function EducationTrain() {
                     index={index}
                     isActive={index === activeIndex}
                     isCurrent={station.isCurrent}
+                    ref={(el) => { stationNodeRefs.current[index] = el }}
                   />
                 ))}
               </div>
 
               <TrainEngine 
+                ref={engineRef}
                 activeIndex={activeIndex} 
                 totalStations={education.length} 
               />
@@ -196,7 +202,10 @@ export function EducationTrain() {
             <StationCard
               key={station.id}
               station={station}
+              index={index}
               isActive={index === activeIndex}
+              isPast={index < activeIndex}
+              side={getCardSide(index)}
             />
           ))}
         </div>
@@ -282,17 +291,27 @@ const TrainEngine = forwardRef<HTMLDivElement, TrainEngineProps>(
 
 interface StationCardProps {
   station: EducationStation
+  index: number
   isActive: boolean
+  isPast: boolean
+  side: 'top' | 'bottom'
 }
 
-function StationCard({ station, isActive }: StationCardProps) {
+function StationCard({ station, index, isActive, isPast, side }: StationCardProps) {
   return (
-    <div style={{ '--card-color': station.color } as React.CSSProperties} className={styles.cardWrapper}>
+    <div 
+      style={{ '--card-color': station.color } as React.CSSProperties} 
+      className={`${styles.cardWrapper} ${styles[side]}`}
+    >
       <motion.div
-        className={`${styles.stationCard} ${isActive ? styles.cardActive : ''}`}
+        className={`${styles.stationCard} ${isActive ? styles.cardActive : ''} ${isPast ? styles.cardPast : ''}`}
         role="listitem"
         initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: isActive ? 1 : 0.4, y: 0, scale: isActive ? 1 : 0.98 }}
+        animate={{ 
+          opacity: index <= 0 ? 1 : 0.3, 
+          y: 0, 
+          scale: 1 
+        }}
         transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <div className={styles.cardTop}>

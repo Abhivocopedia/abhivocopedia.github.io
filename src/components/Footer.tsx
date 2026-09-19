@@ -1,5 +1,5 @@
 import { profile } from '../data/profile'
-import { Star, Label, DotPattern, DecorativeCorner, Crosshair } from './DecorativeMarks'
+import { Label } from './DecorativeMarks'
 import styles from './Footer.module.css'
 
 export function Footer() {
@@ -7,34 +7,18 @@ export function Footer() {
 
   return (
     <footer className={styles.footer} role="contentinfo">
-      <div className={styles.bgDecoration} aria-hidden="true">
-        <DotPattern color="mustard" />
-        <DecorativeCorner position="tl" color="mustard" style={{ top: '10%', left: '5%' }} />
-        <DecorativeCorner position="tr" color="warm-white" style={{ top: '10%', right: '5%' }} />
-        <Crosshair color="orange" style={{ top: '20%', left: '8%' }} />
-        <Crosshair color="teal" style={{ bottom: '20%', right: '8%' }} />
-      </div>
-
       <div className={styles.container}>
         <div className={styles.main}>
           <div className={styles.brand}>
             <span className={styles.logo}>ABHIVOCOPEDIA</span>
             <p className={styles.tagline}>{profile.tagline}</p>
-            <div className={styles.brandAccent} aria-hidden="true">
-              <Star size="lg" color="mustard" />
-              <Star size="md" color="orange" />
-              <Star size="sm" color="teal" />
-            </div>
           </div>
 
           <div className={styles.vexr}>
             <Label variant="meta" className={styles.vexrLabel}>VEX-R</Label>
             <ul className={styles.vexrLines} aria-label="Vex-R philosophy">
               {profile.vexr.lines.map((line, index) => (
-                <li key={index} className={styles.vexrLine}>
-                  <Star size="sm" color="mustard" className={styles.vexrStar} />
-                  {line}
-                </li>
+                <li key={index} className={styles.vexrLine}>{line}</li>
               ))}
             </ul>
           </div>
