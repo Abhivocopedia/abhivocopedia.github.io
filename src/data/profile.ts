@@ -39,6 +39,8 @@ export const profile = {
     facebook: 'https://www.facebook.com/share/14nHq25G65X/',
     snapchat: 'https://www.snapchat.com/add/abhinandan03110',
     callofduty: 'https://www.callofduty.com/',
+    whatsapp: 'https://wa.me/916363941035',
+    googleChat: 'https://chat.google.com/',
     genesis: 'https://genesis-lab-nu.vercel.app/',
     email: 'abhivocopedia@gmail.com'
   },
