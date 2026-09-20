@@ -228,21 +228,142 @@ export function ProfileMusicCard() {
 
         <div className={`${styles.face} ${styles.back}`}>
 
-          {embedUrl ? (
-            <iframe
-              src={embedUrl}
-              title={`${featuredSong.title} by ${featuredSong.artist}`}
-              className={styles.spotifyEmbed}
-              loading="eager"
-              frameBorder="0"
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              allowFullScreen
-            />
-          ) : (
-            <div className={styles.playerFallback}>
-              Spotify track unavailable.
+          <div className={styles.backHeader}>
+
+            <div className={styles.backArtwork}>
+              {thumbnail ? (
+                <img
+                  src={thumbnail}
+                  alt=""
+                />
+              ) : (
+                <div className={styles.backArtworkFallback}>
+                  ♪
+                </div>
+              )}
             </div>
-          )}
+
+            <div className={styles.backMeta}>
+
+              <span className={styles.backEyebrow}>
+                NOW PLAYING
+              </span>
+
+              <h2>
+                {featuredSong.title}
+              </h2>
+
+              <p>
+                {featuredSong.artist}
+              </p>
+
+              <div className={styles.backActions}>
+                <a
+                  href={featuredSong.spotifyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.saveSpotify}
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <span className={styles.spotifyPlus}>+</span>
+                  SAVE ON SPOTIFY
+                </a>
+
+                <span className={styles.spotifyMark}>
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      fill="currentColor"
+                    />
+
+                    <path
+                      d="M7 10.1c3.45-1 7.32-.7 10.2.65"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
+
+                    <path
+                      d="M7.6 13c2.8-.7 5.8-.45 8.25.6"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+
+                    <path
+                      d="M8.4 15.7c2.1-.4 4.2-.2 5.95.48"
+                      fill="none"
+                      stroke="#111"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+              </div>
+
+            </div>
+          </div>
+
+
+          <div className={styles.backPlayback}>
+
+            <div className={styles.fakeProgress}>
+              <span />
+            </div>
+
+            <div className={styles.fakePlaybackRow}>
+
+              <span className={styles.fakeTime}>
+                00:00
+              </span>
+
+              <span className={styles.fakeDots}>
+                •••
+              </span>
+
+              <button
+                type="button"
+                className={styles.backPlay}
+                onClick={(event) => {
+                  event.stopPropagation()
+                }}
+                aria-label="Play track in Spotify"
+              >
+                ▶
+              </button>
+
+            </div>
+
+          </div>
+
+
+          <div className={styles.realSpotifyEmbed}>
+
+            {embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title={`${featuredSong.title} by ${featuredSong.artist}`}
+                className={styles.spotifyEmbed}
+                loading="eager"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div className={styles.playerFallback}>
+                Spotify track unavailable.
+              </div>
+            )}
+
+          </div>
+
 
           <button
             type="button"
@@ -258,7 +379,7 @@ export function ProfileMusicCard() {
 
         </div>
 
+        </div>
       </div>
-    </div>
   )
 }
