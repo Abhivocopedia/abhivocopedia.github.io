@@ -41,6 +41,14 @@ const footerToolLogos = [
   ['DSU DEVHACK 3', 'https://dsudevhack3.tech/', 'https://dsudevhack3.tech/favicon.ico'],
 
   ['Call of Duty', 'https://www.callofduty.com/', 'https://www.callofduty.com/favicon.ico'],
+  ['WhatsApp', 'https://www.whatsapp.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/whatsapp.svg'],
+  ['Meta', 'https://about.meta.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/meta.svg'],
+  ['Gmail', 'https://mail.google.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/gmail.svg'],
+  ['Google Gemini', 'https://gemini.google.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/googlegemini.svg'],
+  ['Boid.js', 'https://github.com/Abhivocopedia/abhivocopedia.github.io', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/javascript.svg'],
+  ['HTML', 'https://developer.mozilla.org/docs/Web/HTML', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/html5.svg'],
+  ['CSS', 'https://developer.mozilla.org/docs/Web/CSS', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/css3.svg'],
+  ['Google Chat', 'https://chat.google.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/googlechat.svg'],
 ] as const
 
 export function Footer() {
