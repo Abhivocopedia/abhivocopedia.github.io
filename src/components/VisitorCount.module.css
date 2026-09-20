@@ -1,0 +1,83 @@
+.visitorCount {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.82rem;
+  border: 2px solid rgba(23, 23, 23, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 253, 246, 0.68);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.visitorCount:hover {
+  background: var(--warm-white);
+  border-color: rgba(23, 23, 23, 0.32);
+  transform: translateY(-1px);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: var(--mustard);
+  animation: visitorPulse 2s ease-in-out infinite;
+}
+
+.value {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  color: var(--ink-muted);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+@keyframes visitorPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(0.82);
+  }
+}
+
+@media (max-width: 1024px) {
+  .visitorCount {
+    min-height: 36px;
+    padding: 0 0.65rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .visitorCount {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    animation: none;
+  }
+
+  .visitorCount {
+    transition: none;
+  }
+}
