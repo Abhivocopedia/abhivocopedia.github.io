@@ -20,6 +20,7 @@ const footerToolLogos = [
   ['CSS3', 'https://developer.mozilla.org/docs/Web/CSS', 'https://cdn.simpleicons.org/css3/1572B6'],
   ['JavaScript', 'https://developer.mozilla.org/docs/Web/JavaScript', 'https://cdn.simpleicons.org/javascript/F7DF1E'],
   ['Node.js', 'https://nodejs.org/', 'https://cdn.simpleicons.org/nodedotjs/339933'],
+  ['Call of Duty', 'https://www.callofduty.com/', 'https://www.callofduty.com/favicon.ico'],
 ] as const
 
 export function Footer() {

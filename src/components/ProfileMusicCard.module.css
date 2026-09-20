@@ -734,9 +734,16 @@
    FINAL PROFILE SPOTIFY DESIGN
 ========================================================= */
 
+/* Profile starts black-and-white.
+   Upper-half hover triggers the flip in TSX.
+   Lower-half hover stays visually black-and-white. */
 .front {
-  filter: none;
+  filter: grayscale(100%);
   transition: none;
+}
+
+.front:hover {
+  filter: grayscale(100%);
 }
 
 /* Small Spotify-style front widget */
