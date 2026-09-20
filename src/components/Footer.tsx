@@ -27,7 +27,7 @@ const footerToolLogos = [
   ['NVIDIA', 'https://www.nvidia.com/', 'https://cdn.simpleicons.org/nvidia/76B900'],
 
   ['Lenovo Yoga', 'https://www.lenovo.com/', 'https://cdn.simpleicons.org/lenovo/E2231A'],
-  ['Microsoft', 'https://www.microsoft.com/', '/icons/microsoft-wikimedia.svg'],
+  ['Microsoft', 'https://www.microsoft.com/', '/icons/microsoft.svg'],
   ['Google', 'https://www.google.com/', 'https://cdn.simpleicons.org/google/4285F4'],
   ['Samsung', 'https://www.samsung.com/', 'https://cdn.simpleicons.org/samsung/1428A0'],
   ['HP', 'https://www.hp.com/', 'https://cdn.simpleicons.org/hp/0096D6'],
@@ -55,8 +55,8 @@ const footerToolLogos = [
   ['Windows', 'https://www.microsoft.com/windows/', '/icons/windows.svg'],
   ['WSL', 'https://learn.microsoft.com/windows/wsl/', '/icons/wsl.svg'],  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/cocacola.svg'],
   ['Red Bull', 'https://www.redbull.com/', '/icons/redbull.svg'],
-
-  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/cocacola.svg'],] as const
+  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/coca-cola.svg'],
+  ['Diet Coke', 'https://www.coca-cola.com/', '/icons/diet-coke.svg'],] as const
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
