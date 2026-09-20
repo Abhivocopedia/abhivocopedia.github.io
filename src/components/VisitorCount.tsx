@@ -8,6 +8,7 @@ import {
 } from 'counterapi'
 
 import styles from './VisitorCount.module.css'
+import { COUNTER_API_TOKEN } from '../lib/counterConfig'
 
 const WORKSPACE =
   'abhivocopedia-portfolio'
@@ -22,9 +23,7 @@ const counter =
   new Counter({
     workspace: WORKSPACE,
     accessToken:
-      import.meta.env
-        .VITE_COUNTER_API_TOKEN ||
-      undefined,
+      COUNTER_API_TOKEN,
     timeout: 5000,
   })
 
