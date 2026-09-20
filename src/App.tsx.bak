@@ -92,32 +92,7 @@ function App() {
 
       frame = window.requestAnimationFrame(() => {
         frame = null
-        
-          /*
-           * Keep the Memory Wall cinematic.
-           * Disable the global scroll SFX while
-           * #beyond-code is visible, so it does
-           * not mix with the dedicated Memory Wall
-           * music.
-           */
-          const beyondCode =
-            document.getElementById('beyond-code')
-
-          if (beyondCode) {
-            const rect =
-              beyondCode.getBoundingClientRect()
-
-            const isVisible =
-              rect.bottom > 0 &&
-              rect.top < window.innerHeight
-
-            if (isVisible) {
-              return
-            }
-          }
-
-          // soundFX.scroll() disabled for Memory Wall audio
-
+        soundFX.scroll()
       })
     }
 

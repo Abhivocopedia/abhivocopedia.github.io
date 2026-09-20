@@ -1,0 +1,544 @@
+import { useEffect, useRef } from 'react'
+
+const MUSIC_SRC = '/music/music.mp3'
+
+const MAX_VOLUME = 0.5
+const FADE_DURATION = 450
+
+const MUSIC_STORAGE_KEY = 'portfolio-music-enabled'
+const MUSIC_EVENT = 'portfolio-music-change'
+
+type MusicWindow = Window & {
+  __portfolioMusicEnabled?: boolean
+}
+
+function getMusicPreference() {
+  if (typeof window === 'undefined') {
+    return true
+  }
+
+  const win = window as MusicWindow
+
+  if (
+    typeof win.__portfolioMusicEnabled ===
+    'boolean'
+  ) {
+    return win.__portfolioMusicEnabled
+  }
+
+  const stored =
+    window.localStorage.getItem(
+      MUSIC_STORAGE_KEY,
+    )
+
+  if (stored === 'true') {
+    return true
+  }
+
+  if (stored === 'false') {
+    return false
+  }
+
+  return true
+}
+
+export function setPortfolioMusicEnabled(
+  enabled: boolean,
+) {
+  if (
+    typeof window === 'undefined'
+  ) {
+    return
+  }
+
+  const win =
+    window as MusicWindow
+
+  win.__portfolioMusicEnabled =
+    enabled
+
+  window.localStorage.setItem(
+    MUSIC_STORAGE_KEY,
+    String(enabled),
+  )
+
+  window.dispatchEvent(
+    new Event(MUSIC_EVENT),
+  )
+}
+
+export function getPortfolioMusicEnabled() {
+  return getMusicPreference()
+}
+
+export function MemoryMusic() {
+  const audioRef =
+    useRef<HTMLAudioElement | null>(
+      null,
+    )
+
+  const sectionRef =
+    useRef<HTMLElement | null>(
+      null,
+    )
+
+  const observerRef =
+    useRef<IntersectionObserver | null>(
+      null,
+    )
+
+  const fadeFrameRef =
+    useRef<number | null>(null)
+
+  const playPromiseRef =
+    useRef<Promise<void> | null>(null)
+
+  const enabledRef =
+    useRef(true)
+
+  const visibleRef =
+    useRef(false)
+
+  const mountedRef =
+    useRef(false)
+
+  useEffect(() => {
+    mountedRef.current = true
+
+    const section =
+      document.getElementById(
+        'beyond-code',
+      )
+
+    if (!section) {
+      return
+    }
+
+    sectionRef.current = section
+
+    const audio =
+      new Audio(MUSIC_SRC)
+
+    audio.loop = true
+    audio.preload = 'auto'
+    audio.volume = 0
+
+    audioRef.current = audio
+
+    enabledRef.current =
+      getMusicPreference()
+
+    const cancelFade = () => {
+      if (
+        fadeFrameRef.current !== null
+      ) {
+        cancelAnimationFrame(
+          fadeFrameRef.current,
+        )
+
+        fadeFrameRef.current = null
+      }
+    }
+
+    const stopPlayback = () => {
+      cancelFade()
+
+      audio.volume = 0
+      audio.pause()
+
+      try {
+        audio.currentTime = 0
+      } catch {
+        // Ignore media reset failures.
+      }
+    }
+
+    const fadeTo = (
+      target: number,
+      pauseAfterFade = false,
+    ) => {
+      cancelFade()
+
+      const startVolume =
+        audio.volume
+
+      const difference =
+        target - startVolume
+
+      if (
+        Math.abs(difference) <
+        0.001
+      ) {
+        audio.volume = target
+
+        if (
+          pauseAfterFade &&
+          target === 0
+        ) {
+          audio.pause()
+
+          try {
+            audio.currentTime = 0
+          } catch {
+            // Ignore reset failures.
+          }
+        }
+
+        return
+      }
+
+      const startTime =
+        performance.now()
+
+      const animate = (
+        now: number,
+      ) => {
+        if (!mountedRef.current) {
+          return
+        }
+
+        const progress =
+          Math.min(
+            1,
+            (
+              now -
+              startTime
+            ) /
+              FADE_DURATION,
+          )
+
+        /*
+         * Smooth ease-out curve.
+         * Crucially, this only runs while
+         * entering/leaving the section.
+         * It is NOT tied to scroll position.
+         */
+        const eased =
+          1 -
+          Math.pow(
+            1 - progress,
+            3,
+          )
+
+        audio.volume =
+          startVolume +
+          difference * eased
+
+        if (
+          progress < 1
+        ) {
+          fadeFrameRef.current =
+            requestAnimationFrame(
+              animate,
+            )
+
+          return
+        }
+
+        fadeFrameRef.current =
+          null
+
+        audio.volume = target
+
+        if (
+          pauseAfterFade &&
+          target === 0
+        ) {
+          audio.pause()
+
+          try {
+            audio.currentTime = 0
+          } catch {
+            // Ignore reset failures.
+          }
+        }
+      }
+
+      fadeFrameRef.current =
+        requestAnimationFrame(
+          animate,
+        )
+    }
+
+    const startPlayback = () => {
+      if (
+        !enabledRef.current ||
+        !visibleRef.current ||
+        document.hidden ||
+        !audio.paused
+      ) {
+        return
+      }
+
+      if (
+        playPromiseRef.current
+      ) {
+        return
+      }
+
+      try {
+        const promise =
+          audio.play()
+
+        playPromiseRef.current =
+          promise
+
+        void promise
+          .then(() => {
+            if (
+              !mountedRef.current
+            ) {
+              return
+            }
+
+            /*
+             * If the section disappeared while
+             * playback was being unlocked,
+             * immediately stop rather than
+             * allowing the audio to continue.
+             */
+            if (
+              !visibleRef.current ||
+              !enabledRef.current ||
+              document.hidden
+            ) {
+              stopPlayback()
+            }
+          })
+          .catch(() => {
+            /*
+             * Browser autoplay restrictions are
+             * handled by the next user interaction.
+             */
+          })
+          .finally(() => {
+            if (
+              playPromiseRef.current ===
+              promise
+            ) {
+              playPromiseRef.current =
+                null
+            }
+          })
+      } catch {
+        playPromiseRef.current =
+          null
+      }
+    }
+
+    const enterMemoryWall = () => {
+      if (
+        !enabledRef.current ||
+        document.hidden
+      ) {
+        return
+      }
+
+      visibleRef.current = true
+
+      startPlayback()
+
+      /*
+       * Stable music volume.
+       * No volume calculation based on
+       * scroll position.
+       */
+      fadeTo(
+        MAX_VOLUME,
+      )
+    }
+
+    const leaveMemoryWall = () => {
+      visibleRef.current = false
+
+      fadeTo(
+        0,
+        true,
+      )
+    }
+
+    const handleUserInteraction = () => {
+      if (
+        !enabledRef.current ||
+        !visibleRef.current ||
+        document.hidden
+      ) {
+        return
+      }
+
+      startPlayback()
+    }
+
+    const syncPreference = () => {
+      enabledRef.current =
+        getMusicPreference()
+
+      if (
+        !enabledRef.current
+      ) {
+        visibleRef.current = false
+        stopPlayback()
+        return
+      }
+
+      if (
+        visibleRef.current
+      ) {
+        startPlayback()
+
+        fadeTo(
+          MAX_VOLUME,
+        )
+      }
+    }
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        audio.pause()
+        audio.volume = 0
+        return
+      }
+
+      if (
+        enabledRef.current &&
+        visibleRef.current
+      ) {
+        startPlayback()
+
+        fadeTo(
+          MAX_VOLUME,
+        )
+      }
+    }
+
+    /*
+     * Observe whether the Memory Wall is
+     * actually visible instead of inspecting
+     * its position every animation frame.
+     */
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          const entry =
+            entries[0]
+
+          if (!entry) {
+            return
+          }
+
+          if (
+            entry.isIntersecting &&
+            entry.intersectionRatio > 0.01
+          ) {
+            enterMemoryWall()
+          } else {
+            leaveMemoryWall()
+          }
+        },
+        {
+          threshold: [
+            0,
+            0.01,
+          ],
+        },
+      )
+
+    observer.observe(section)
+
+    observerRef.current =
+      observer
+
+    window.addEventListener(
+      'pointerdown',
+      handleUserInteraction,
+      {
+        passive: true,
+      },
+    )
+
+    window.addEventListener(
+      'keydown',
+      handleUserInteraction,
+    )
+
+    window.addEventListener(
+      'touchstart',
+      handleUserInteraction,
+      {
+        passive: true,
+      },
+    )
+
+    window.addEventListener(
+      MUSIC_EVENT,
+      syncPreference,
+    )
+
+    window.addEventListener(
+      'storage',
+      syncPreference,
+    )
+
+    document.addEventListener(
+      'visibilitychange',
+      handleVisibility,
+    )
+
+    return () => {
+      mountedRef.current = false
+
+      observer.disconnect()
+
+      observerRef.current =
+        null
+
+      cancelFade()
+
+      window.removeEventListener(
+        'pointerdown',
+        handleUserInteraction,
+      )
+
+      window.removeEventListener(
+        'keydown',
+        handleUserInteraction,
+      )
+
+      window.removeEventListener(
+        'touchstart',
+        handleUserInteraction,
+      )
+
+      window.removeEventListener(
+        MUSIC_EVENT,
+        syncPreference,
+      )
+
+      window.removeEventListener(
+        'storage',
+        syncPreference,
+      )
+
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibility,
+      )
+
+      audio.pause()
+      audio.volume = 0
+
+      audio.removeAttribute(
+        'src',
+      )
+
+      audio.load()
+
+      audioRef.current = null
+
+      playPromiseRef.current =
+        null
+    }
+  }, [])
+
+  return null
+}

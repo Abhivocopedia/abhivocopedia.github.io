@@ -4,58 +4,63 @@ import {
 } from 'react'
 
 import {
-  getPortfolioMusicEnabled,
-  setPortfolioMusicEnabled,
-} from './MemoryMusic'
+  soundFX,
+} from '../lib/SoundFX'
 
 interface SoundToggleProps {
   compact?: boolean
 }
 
-const MUSIC_EVENT = 'portfolio-music-change'
-
 export function SoundToggle({
   compact = false,
 }: SoundToggleProps) {
-  const [enabled, setEnabled] = useState(
-    getPortfolioMusicEnabled(),
+  const [
+    enabled,
+    setEnabled,
+  ] = useState(
+    soundFX.isEnabled(),
   )
 
   useEffect(() => {
-    const syncMusicState = () => {
-      setEnabled(
-        getPortfolioMusicEnabled(),
+    const unlock = () => {
+      if (soundFX.isEnabled()) {
+        soundFX.click()
+      }
+
+      window.removeEventListener(
+        'pointerdown',
+        unlock,
       )
     }
 
     window.addEventListener(
-      MUSIC_EVENT,
-      syncMusicState,
-    )
-
-    window.addEventListener(
-      'storage',
-      syncMusicState,
+      'pointerdown',
+      unlock,
+      {
+        once: true,
+      },
     )
 
     return () => {
       window.removeEventListener(
-        MUSIC_EVENT,
-        syncMusicState,
-      )
-
-      window.removeEventListener(
-        'storage',
-        syncMusicState,
+        'pointerdown',
+        unlock,
       )
     }
   }, [])
 
   const toggle = () => {
-    const next = !getPortfolioMusicEnabled()
+    const next =
+      !soundFX.isEnabled()
 
-    setPortfolioMusicEnabled(next)
+    soundFX.setEnabled(next)
+
     setEnabled(next)
+
+    if (next) {
+      soundFX.unlock()
+      soundFX.click()
+    }
   }
 
   return (
@@ -64,14 +69,14 @@ export function SoundToggle({
       onClick={toggle}
       aria-label={
         enabled
-          ? 'Mute Memory Wall music'
-          : 'Enable Memory Wall music'
+          ? 'Mute interface sounds'
+          : 'Enable interface sounds'
       }
       aria-pressed={enabled}
       title={
         enabled
-          ? 'Mute Memory Wall music'
-          : 'Enable Memory Wall music'
+          ? 'Mute sounds'
+          : 'Enable sounds'
       }
       style={{
         display: 'grid',

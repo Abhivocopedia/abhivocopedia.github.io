@@ -26,6 +26,7 @@ export function EducationTrain() {
   const rafRef = useRef<number | null>(null)
   const moveStopTimerRef = useRef<number | null>(null)
   const previousTrainXRef = useRef(0)
+  const previousProgressRef = useRef(0)
   const previousStationRef = useRef(0)
 
   const [progress, setProgress] = useState(0)
@@ -79,31 +80,18 @@ export function EducationTrain() {
 
   const wheelRotation = trainX * WHEEL_DEGREES_PER_PIXEL
 
-  /*
-   * Train audio follows the actual movement state.
-   *
-   * `progress` changes continuously while scrolling,
-   * so it must not control startTrain()/stopTrain()
-   * directly. The dedicated isMoving state already
-   * contains the proper movement debounce.
-   */
   useEffect(() => {
-    if (isMoving) {
+    const progressDelta = Math.abs(
+      progress -
+        previousProgressRef.current,
+    )
+
+    if (progressDelta > 0.00015) {
       soundFX.startTrain()
     } else {
       soundFX.stopTrain()
     }
 
-    return () => {
-      soundFX.stopTrain()
-    }
-  }, [isMoving])
-
-  /*
-   * Station sounds are independent from the
-   * continuous train engine sound.
-   */
-  useEffect(() => {
     const nextStation = Math.min(
       totalStations - 1,
       Math.round(
@@ -116,9 +104,15 @@ export function EducationTrain() {
       previousStationRef.current
     ) {
       soundFX.station()
-
       previousStationRef.current =
         nextStation
+    }
+
+    previousProgressRef.current =
+      progress
+
+    return () => {
+      soundFX.stopTrain()
     }
   }, [
     maxStationIndex,

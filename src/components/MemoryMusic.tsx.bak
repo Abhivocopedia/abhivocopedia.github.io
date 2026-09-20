@@ -2,15 +2,10 @@ import { useEffect, useRef } from 'react'
 
 const MUSIC_SRC = '/music/music.mp3'
 
-const MAX_VOLUME = 0.5
+const MAX_VOLUME = 0.6
 const FADE_DISTANCE = 900
-const VOLUME_LERP = 0.08
-
-const MUSIC_STORAGE_KEY =
-  'portfolio-music-enabled'
-
-const MUSIC_EVENT =
-  'portfolio-music-change'
+const MUSIC_STORAGE_KEY = 'portfolio-music-enabled'
+const MUSIC_EVENT = 'portfolio-music-change'
 
 type MusicWindow = Window & {
   __portfolioMusicEnabled?: boolean
@@ -23,17 +18,12 @@ function getMusicPreference() {
 
   const win = window as MusicWindow
 
-  if (
-    typeof win.__portfolioMusicEnabled ===
-    'boolean'
-  ) {
+  if (typeof win.__portfolioMusicEnabled === 'boolean') {
     return win.__portfolioMusicEnabled
   }
 
   const stored =
-    window.localStorage.getItem(
-      MUSIC_STORAGE_KEY,
-    )
+    window.localStorage.getItem(MUSIC_STORAGE_KEY)
 
   if (stored === 'true') {
     return true
@@ -43,6 +33,7 @@ function getMusicPreference() {
     return false
   }
 
+  // Default ON.
   return true
 }
 
@@ -51,10 +42,7 @@ function clamp(
   min: number,
   max: number,
 ) {
-  return Math.min(
-    max,
-    Math.max(min, value),
-  )
+  return Math.min(max, Math.max(min, value))
 }
 
 function smoothstep(value: number) {
@@ -72,10 +60,11 @@ function calculateSectionProximity(
   const viewportHeight =
     window.innerHeight
 
-  if (
-    rect.bottom <= 0 ||
-    rect.top >= viewportHeight
-  ) {
+  if (rect.bottom <= 0) {
+    return 0
+  }
+
+  if (rect.top >= viewportHeight) {
     return 0
   }
 
@@ -132,29 +121,22 @@ export function getPortfolioMusicEnabled() {
 
 export function MemoryMusic() {
   const audioRef =
-    useRef<HTMLAudioElement | null>(
-      null,
-    )
+    useRef<HTMLAudioElement | null>(null)
 
   const sectionRef =
-    useRef<HTMLElement | null>(
-      null,
-    )
+    useRef<HTMLElement | null>(null)
 
   const frameRef =
     useRef<number | null>(null)
 
-  const targetVolumeRef =
-    useRef(0)
-
   const enabledRef =
     useRef(true)
 
-  const playPromiseRef =
-    useRef<Promise<void> | null>(null)
-
   const startedRef =
     useRef(false)
+
+  const targetVolumeRef =
+    useRef(0)
 
   useEffect(() => {
     const section =
@@ -163,6 +145,10 @@ export function MemoryMusic() {
       )
 
     if (!section) {
+      console.warn(
+        '[MemoryMusic] #beyond-code section not found.',
+      )
+
       return
     }
 
@@ -171,9 +157,6 @@ export function MemoryMusic() {
     const audio =
       new Audio(MUSIC_SRC)
 
-    /*
-     * Memory Wall music always loops.
-     */
     audio.loop = true
     audio.preload = 'auto'
     audio.volume = 0
@@ -185,73 +168,43 @@ export function MemoryMusic() {
 
     const stopPlayback = () => {
       targetVolumeRef.current = 0
+
       audio.pause()
-      audio.volume = 0
+
+      audio.currentTime = 0
+
       startedRef.current = false
     }
 
-    const startPlayback = () => {
+    const startPlayback =
+      async () => {
+        if (
+          !enabledRef.current
+        ) {
+          return
+        }
+
+        if (startedRef.current) {
+          return
+        }
+
+        try {
+          await audio.play()
+
+          startedRef.current =
+            true
+        } catch {
+          // Browser blocked playback.
+          // The next user interaction will retry.
+          startedRef.current =
+            false
+        }
+      }
+
+    const updateVolume = () => {
       if (
-        !enabledRef.current ||
-        document.hidden ||
-        startedRef.current
+        !sectionRef.current
       ) {
-        return
-      }
-
-      if (!audio.paused) {
-        startedRef.current = true
-        return
-      }
-
-      /*
-       * Prevent multiple play() calls from
-       * being queued at the same time.
-       */
-      if (playPromiseRef.current) {
-        return
-      }
-
-      try {
-        const promise =
-          audio.play()
-
-        playPromiseRef.current =
-          promise
-
-        void promise
-          .then(() => {
-            if (
-              audioRef.current !== audio
-            ) {
-              return
-            }
-
-            startedRef.current =
-              !document.hidden &&
-              !audio.paused
-          })
-          .catch(() => {
-            startedRef.current =
-              false
-          })
-          .finally(() => {
-            if (
-              playPromiseRef.current ===
-              promise
-            ) {
-              playPromiseRef.current =
-                null
-            }
-          })
-      } catch {
-        startedRef.current = false
-        playPromiseRef.current = null
-      }
-    }
-
-    const updateMusic = () => {
-      if (!sectionRef.current) {
         return
       }
 
@@ -268,25 +221,13 @@ export function MemoryMusic() {
       targetVolumeRef.current =
         targetVolume
 
-      /*
-       * Start whenever proximity becomes
-       * positive — regardless of scroll direction.
-       */
       if (
         enabledRef.current &&
-        proximity > 0.01 &&
-        !document.hidden
+        proximity > 0.01
       ) {
-        startPlayback()
+        void startPlayback()
       }
 
-      /*
-       * Smoothly approach the target volume.
-       *
-       * This happens from the actual section
-       * position, so forward AND reverse scrolling
-       * behave identically.
-       */
       const currentVolume =
         audio.volume
 
@@ -296,7 +237,7 @@ export function MemoryMusic() {
           targetVolume -
           currentVolume
         ) *
-        VOLUME_LERP
+          0.08
 
       audio.volume =
         clamp(
@@ -305,77 +246,69 @@ export function MemoryMusic() {
           MAX_VOLUME,
         )
 
-      /*
-       * Once the section is completely far away,
-       * stop playback after reaching silence.
-       *
-       * We intentionally DO NOT reset currentTime.
-       * The music therefore continues from the same
-       * position when you reverse-scroll back.
-       */
       if (
-        !enabledRef.current ||
-        (
-          targetVolume <= 0.001 &&
-          audio.volume <= 0.003
-        )
+        !enabledRef.current &&
+        audio.volume < 0.005
       ) {
-        audio.pause()
-        startedRef.current = false
-        audio.volume = 0
+        stopPlayback()
       }
 
       frameRef.current =
         requestAnimationFrame(
-          updateMusic,
+          updateVolume,
         )
     }
 
-    const handleUserInteraction = () => {
-      if (
-        !enabledRef.current ||
-        document.hidden
-      ) {
-        return
+    const handleUserInteraction =
+      () => {
+        if (
+          !enabledRef.current
+        ) {
+          return
+        }
+
+        const proximity =
+          sectionRef.current
+            ? calculateSectionProximity(
+                sectionRef.current,
+              )
+            : 0
+
+        if (proximity > 0.01) {
+          void startPlayback()
+        }
       }
 
-      const proximity =
-        sectionRef.current
-          ? calculateSectionProximity(
-              sectionRef.current,
-            )
-          : 0
+    const syncPreference =
+      () => {
+        enabledRef.current =
+          getMusicPreference()
 
-      if (proximity > 0.01) {
-        startPlayback()
-      }
-    }
+        if (
+          !enabledRef.current
+        ) {
+          stopPlayback()
+          return
+        }
 
-    const syncPreference = () => {
-      enabledRef.current =
-        getMusicPreference()
-
-      if (
-        !enabledRef.current
-      ) {
-        stopPlayback()
-        return
-      }
-
-      handleUserInteraction()
-    }
-
-    const handleVisibility = () => {
-      if (document.hidden) {
-        audio.pause()
-        startedRef.current = false
-        return
-      }
-
-      if (enabledRef.current) {
         handleUserInteraction()
       }
-    }
+
+    const handleVisibility =
+      () => {
+        if (
+          document.hidden
+        ) {
+          audio.pause()
+          return
+        }
+
+        if (
+          enabledRef.current
+        ) {
+          handleUserInteraction()
+        }
+      }
 
     window.addEventListener(
       'pointerdown',
@@ -399,7 +332,7 @@ export function MemoryMusic() {
     )
 
     window.addEventListener(
-      MUSIC_EVENT,
+      'portfolio-music-change',
       syncPreference,
     )
 
@@ -413,13 +346,9 @@ export function MemoryMusic() {
       handleVisibility,
     )
 
-    /*
-     * The animation loop is responsible only for
-     * the dedicated Memory Wall music.
-     */
     frameRef.current =
       requestAnimationFrame(
-        updateMusic,
+        updateVolume,
       )
 
     return () => {
@@ -447,7 +376,7 @@ export function MemoryMusic() {
       )
 
       window.removeEventListener(
-        MUSIC_EVENT,
+        'portfolio-music-change',
         syncPreference,
       )
 
@@ -462,7 +391,6 @@ export function MemoryMusic() {
       )
 
       audio.pause()
-      audio.volume = 0
 
       audio.removeAttribute(
         'src',
@@ -471,8 +399,6 @@ export function MemoryMusic() {
       audio.load()
 
       audioRef.current = null
-      playPromiseRef.current = null
-      startedRef.current = false
     }
   }, [])
 
