@@ -107,17 +107,18 @@ function loadVisitorCount(): Promise<number> {
     fetchVisitorCount()
 
   requestInFlight =
-    request
+    request.then(
+      (value) => {
+        requestInFlight = null
+        return value
+      },
+      (error) => {
+        requestInFlight = null
+        throw error
+      },
+    )
 
-  void request.finally(() => {
-    if (
-      requestInFlight === request
-    ) {
-      requestInFlight = null
-    }
-  })
-
-  return request
+  return requestInFlight
 }
 
 export function VisitorCount() {
