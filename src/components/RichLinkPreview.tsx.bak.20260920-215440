@@ -48,145 +48,12 @@ type PlatformInfo = {
   icon: JSX.Element
 }
 
-function buildStaticPreview(
-  url: string,
-  label?: string,
-  username?: string,
-): LinkPreviewData {
-  const platform =
-    detectPlatform(url, label)
+const API_BASE =
+  import.meta.env.VITE_LINK_PREVIEW_API ||
+  '/api/link-preview'
 
-  switch (platform) {
-    case 'github':
-      return {
-        ok: true,
-        url,
-        platform: 'github',
-        title:
-          username ||
-          'Abhivocopedia',
-        description:
-          'Open-source projects, repositories and recent work.',
-        siteName: 'GitHub',
-        favicon:
-          'https://github.com/favicon.ico',
-        image:
-          'https://github.com/Abhivocopedia.png',
-        images: [
-          'https://github.com/Abhivocopedia.png',
-        ],
-      }
-
-    case 'linkedin':
-      return {
-        ok: true,
-        url,
-        platform: 'linkedin',
-        title:
-          'Abhinandana Bhatta',
-        description:
-          'Professional profile, engineering journey and experience.',
-        siteName: 'LinkedIn',
-        favicon:
-          'https://www.linkedin.com/favicon.ico',
-        image: null,
-        images: [],
-      }
-
-    case 'instagram':
-      return {
-        ok: true,
-        url,
-        platform: 'instagram',
-        title:
-          '@abhivocopedia',
-        description:
-          'Photography, memories and life beyond code.',
-        siteName: 'Instagram',
-        favicon:
-          'https://www.instagram.com/favicon.ico',
-        image: null,
-        images: [],
-      }
-
-    case 'youtube':
-      return {
-        ok: true,
-        url,
-        platform: 'youtube',
-        title:
-          'Abhinandana Bhatta',
-        description:
-          'Videos, projects, music and technology.',
-        siteName: 'YouTube',
-        favicon:
-          'https://www.youtube.com/s/desktop/favicon.ico',
-        image: null,
-        images: [],
-      }
-
-    case 'x':
-      return {
-        ok: true,
-        url,
-        platform: 'x',
-        title:
-          '@Abhinandan43024',
-        description:
-          'Thoughts, updates and conversations.',
-        siteName: 'X',
-        favicon:
-          'https://abs.twimg.com/favicons/twitter.3.ico',
-        image: null,
-        images: [],
-      }
-
-    case 'photography':
-      return {
-        ok: true,
-        url,
-        platform: 'web',
-        title:
-          "Abhi's Unscripted Photography",
-        description:
-          'A visual collection beyond the screen.',
-        siteName:
-          "Abhi's Unscripted Photography",
-        favicon: '',
-        image: null,
-        images: [],
-      }
-
-    default: {
-      let hostname = url
-
-      try {
-        hostname =
-          new URL(url).hostname.replace(
-            /^www\./,
-            '',
-          )
-      } catch {
-        // Keep the original URL.
-      }
-
-      return {
-        ok: true,
-        url,
-        platform: 'web',
-        title:
-          label ||
-          username ||
-          hostname,
-        description:
-          `Open ${hostname}.`,
-        siteName: hostname,
-        favicon: '',
-        image: null,
-        images: [],
-      }
-    }
-  }
+function buildApiUrl(url: string) {
+  return `${API_BASE}?url=${encodeURIComponent(url)}`
 }
 
 /* =========================================================
@@ -353,22 +220,60 @@ export function RichLinkPreview({
     setError(null)
     setData(null)
 
-    const result =
-      buildStaticPreview(
-        url,
-        label,
-        username,
-      )
+    fetch(buildApiUrl(url))
+      .then(async (response) => {
+        let result: LinkPreviewData | null = null
 
-    if (!cancelled) {
-      setData(result)
-      setLoading(false)
-    }
+        try {
+          result =
+            (await response.json()) as LinkPreviewData
+        } catch {
+          throw new Error(
+            'Preview service returned invalid data.',
+          )
+        }
+
+        if (
+          !response.ok ||
+          !result ||
+          !result.ok
+        ) {
+          throw new Error(
+            result?.error ||
+              'Preview could not be generated.',
+          )
+        }
+
+        return result
+      })
+      .then((result) => {
+        if (cancelled) {
+          return
+        }
+
+        setData(result)
+      })
+      .catch((reason) => {
+        if (cancelled) {
+          return
+        }
+
+        setError(
+          reason instanceof Error
+            ? reason.message
+            : 'Preview unavailable.',
+        )
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      })
 
     return () => {
       cancelled = true
     }
-  }, [url, label, username])
+  }, [url])
 
   const detectedPlatform = useMemo(
     () =>
