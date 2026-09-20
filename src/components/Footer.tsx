@@ -46,8 +46,6 @@ const footerToolLogos = [
   ['Gmail', 'https://mail.google.com/', '/icons/gmail.svg'],
   ['Google Gemini', 'https://gemini.google.com/', '/icons/google-gemini.svg'],
   ['Boid.js', 'https://developer.mozilla.org/docs/Web/JavaScript', '/icons/javascript.svg'],
-  ['HTML', 'https://developer.mozilla.org/docs/Web/HTML', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/html5.svg'],
-  ['CSS', 'https://developer.mozilla.org/docs/Web/CSS', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/css3.svg'],
   ['Google Chat', 'https://chat.google.com/', '/icons/googlechat.svg'],
 
   ['Nvim', 'https://neovim.io/', '/icons/neovim.svg'],
