@@ -437,3 +437,154 @@
 .musicButton:hover {
   transform: translateX(-50%) scale(1.06);
 }
+
+
+/* Compact Spotify-style widget on the bottom of the profile card */
+.spotifyMiniWidget {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: min(calc(100% - 28px), 430px);
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1268d7 0%, #0b55b6 100%);
+  color: #fff;
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateX(-50%);
+  z-index: 8;
+  pointer-events: none;
+}
+
+.spotifyMiniTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.spotifyMiniArtwork {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 2px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.22), transparent 45%),
+    #d7d7d7;
+  color: #202020;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.spotifyMiniInfo {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.spotifyMiniTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 600;
+}
+
+.spotifyMiniArtist {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 16px;
+  line-height: 1.2;
+  opacity: 0.8;
+}
+
+.spotifyMiniSpotify {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.spotifyMiniSpotify svg {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: #0b5fbd;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.spotifyMiniControls {
+  height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+  background: #082e60;
+}
+
+.spotifyMiniControl {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+
+.spotifyMiniControl svg {
+  width: 32px;
+  height: 32px;
+  fill: #fff;
+}
+
+.spotifyMiniPlay {
+  width: 48px;
+  height: 48px;
+}
+
+.spotifyMiniPlay svg {
+  width: 42px;
+  height: 42px;
+}
+
+.spotifyMiniProgress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.spotifyMiniProgress span {
+  display: block;
+  width: 38%;
+  height: 100%;
+  background: #fff;
+}
+
+/* Keep the real Spotify player centered on the flipped card */
+.back {
+  align-items: center;
+  justify-content: center;
+}
+
+.spotifyFrame {
+  width: min(100%, 420px);
+  align-self: center;
+  margin-inline: auto;
+}
+
+.spotifyFrame iframe {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin-inline: auto;
+}

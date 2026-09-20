@@ -145,10 +145,6 @@ export function ProfileMusicCard() {
     setFlipped(false)
   }
 
-  const handleFrontWidgetClick = () => {
-    // Front widget opens the player but does not autoplay.
-    setFlipped(true)
-  }
 
   return (
     <div
@@ -172,21 +168,59 @@ export function ProfileMusicCard() {
           </div>
 
           {/* EXISTING FRONT MUSIC WIDGET RESTORED */}
-          <button
-            type="button"
-            className={styles.musicButton}
-            aria-label="Open featured Spotify track"
-            onClick={handleFrontWidgetClick}
-          >
-            ▶
-          </button>
+          <div className={styles.spotifyMiniWidget}>
+            <div className={styles.spotifyMiniTop}>
+              <div className={styles.spotifyMiniArtwork}>
+                <span aria-hidden="true">♪</span>
+              </div>
 
-          <div className={styles.bottomCaption}>
-            <span>FEATURED TRACK</span>
-            <strong>{featuredSong.title}</strong>
+              <div className={styles.spotifyMiniInfo}>
+                <span className={styles.spotifyMiniTitle}>
+                  {featuredSong.title}
+                </span>
+                <span className={styles.spotifyMiniArtist}>
+                  {featuredSong.artist}
+                </span>
+              </div>
+
+              <div className={styles.spotifyMiniSpotify}>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M7 9.2c3.2-1 6.9-.8 10 .5" />
+                  <path d="M7.8 12.2c2.7-.7 5.6-.5 8.2.6" />
+                  <path d="M8.8 15.1c2.1-.4 4.3-.2 6.1.5" />
+                </svg>
+              </div>
+            </div>
+
+            <div className={styles.spotifyMiniControls}>
+              <span className={styles.spotifyMiniControl} aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M18 5v14L6 12z" />
+                  <path d="M6 5v14" />
+                </svg>
+              </span>
+
+              <span className={`${styles.spotifyMiniControl} ${styles.spotifyMiniPlay}`} aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8 5.5v13L19 12z" />
+                </svg>
+              </span>
+
+              <span className={styles.spotifyMiniControl} aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M6 5v14l12-7z" />
+                  <path d="M18 5v14" />
+                </svg>
+              </span>
+            </div>
+
+            <div className={styles.spotifyMiniProgress}>
+              <span />
+            </div>
           </div>
 
-          <div className={styles.hoverHint}>
+<div className={styles.hoverHint}>
             HOVER TO OPEN PLAYER
           </div>
         </div>
