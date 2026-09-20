@@ -23,6 +23,9 @@ type SocialPlatform =
   | 'discord'
   | 'spotify'
   | 'devfolio'
+  | 'devto'
+  | 'unstop'
+  | 'mlh'
 
 type SocialLink = {
   label: string
@@ -95,6 +98,27 @@ const socialLinks: SocialLink[] = [
     href: profile.social.devfolio,
     platform: 'devfolio',
     color: '#3770FF',
+  },
+  {
+    label: 'MLH',
+    username: 'Abhinandana Bhatta',
+    href: profile.social.mlh,
+    platform: 'mlh',
+    color: '#e53028',
+  },
+  {
+    label: 'Unstop',
+    username: 'abhinbha29455',
+    href: profile.social.unstop,
+    platform: 'unstop',
+    color: '#2563eb',
+  },
+  {
+    label: 'Dev.to',
+    username: '@abhivocopedia',
+    href: profile.social.devto,
+    platform: 'devto',
+    color: '#f5f5f5',
   },
 ]
 

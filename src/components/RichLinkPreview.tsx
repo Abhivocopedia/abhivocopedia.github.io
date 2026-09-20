@@ -19,6 +19,9 @@ type LinkPreviewData = {
     | 'discord'
     | 'spotify'
     | 'devfolio'
+    | 'mlh'
+    | 'unstop'
+    | 'devto'
     | 'web'
   title: string
   description: string
@@ -46,6 +49,9 @@ type PlatformKey =
   | 'discord'
   | 'spotify'
   | 'devfolio'
+  | 'mlh'
+  | 'unstop'
+  | 'devto'
   | 'web'
 
 type PlatformInfo = {
@@ -263,6 +269,29 @@ function detectPlatform(
     return 'devfolio'
   }
 
+  if (
+    value.includes('my.mlh.io') ||
+    value.includes('mlh.com') ||
+    value.includes('major league hacking') ||
+    value.includes('mlh')
+  ) {
+    return 'mlh'
+  }
+
+  if (
+    value.includes('unstop.com') ||
+    value.includes('unstop')
+  ) {
+    return 'unstop'
+  }
+
+  if (
+    value.includes('dev.to') ||
+    value.includes('devto')
+  ) {
+    return 'devto'
+  }
+
   return 'web'
 }
 
@@ -332,6 +361,27 @@ function getPlatformInfo(
         name: 'Devfolio',
         color: '#3770ff',
         icon: <DevfolioIcon />,
+      }
+
+    case 'mlh':
+      return {
+        name: 'MLH',
+        color: '#e53028',
+        icon: <MLHIcon />,
+      }
+
+    case 'unstop':
+      return {
+        name: 'Unstop',
+        color: '#2563eb',
+        icon: <UnstopIcon />,
+      }
+
+    case 'devto':
+      return {
+        name: 'Dev.to',
+        color: '#f5f5f5',
+        icon: <DevToIcon />,
       }
 
     default:
@@ -976,6 +1026,84 @@ function DevfolioIcon() {
         fill="currentColor"
         d="M5 3h8.1a6.9 6.9 0 0 1 0 13.8H9.4V21H5V3Zm4.4 4v5.8h3.5a2.9 2.9 0 0 0 0-5.8H9.4Z"
       />
+    </svg>
+  )
+}
+
+function MLHIcon() {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+    >
+      <rect
+        x="5"
+        y="5"
+        width="54"
+        height="54"
+        rx="8"
+        fill="currentColor"
+      />
+      <text
+        x="32"
+        y="37"
+        textAnchor="middle"
+        fontSize="18"
+        fontWeight="800"
+        fill="#fff"
+      >
+        MLH
+      </text>
+    </svg>
+  )
+}
+
+function UnstopIcon() {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+    >
+      <rect
+        x="5"
+        y="5"
+        width="54"
+        height="54"
+        rx="16"
+        fill="currentColor"
+      />
+      <path
+        d="M20 22v13a12 12 0 0 0 24 0V22h-7v13a5 5 0 0 1-10 0V22h-7Z"
+        fill="#fff"
+      />
+    </svg>
+  )
+}
+
+function DevToIcon() {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+    >
+      <rect
+        x="4"
+        y="4"
+        width="56"
+        height="56"
+        rx="8"
+        fill="currentColor"
+      />
+      <text
+        x="32"
+        y="39"
+        textAnchor="middle"
+        fontSize="17"
+        fontWeight="800"
+        fill="#111"
+      >
+        DEV
+      </text>
     </svg>
   )
 }

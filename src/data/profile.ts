@@ -33,6 +33,9 @@ export const profile = {
     discord: 'https://discord.com',
     spotify: 'https://open.spotify.com/user/31xuz4tl6ckxuno63m4ckq7evpim',
     devfolio: 'https://devfolio.co/@abhivocopedia',
+    mlh: 'https://my.mlh.io',
+    unstop: 'https://unstop.com/u/abhinbha29455',
+    devto: 'https://dev.to/abhivocopedia',
     genesis: 'https://genesis-lab-nu.vercel.app/',
     email: 'abhivocopedia@gmail.com'
   },
