@@ -17,9 +17,9 @@ const footerToolLogos = [
   ['Spotify', profile.social.spotify, 'https://cdn.simpleicons.org/spotify/1ED760'],
   ['React', 'https://react.dev/', 'https://cdn.simpleicons.org/react/61DAFB'],
   ['TypeScript', 'https://www.typescriptlang.org/', 'https://cdn.simpleicons.org/typescript/3178C6'],
-  ['JavaScript', 'https://developer.mozilla.org/docs/Web/JavaScript', 'https://cdn.simpleicons.org/javascript/F7DF1E'],
-  ['HTML5', 'https://developer.mozilla.org/docs/Web/HTML', 'https://cdn.simpleicons.org/html5/E34F26'],
-  ['CSS3', 'https://developer.mozilla.org/docs/Web/CSS', '/icons/css.svg'],
+  ['JavaScript', 'https://developer.mozilla.org/docs/Web/JavaScript', '/icons/javascript.svg'],
+  ['HTML5', 'https://developer.mozilla.org/docs/Web/HTML', '/icons/html5.svg'],
+  ['CSS3', 'https://developer.mozilla.org/docs/Web/CSS', '/icons/css3.svg'],
   ['Vite', 'https://vite.dev/', 'https://cdn.simpleicons.org/vite/646CFF'],
   ['Framer Motion', 'https://motion.dev/', 'https://cdn.simpleicons.org/framer/0055FF'],
   ['Node.js', 'https://nodejs.org/', 'https://cdn.simpleicons.org/nodedotjs/339933'],
@@ -27,7 +27,7 @@ const footerToolLogos = [
   ['NVIDIA', 'https://www.nvidia.com/', 'https://cdn.simpleicons.org/nvidia/76B900'],
 
   ['Lenovo Yoga', 'https://www.lenovo.com/', 'https://cdn.simpleicons.org/lenovo/E2231A'],
-  ['Microsoft', 'https://www.microsoft.com/', '/icons/microsoft.svg'],
+  ['Microsoft', 'https://www.microsoft.com/', '/icons/microsoft-wikimedia.svg'],
   ['Google', 'https://www.google.com/', 'https://cdn.simpleicons.org/google/4285F4'],
   ['Samsung', 'https://www.samsung.com/', 'https://cdn.simpleicons.org/samsung/1428A0'],
   ['HP', 'https://www.hp.com/', 'https://cdn.simpleicons.org/hp/0096D6'],
@@ -41,11 +41,11 @@ const footerToolLogos = [
   ['DSU DEVHACK 3', 'https://www.dsudevhack3.tech/', '/icons/dsu-devhack-3.webp'],
 
   ['Call of Duty', 'https://www.callofduty.com/', 'https://www.callofduty.com/favicon.ico'],
-  ['WhatsApp', 'https://www.whatsapp.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/whatsapp.svg'],
-  ['Meta', 'https://about.meta.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/meta.svg'],
-  ['Gmail', 'https://mail.google.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/gmail.svg'],
-  ['Google Gemini', 'https://gemini.google.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/googlegemini.svg'],
-  ['Boid.js', 'https://github.com/Abhivocopedia/abhivocopedia.github.io', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/javascript.svg'],
+  ['WhatsApp', 'https://www.whatsapp.com/', '/icons/whatsapp.svg'],
+  ['Meta', 'https://about.meta.com/', '/icons/meta.svg'],
+  ['Gmail', 'https://mail.google.com/', '/icons/gmail.svg'],
+  ['Google Gemini', 'https://gemini.google.com/', '/icons/google-gemini.svg'],
+  ['Boid.js', 'https://developer.mozilla.org/docs/Web/JavaScript', '/icons/javascript.svg'],
   ['HTML', 'https://developer.mozilla.org/docs/Web/HTML', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/html5.svg'],
   ['CSS', 'https://developer.mozilla.org/docs/Web/CSS', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/css3.svg'],
   ['Google Chat', 'https://chat.google.com/', 'https://cdn.jsdelivr.net/gh/simple-icons/simple-icons@16.32.0/icons/googlechat.svg'],
@@ -55,7 +55,8 @@ const footerToolLogos = [
   ['Windows', 'https://www.microsoft.com/windows/', '/icons/windows.svg'],
   ['WSL', 'https://learn.microsoft.com/windows/wsl/', '/icons/wsl.svg'],  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/cocacola.svg'],
   ['Red Bull', 'https://www.redbull.com/', '/icons/redbull.svg'],
-] as const
+
+  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/cocacola.svg'],] as const
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
