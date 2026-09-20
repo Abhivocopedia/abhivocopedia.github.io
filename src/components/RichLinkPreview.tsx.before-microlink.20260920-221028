@@ -48,143 +48,17 @@ type PlatformInfo = {
   icon: JSX.Element
 }
 
-const MICROLINK_API =
-  'https://api.microlink.io'
+const API_BASE =
+  import.meta.env.VITE_LINK_PREVIEW_API ||
+  '/api/link-preview'
 
 function buildApiUrl(url: string) {
-  return `${MICROLINK_API}/?url=${encodeURIComponent(url)}`
-}
-
-type MicrolinkValue =
-  | string
-  | {
-      url?: string
-    }
-  | null
-  | undefined
-
-function readMicrolinkUrl(
-  value: MicrolinkValue,
-) {
-  if (typeof value === 'string') {
-    return value
-  }
-
-  if (
-    value &&
-    typeof value === 'object' &&
-    typeof value.url === 'string'
-  ) {
-    return value.url
-  }
-
-  return ''
-}
-
-function normalizeMicrolinkPreview(
-  url: string,
-  label: string | undefined,
-  username: string | undefined,
-  payload: unknown,
-): LinkPreviewData {
-  if (
-    !payload ||
-    typeof payload !== 'object' ||
-    !('data' in payload)
-  ) {
-    throw new Error(
-      'Preview service returned invalid data.',
-    )
-  }
-
-  const data = (
-    payload as {
-      data?: Record<string, unknown>
-    }
-  ).data
-
-  if (!data) {
-    throw new Error(
-      'Preview service returned no metadata.',
-    )
-  }
-
-  const detected =
-    detectPlatform(
-      url,
-      label,
-    )
-
-  const platform:
-    LinkPreviewData['platform'] =
-    detected === 'photography'
-      ? 'web'
-      : detected
-
-  let hostname = url
-
-  try {
-    hostname =
-      new URL(url).hostname.replace(
-        /^www\./,
-        '',
-      )
-  } catch {
-    // Keep original URL.
-  }
-
-  const title =
-    typeof data.title === 'string'
-      ? data.title
-      : label ||
-        username ||
-        hostname
-
-  const description =
-    typeof data.description === 'string'
-      ? data.description
-      : `Preview for ${hostname}.`
-
-  const siteName =
-    typeof data.publisher === 'string'
-      ? data.publisher
-      : typeof data.siteName === 'string'
-        ? data.siteName
-        : username ||
-          hostname
-
-  const image =
-    readMicrolinkUrl(
-      data.image as MicrolinkValue,
-    )
-
-  const favicon =
-    readMicrolinkUrl(
-      data.logo as MicrolinkValue,
-    ) ||
-    readMicrolinkUrl(
-      data.favicon as MicrolinkValue,
-    )
-
-  return {
-    ok: true,
-    url,
-    platform,
-    title,
-    description,
-    siteName,
-    favicon,
-    images: image
-      ? [image]
-      : [],
-    image: image || null,
-  }
+  return `${API_BASE}?url=${encodeURIComponent(url)}`
 }
 
 /* =========================================================
    PLATFORM DETECTION
 ========================================================= */
-
 
 function detectPlatform(
   url: string,
@@ -348,28 +222,29 @@ export function RichLinkPreview({
 
     fetch(buildApiUrl(url))
       .then(async (response) => {
-        let payload: unknown
+        let result: LinkPreviewData | null = null
 
         try {
-          payload = await response.json()
+          result =
+            (await response.json()) as LinkPreviewData
         } catch {
           throw new Error(
-            'Preview service returned invalid JSON.',
+            'Preview service returned invalid data.',
           )
         }
 
-        if (!response.ok) {
+        if (
+          !response.ok ||
+          !result ||
+          !result.ok
+        ) {
           throw new Error(
-            'Preview request failed.',
+            result?.error ||
+              'Preview could not be generated.',
           )
         }
 
-        return normalizeMicrolinkPreview(
-          url,
-          label,
-          username,
-          payload,
-        )
+        return result
       })
       .then((result) => {
         if (cancelled) {
@@ -398,11 +273,7 @@ export function RichLinkPreview({
     return () => {
       cancelled = true
     }
-  }, [
-    url,
-    label,
-    username,
-  ])
+  }, [url])
 
   const detectedPlatform = useMemo(
     () =>
