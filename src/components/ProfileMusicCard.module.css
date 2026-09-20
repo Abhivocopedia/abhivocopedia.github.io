@@ -1,0 +1,898 @@
+/* =========================================================
+   PROFILE MUSIC CARD
+========================================================= */
+
+.shell {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 4 / 5;
+  perspective: 1800px;
+  outline: none;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  transform-style: preserve-3d;
+
+  transition:
+    transform 0.82s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.5s ease;
+}
+
+.cardFlipped {
+  transform: rotateY(180deg);
+}
+
+.face {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  border: 3px solid var(--ink);
+  border-radius: var(--radius-xl);
+
+  box-shadow:
+    0 32px 64px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(23, 23, 23, 0.12) inset;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+
+/* =========================================================
+   FRONT
+========================================================= */
+
+.front {
+  background: #111;
+  transform: rotateY(0deg);
+
+  filter: grayscale(100%);
+
+  transition: filter 0.6s ease;
+}
+
+.front:hover {
+  filter: grayscale(0%);
+}
+
+.profileImage {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.6s ease;
+}
+
+.front:hover .profileImage {
+  transform: scale(1.03);
+}
+
+.photoOverlay {
+  position: absolute;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.03),
+      rgba(0,0,0,.04) 40%,
+      rgba(0,0,0,.24) 63%,
+      rgba(0,0,0,.82) 100%
+    );
+}
+
+.frontLabel {
+  position: absolute;
+
+  top: 18px;
+  left: 18px;
+
+  z-index: 8;
+
+  padding: 7px 10px;
+
+  border:
+    1px solid rgba(255,255,255,.35);
+
+  border-radius: 999px;
+
+  background:
+    rgba(15,15,15,.56);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  color: #fff;
+
+  font-family: var(--font-mono);
+  font-size: .55rem;
+  font-weight: 600;
+  letter-spacing: .15em;
+}
+
+
+/* =========================================================
+   FRONT MINI PLAYER
+========================================================= */
+
+.frontMiniPlayer {
+  position: absolute;
+
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+
+  z-index: 15;
+
+  height: 78px;
+
+  display: grid;
+
+  grid-template-columns:
+    50px
+    minmax(0,1fr)
+    30px
+    72px;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 9px 11px 9px 9px;
+
+  border:
+    1px solid
+    rgba(255,255,255,.18);
+
+  border-radius: 17px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(18, 94, 193, .94),
+      rgba(5, 47, 106, .97)
+    );
+
+  color: #fff;
+
+  box-shadow:
+    0 16px 38px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.18);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  cursor: pointer;
+
+  transition:
+    transform .25s ease,
+    box-shadow .25s ease,
+    filter .25s ease;
+}
+
+.frontMiniPlayer:hover {
+  transform: translateY(-4px);
+
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 22px 45px rgba(0,0,0,.38),
+    inset 0 1px 0 rgba(255,255,255,.22);
+}
+
+
+/* ALBUM ART */
+
+.miniArtwork {
+  width: 50px;
+  height: 50px;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #542d2d,
+      #b85c36 50%,
+      #23130f
+    );
+
+  background-size: cover;
+  background-position: center;
+
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.28),
+    inset 0 0 0 1px rgba(255,255,255,.14);
+
+  display: grid;
+  place-items: center;
+}
+
+.miniMusicIcon {
+  font-size: 1.5rem;
+  color: rgba(255,255,255,.86);
+}
+
+
+/* TRACK INFO */
+
+.miniInfo {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+
+  line-height: 1.05;
+}
+
+.miniEyebrow {
+  margin-bottom: 4px;
+
+  font-family: var(--font-mono);
+
+  font-size: .43rem;
+
+  letter-spacing: .13em;
+
+  color: rgba(255,255,255,.58);
+}
+
+.miniInfo strong {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-family: var(--font-display);
+
+  font-size: .88rem;
+
+  color: #fff;
+}
+
+.miniInfo > span:last-child {
+  overflow: hidden;
+
+  margin-top: 4px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: .59rem;
+
+  color: rgba(255,255,255,.68);
+}
+
+
+/* SPOTIFY ICON */
+
+.miniSpotifyIcon {
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+  place-items: center;
+
+  color: #fff;
+}
+
+.miniSpotifyIcon svg {
+  display: block;
+
+  width: 25px;
+  height: 25px;
+}
+
+
+/* MINI CONTROLS */
+
+.miniControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 5px;
+}
+
+.miniControls > span {
+  font-size: 1.1rem;
+
+  color: rgba(255,255,255,.7);
+}
+
+.miniPlay {
+  width: 39px;
+  height: 39px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #111;
+
+  font-size: .8rem;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 16px rgba(0,0,0,.25);
+
+  transition:
+    transform .2s ease,
+    background .2s ease;
+}
+
+.miniPlay:hover {
+  transform: scale(1.08);
+  background: #f5f5f5;
+}
+
+
+/* =========================================================
+   KEEP THE ORIGINAL PLAY BUTTON SUBTLE
+========================================================= */
+
+.musicButton {
+  position: absolute;
+
+  left: 50%;
+  bottom: 111px;
+
+  z-index: 12;
+
+  width: 50px;
+  height: 50px;
+
+  transform: translateX(-50%);
+
+  display: grid;
+  place-items: center;
+
+  border:
+    2px solid rgba(255,255,255,.85);
+
+  border-radius: 50%;
+
+  background:
+    rgba(8,8,8,.72);
+
+  color: #fff;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.32);
+
+  transition:
+    transform .25s ease,
+    opacity .25s ease;
+}
+
+.musicButton:hover {
+  transform:
+    translateX(-50%)
+    scale(1.08);
+}
+
+.playIcon {
+  margin-left: 3px;
+}
+
+
+/* =========================================================
+   CAPTION
+========================================================= */
+
+.bottomCaption {
+  position: absolute;
+
+  left: 21px;
+  right: 21px;
+  bottom: 110px;
+
+  z-index: 10;
+
+  pointer-events: none;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  color: #fff;
+
+  opacity: .75;
+}
+
+.bottomCaption span {
+  font-family: var(--font-mono);
+  font-size: .48rem;
+  letter-spacing: .15em;
+}
+
+.bottomCaption strong {
+  font-family: var(--font-display);
+  font-size: .9rem;
+}
+
+
+/* =========================================================
+   BACK PLACEHOLDER
+========================================================= */
+
+.back {
+  transform: rotateY(180deg);
+
+  display: grid;
+  place-items: center;
+
+  background:
+    linear-gradient(
+      145deg,
+      #191414,
+      #0a0a0a
+    );
+
+  color: #fff;
+}
+
+.backHint {
+  font-family: var(--font-mono);
+
+  font-size: .55rem;
+
+  letter-spacing: .16em;
+
+  opacity: .55;
+}
+
+
+/* =========================================================
+   TRUE FULL VIEWPORT PLAYER
+========================================================= */
+
+.fullscreenPlayer {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 2147483000;
+
+  width: 100vw;
+  height: 100dvh;
+
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-rows:
+    74px
+    minmax(0,1fr)
+    92px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(48,48,48,.38),
+      transparent 35%
+    ),
+    #121212;
+
+  color: #fff;
+
+  animation:
+    spotifyFullscreenIn
+    .42s
+    cubic-bezier(.16,1,.3,1)
+    both;
+}
+
+@keyframes spotifyFullscreenIn {
+  from {
+    opacity: 0;
+    transform: scale(.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* TOP BAR */
+
+.fullscreenTopbar {
+  display: grid;
+
+  grid-template-columns: 48px minmax(0,1fr) 48px;
+
+  align-items: center;
+
+  padding:
+    env(safe-area-inset-top)
+    14px
+    0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.28),
+      transparent
+    );
+}
+
+.fullscreenBack,
+.fullscreenClose {
+  width: 40px;
+  height: 40px;
+
+  display: grid;
+  place-items: center;
+
+  border: 0;
+  border-radius: 50%;
+
+  background:
+    rgba(255,255,255,.08);
+
+  color: #fff;
+
+  cursor: pointer;
+
+  font-size: 1.4rem;
+}
+
+.fullscreenBack:hover,
+.fullscreenClose:hover {
+  background:
+    rgba(255,255,255,.15);
+}
+
+.fullscreenIdentity {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  text-align: center;
+}
+
+.fullscreenIdentity span {
+  font-family: var(--font-mono);
+
+  font-size: .46rem;
+
+  letter-spacing: .14em;
+
+  opacity: .5;
+}
+
+.fullscreenIdentity strong {
+  max-width: 70vw;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  margin-top: 4px;
+
+  font-size: .9rem;
+}
+
+
+/* MAIN SPOTIFY AREA */
+
+.fullscreenPlayerStage {
+  position: relative;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  background: #191414;
+}
+
+.fullscreenSpotifyEmbed {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  min-width: 100%;
+  min-height: 100%;
+
+  display: block;
+
+  border: 0;
+
+  background: #191414;
+}
+
+.fullscreenFallback {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  place-items: center;
+
+  color: rgba(255,255,255,.65);
+
+  font-family: var(--font-mono);
+}
+
+
+/* BOTTOM BAR */
+
+.fullscreenBottomBar {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 16px;
+
+  padding:
+    12px
+    20px
+    calc(12px + env(safe-area-inset-bottom));
+
+  background:
+    linear-gradient(
+      180deg,
+      #111,
+      #090909
+    );
+
+  border-top:
+    1px solid rgba(255,255,255,.08);
+}
+
+.fullscreenBottomBar > div {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreenBottomBar span {
+  font-family: var(--font-mono);
+
+  font-size: .44rem;
+
+  letter-spacing: .13em;
+
+  color:
+    rgba(255,255,255,.45);
+}
+
+.fullscreenBottomBar strong {
+  overflow: hidden;
+
+  margin-top: 3px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-family: var(--font-display);
+
+  font-size: 1rem;
+}
+
+.fullscreenBottomBar small {
+  overflow: hidden;
+
+  margin-top: 3px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color:
+    rgba(255,255,255,.55);
+
+  font-size: .65rem;
+}
+
+.openSpotify {
+  flex-shrink: 0;
+
+  padding:
+    9px
+    12px;
+
+  border:
+    1px solid rgba(255,255,255,.16);
+
+  border-radius: 999px;
+
+  background:
+    rgba(29,185,84,.12);
+
+  color: #1ed760;
+
+  font-family: var(--font-mono);
+
+  font-size: .46rem;
+  font-weight: 700;
+
+  letter-spacing: .1em;
+
+  text-decoration: none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .shell {
+    max-width: 100%;
+  }
+
+  .frontMiniPlayer {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+
+    height: 70px;
+
+    grid-template-columns:
+      44px
+      minmax(0,1fr)
+      26px
+      60px;
+
+    gap: 8px;
+
+    padding:
+      8px;
+  }
+
+  .miniArtwork {
+    width: 44px;
+    height: 44px;
+  }
+
+  .miniInfo strong {
+    font-size: .77rem;
+  }
+
+  .miniInfo > span:last-child {
+    font-size: .54rem;
+  }
+
+  .miniPlay {
+    width: 34px;
+    height: 34px;
+  }
+
+  .musicButton,
+  .bottomCaption {
+    display: none;
+  }
+
+  .fullscreenPlayer {
+    grid-template-rows:
+      66px
+      minmax(0,1fr)
+      86px;
+  }
+
+  .fullscreenTopbar {
+    padding:
+      env(safe-area-inset-top)
+      10px
+      0;
+  }
+
+  .fullscreenBottomBar {
+    padding:
+      10px
+      14px
+      calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .fullscreenBottomBar strong {
+    font-size: .9rem;
+  }
+
+  .openSpotify {
+    padding: 8px 10px;
+    font-size: .42rem;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 390px) {
+
+  .frontMiniPlayer {
+    grid-template-columns:
+      40px
+      minmax(0,1fr)
+      24px
+      52px;
+  }
+
+  .miniArtwork {
+    width: 40px;
+    height: 40px;
+  }
+
+  .miniSpotifyIcon svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .miniControls > span {
+    font-size: .9rem;
+  }
+
+  .miniPlay {
+    width: 31px;
+    height: 31px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .profileImage,
+  .musicButton,
+  .frontMiniPlayer {
+    transition: none;
+  }
+
+  .fullscreenPlayer {
+    animation: none;
+  }
+}
+
+
+/* =========================================================
+   CLEAN FRONT PROFILE
+   Remove old floating caption + circular play button.
+   The mini Spotify widget is now the only music control.
+========================================================= */
+
+.frontLabel,
+.musicButton,
+.bottomCaption {
+  display: none !important;
+}

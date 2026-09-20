@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
 import { Star, Arrow, OrganicShape, DotPattern, DecorativeCorner, Crosshair, Sticker, Label } from './DecorativeMarks'
 import styles from './Hero.module.css'
+import { ProfileMusicCard } from './ProfileMusicCard'
 
 export function Hero() {
   const hasProfilePhoto = profile.profilePhoto && profile.profilePhoto.trim() !== ''
@@ -106,22 +107,11 @@ export function Hero() {
             </div>
           </motion.div>
 
-          <div
-            className={styles.mobileProfilePhoto}
-            aria-hidden="true"
-          >
-            <div className={styles.mobileProfilePhotoFrame}>
-              <img
-                src={profile.profilePhoto}
-                alt=""
-                className={styles.mobileProfileImage}
-                loading="eager"
-              />
-              <div className={styles.mobileProfileOverlay} />
+            <div className={styles.mobileProfilePhoto}>
+              <ProfileMusicCard />
             </div>
-          </div>
 
-          <motion.div
+<motion.div
             className={styles.cta}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -142,24 +132,16 @@ export function Hero() {
           </motion.div>
         </div>
 
-        <div className={styles.visual} aria-hidden="true">
+        <div className={styles.visual}>
           <motion.div
             className={styles.visualWrapper}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            {hasProfilePhoto ? (
-              <div className={styles.profilePhotoCard}>
-                <img
-                  src={profile.profilePhoto}
-                  alt={`${profile.name} - ${profile.identity}`}
-                  className={styles.profilePhoto}
-                  loading="eager"
-                />
-                <div className={styles.photoOverlay} />
-              </div>
-            ) : (
+              {hasProfilePhoto ? (
+                <ProfileMusicCard />
+              ) : (
               <div className={styles.visualCard}>
                 <div className={styles.visualHeader}>
                   <span className={styles.visualDot} style={{ background: 'var(--orange)' }} />
