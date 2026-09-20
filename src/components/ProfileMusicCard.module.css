@@ -570,21 +570,161 @@
   background: #fff;
 }
 
-/* Keep the real Spotify player centered on the flipped card */
+
+/* Exact center alignment for the flipped Spotify player */
 .back {
+  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .spotifyFrame {
   width: min(100%, 420px);
+  margin: 0 auto;
   align-self: center;
-  margin-inline: auto;
+  flex: 0 0 auto;
 }
 
 .spotifyFrame iframe {
   display: block;
   width: 100%;
   max-width: 420px;
+  margin: 0 auto;
+}
+
+/* Spotify compact sizing + exact center override */
+
+/* Smaller, cleaner Spotify-style front widget */
+.spotifyMiniWidget {
+  width: min(calc(100% - 40px), 360px);
+  bottom: 20px;
+  border-radius: 14px;
+  background: #181818;
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.spotifyMiniTop {
+  min-height: 58px;
+  padding: 9px 11px;
+  gap: 10px;
+}
+
+.spotifyMiniArtwork {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+  border-radius: 3px;
+  background: #282828;
+  color: #fff;
+  font-size: 22px;
+}
+
+.spotifyMiniTitle {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.spotifyMiniArtist {
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+.spotifyMiniSpotify {
+  width: 30px;
+  height: 30px;
+  flex-basis: 30px;
+  background: transparent;
+}
+
+.spotifyMiniSpotify svg {
+  width: 25px;
+  height: 25px;
+  stroke: #1ed760;
+}
+
+.spotifyMiniControls {
+  height: 48px;
+  gap: 42px;
+  background: #121212;
+}
+
+.spotifyMiniControl {
+  width: 28px;
+  height: 28px;
+}
+
+.spotifyMiniControl svg {
+  width: 23px;
+  height: 23px;
+}
+
+.spotifyMiniPlay {
+  width: 34px;
+  height: 34px;
+}
+
+.spotifyMiniPlay svg {
+  width: 30px;
+  height: 30px;
+}
+
+.spotifyMiniProgress {
+  height: 3px;
+  background: #3a3a3a;
+}
+
+.spotifyMiniProgress span {
+  width: 32%;
+  background: #1ed760;
+}
+
+/* Exact center for the real Spotify Embed on the flipped side */
+.back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.playerTop,
+.playerIdentity,
+.spotifyFrame,
+.playerFooter {
+  width: min(100%, 360px);
   margin-inline: auto;
+}
+
+.playerTop {
+  justify-content: center;
+}
+
+.playerIdentity {
+  text-align: center;
+}
+
+.spotifyFrame {
+  flex: 0 0 auto;
+  width: min(100%, 360px);
+  height: 152px;
+  margin: 0 auto;
+  align-self: center;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.spotifyFrame iframe {
+  display: block;
+  width: 100%;
+  height: 152px;
+  max-width: 360px;
+  margin: 0 auto;
+  border: 0;
+}
+
+.playerFooter {
+  justify-content: center;
 }

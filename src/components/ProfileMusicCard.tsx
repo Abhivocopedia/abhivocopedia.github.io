@@ -1,3 +1,4 @@
+import type React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { featuredSong } from '../data/featuredSong'
 import { profile } from '../data/profile'
@@ -132,15 +133,22 @@ export function ProfileMusicCard() {
     }
   }, [trackId])
 
-  const handleMouseEnter = () => {
-    // Hover only flips the card.
-    // It MUST NOT start Spotify.
-    setFlipped(true)
+  const handlePointerMove = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    const y = event.clientY - rect.top
+
+    // Only the upper half flips the card.
+    // The lower half keeps the colorful front widget visible.
+    if (y < rect.height / 2) {
+      setFlipped(true)
+    } else {
+      setFlipped(false)
+    }
   }
 
-  const handleMouseLeave = () => {
-    // Leaving the profile card pauses Spotify.
-    // Playback position is preserved by Spotify.
+  const handlePointerLeave = () => {
     controllerRef.current?.pause()
     setFlipped(false)
   }
@@ -149,8 +157,8 @@ export function ProfileMusicCard() {
   return (
     <div
       className={styles.shell}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onPointerMove={handlePointerMove}
+      onPointerLeave={handlePointerLeave}
     >
       <div className={`${styles.card} ${flipped ? styles.cardFlipped : ''}`}>
         {/* FRONT */}
