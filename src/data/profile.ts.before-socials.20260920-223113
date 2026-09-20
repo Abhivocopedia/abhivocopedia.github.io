@@ -30,9 +30,6 @@ export const profile = {
     youtube: 'https://youtube.com/@abhinandanabhatta-s7b',
     x: 'https://x.com/Abhinandan43024',
     photography: 'https://abhivocopedia.github.io/Abhis_Unscripted-Photography/',
-    discord: 'https://discord.com',
-    spotify: 'https://open.spotify.com/user/31xuz4tl6ckxuno63m4ckq7evpim',
-    devfolio: 'https://devfolio.co/@abhivocopedia',
     genesis: 'https://genesis-lab-nu.vercel.app/',
     email: 'abhivocopedia@gmail.com'
   },
