@@ -1,239 +1,208 @@
-import type React from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import type { KeyboardEvent, PointerEvent } from 'react'
 import { featuredSong } from '../data/featuredSong'
 import { profile } from '../data/profile'
 import styles from './ProfileMusicCard.module.css'
-
-interface SpotifyEmbedController {
-  play: () => void
-  pause: () => void
-}
-
-interface SpotifyIframeApi {
-  createController: (
-    element: HTMLElement,
-    options: { uri: string },
-    callback: (controller: SpotifyEmbedController) => void,
-  ) => void
-}
-
-declare global {
-  interface Window {
-    onSpotifyIframeApiReady?: (api: SpotifyIframeApi) => void
-    SpotifyIframeApi?: SpotifyIframeApi
-  }
-}
 
 function getSpotifyTrackId(url: string) {
   return url.match(/track\/([A-Za-z0-9]+)/)?.[1] ?? ''
 }
 
-let spotifyApiPromise: Promise<SpotifyIframeApi> | null = null
-
-function loadSpotifyIframeApi(): Promise<SpotifyIframeApi> {
-  if (spotifyApiPromise) return spotifyApiPromise
-
-  spotifyApiPromise = new Promise<SpotifyIframeApi>((resolve, reject) => {
-    if (window.SpotifyIframeApi) {
-      resolve(window.SpotifyIframeApi)
-      return
-    }
-
-    const previousReady = window.onSpotifyIframeApiReady
-
-    window.onSpotifyIframeApiReady = (api) => {
-      window.SpotifyIframeApi = api
-      previousReady?.(api)
-      resolve(api)
-    }
-
-    const existingScript = document.querySelector<HTMLScriptElement>(
-      'script[data-spotify-iframe-api]',
-    )
-
-    if (existingScript) {
-      window.setTimeout(() => {
-        if (window.SpotifyIframeApi) {
-          resolve(window.SpotifyIframeApi)
-        } else {
-          reject(new Error('Spotify iFrame API did not initialize.'))
-        }
-      }, 10000)
-
-      return
-    }
-
-    const script = document.createElement('script')
-    script.src = 'https://open.spotify.com/embed/iframe-api/v1'
-    script.async = true
-    script.dataset.spotifyIframeApi = 'true'
-
-    script.onerror = () => {
-      reject(new Error('Failed to load Spotify iFrame API.'))
-    }
-
-    document.head.appendChild(script)
-
-    window.setTimeout(() => {
-      if (!window.SpotifyIframeApi) {
-        reject(new Error('Spotify iFrame API timed out.'))
-      }
-    }, 10000)
-  })
-
-  return spotifyApiPromise
-}
-
 export function ProfileMusicCard() {
   const [flipped, setFlipped] = useState(false)
-
-  const spotifyFrameRef = useRef<HTMLDivElement | null>(null)
-  const controllerRef = useRef<SpotifyEmbedController | null>(null)
-  const initializedRef = useRef(false)
+  const [albumArtUrl, setAlbumArtUrl] = useState('')
 
   const trackId = getSpotifyTrackId(featuredSong.spotifyUrl)
 
+  const embedUrl = trackId
+    ? `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`
+    : ''
+
   useEffect(() => {
-    if (!trackId || !spotifyFrameRef.current || initializedRef.current) {
-      return
-    }
+    let cancelled = false
 
-    initializedRef.current = true
-
-    const initializeSpotify = async () => {
+    const loadAlbumArt = async () => {
       try {
-        const api = await loadSpotifyIframeApi()
-
-        if (!spotifyFrameRef.current) return
-
-        api.createController(
-          spotifyFrameRef.current,
-          {
-            uri: `spotify:track:${trackId}`,
-          },
-          (controller) => {
-            controllerRef.current = controller
-
-            // IMPORTANT:
-            // Never autoplay. Spotify starts only when its own Play
-            // button is clicked by the user.
-            controller.pause()
-          },
+        const response = await fetch(
+          `https://open.spotify.com/oembed?url=${encodeURIComponent(
+            featuredSong.spotifyUrl,
+          )}`,
         )
-      } catch (error) {
-        console.error('Spotify initialization failed:', error)
+
+        if (!response.ok) return
+
+        const data = (await response.json()) as {
+          thumbnail_url?: string
+        }
+
+        if (!cancelled && data.thumbnail_url) {
+          setAlbumArtUrl(data.thumbnail_url)
+        }
+      } catch {
+        // Keep the local fallback artwork when Spotify metadata is unavailable.
       }
     }
 
-    void initializeSpotify()
+    void loadAlbumArt()
 
     return () => {
-      controllerRef.current?.pause()
-      controllerRef.current = null
+      cancelled = true
     }
-  }, [trackId])
+  }, [])
 
-  const handlePointerMove = (
-    event: React.PointerEvent<HTMLDivElement>,
-  ) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    const y = event.clientY - rect.top
+  /*
+   * Upper half:
+   *   hover -> flip
+   *
+   * Once flipped:
+   *   stay flipped
+   *
+   * Click:
+   *   flip back to profile
+   */
+  const handlePointerMove = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (flipped || event.pointerType === 'touch') return
 
-    // Only the upper half flips the card.
-    // The lower half keeps the colorful front widget visible.
-    if (y < rect.height / 2) {
-      setFlipped(true)
-    } else {
-      setFlipped(false)
-    }
+      const rect = event.currentTarget.getBoundingClientRect()
+      const y = event.clientY - rect.top
+
+      if (y <= rect.height * 0.5) {
+        setFlipped(true)
+      }
+    },
+    [flipped],
+  )
+
+  const handleCardClick = () => {
+    setFlipped((current) => !current)
   }
 
-  const handlePointerLeave = () => {
-    controllerRef.current?.pause()
-    setFlipped(false)
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      setFlipped((current) => !current)
+    }
   }
-
 
   return (
     <div
       className={styles.shell}
       onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      aria-label="Profile photo with featured Spotify song"
     >
-      <div className={`${styles.card} ${flipped ? styles.cardFlipped : ''}`}>
-        {/* FRONT */}
+      <div
+        className={`${styles.card} ${
+          flipped ? styles.cardFlipped : ''
+        }`}
+      >
+        {/* =====================================================
+            FRONT — PROFILE PHOTO
+        ===================================================== */}
         <div className={`${styles.face} ${styles.front}`}>
           <img
-            className={styles.profileImage}
             src={profile.profilePhoto}
-            alt={profile.name}
+            alt={`${profile.name} - ${profile.identity}`}
+            className={styles.profileImage}
+            loading="eager"
           />
 
           <div className={styles.photoOverlay} />
 
           <div className={styles.frontLabel}>
-            ABHIVOCOPEDIA
+            <span>ABHIVOCOPEDIA</span>
           </div>
 
-          {/* EXISTING FRONT MUSIC WIDGET RESTORED */}
-          <div className={styles.spotifyMiniWidget}>
-            <div className={styles.spotifyMiniTop}>
-              <div className={styles.spotifyMiniArtwork}>
-                <span aria-hidden="true">♪</span>
-              </div>
+          {/* Compact Spotify-style widget */}
+          <button
+            type="button"
+            className={styles.spotifyMiniWidget}
+            aria-label={`Open Spotify player for ${featuredSong.title}`}
+            onClick={(event) => {
+              event.stopPropagation()
+              setFlipped(true)
+            }}
+          >
+            <span className={styles.spotifyMiniTop}>
+              <span className={styles.spotifyMiniArtwork}>
+                {albumArtUrl ? (
+                  <img
+                    src={albumArtUrl}
+                    alt=""
+                    loading="lazy"
+                  />
+                ) : (
+                  <span aria-hidden="true">♪</span>
+                )}
+              </span>
 
-              <div className={styles.spotifyMiniInfo}>
+              <span className={styles.spotifyMiniInfo}>
                 <span className={styles.spotifyMiniTitle}>
                   {featuredSong.title}
                 </span>
+
                 <span className={styles.spotifyMiniArtist}>
                   {featuredSong.artist}
                 </span>
-              </div>
+              </span>
 
-              <div className={styles.spotifyMiniSpotify}>
-                <svg viewBox="0 0 24 24" aria-hidden="true">
+              <span
+                className={styles.spotifyMiniBrand}
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10" />
-                  <path d="M7 9.2c3.2-1 6.9-.8 10 .5" />
-                  <path d="M7.8 12.2c2.7-.7 5.6-.5 8.2.6" />
-                  <path d="M8.8 15.1c2.1-.4 4.3-.2 6.1.5" />
+                  <path d="M7 9.4c3.7-1.1 6.9-.8 10 .5" />
+                  <path d="M7.5 12.2c3-.8 5.9-.55 8.9.58" />
+                  <path d="M8 14.9c2.25-.55 4.5-.35 6.8.45" />
                 </svg>
-              </div>
-            </div>
+              </span>
+            </span>
 
-            <div className={styles.spotifyMiniControls}>
-              <span className={styles.spotifyMiniControl} aria-hidden="true">
+            <span
+              className={styles.spotifyMiniControls}
+              aria-hidden="true"
+            >
+              <span className={styles.spotifyMiniControl}>
                 <svg viewBox="0 0 24 24">
                   <path d="M18 5v14L6 12z" />
                   <path d="M6 5v14" />
                 </svg>
               </span>
 
-              <span className={`${styles.spotifyMiniControl} ${styles.spotifyMiniPlay}`} aria-hidden="true">
+              <span
+                className={`${styles.spotifyMiniControl} ${styles.spotifyMiniPlay}`}
+              >
                 <svg viewBox="0 0 24 24">
                   <path d="M8 5.5v13L19 12z" />
                 </svg>
               </span>
 
-              <span className={styles.spotifyMiniControl} aria-hidden="true">
+              <span className={styles.spotifyMiniControl}>
                 <svg viewBox="0 0 24 24">
                   <path d="M6 5v14l12-7z" />
                   <path d="M18 5v14" />
                 </svg>
               </span>
-            </div>
+            </span>
 
-            <div className={styles.spotifyMiniProgress}>
+            <span className={styles.spotifyMiniProgress}>
               <span />
-            </div>
-          </div>
+            </span>
+          </button>
 
-<div className={styles.hoverHint}>
-            HOVER TO OPEN PLAYER
+          <div className={styles.hoverHint}>
+            HOVER TOP HALF
+            <span>FOR MUSIC ↗</span>
           </div>
         </div>
 
-        {/* BACK */}
+        {/* =====================================================
+            BACK — REAL SPOTIFY EMBED
+        ===================================================== */}
         <div className={`${styles.face} ${styles.back}`}>
           <div className={styles.playerTop}>
             <span className={styles.playerEyebrow}>
@@ -246,34 +215,56 @@ export function ProfileMusicCard() {
           </div>
 
           <div className={styles.playerIdentity}>
-            <strong>{featuredSong.title}</strong>
-            <span>{featuredSong.artist}</span>
+            <div className={styles.musicDot}>
+              <span />
+              <span />
+              <span />
+            </div>
+
+            <div>
+              <strong>{featuredSong.title}</strong>
+              <span>{featuredSong.artist}</span>
+            </div>
           </div>
 
-          <div
-            ref={spotifyFrameRef}
-            className={styles.spotifyFrame}
-            aria-label={`Spotify player for ${featuredSong.title}`}
-          />
+          <div className={styles.spotifyFrame}>
+            {embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title={`${featuredSong.title} by ${featuredSong.artist}`}
+                loading="lazy"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div className={styles.playerFallback}>
+                <p>Spotify track unavailable.</p>
+              </div>
+            )}
+          </div>
 
           <div className={styles.playerFooter}>
             <a
               href={featuredSong.spotifyUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
+              className={styles.spotifyLink}
+              onClick={(event) => event.stopPropagation()}
             >
               OPEN IN SPOTIFY
+              <span>↗</span>
             </a>
 
             <button
               type="button"
               className={styles.flipBack}
-              onClick={() => {
-                controllerRef.current?.pause()
+              onClick={(event) => {
+                event.stopPropagation()
                 setFlipped(false)
               }}
             >
               FLIP BACK
+              <span>↩</span>
             </button>
           </div>
         </div>

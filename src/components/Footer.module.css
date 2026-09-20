@@ -215,3 +215,128 @@
     height: 44px;
   }
 }
+
+/* =========================================================
+   THANKS TO — TOOL MARQUEE
+========================================================= */
+
+.toolMarqueeSection {
+  width: 100%;
+  margin-bottom: clamp(28px, 4vw, 46px);
+  padding-top: clamp(16px, 2vw, 24px);
+  border-top: 1px solid rgba(23, 23, 23, 0.16);
+}
+
+.toolMarqueeLabel {
+  display: block;
+  margin-bottom: 12px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: rgba(23, 23, 23, 0.58);
+}
+
+.toolMarqueeViewport {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 5%,
+    #000 95%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 5%,
+    #000 95%,
+    transparent
+  );
+}
+
+.toolMarqueeTrack {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: footerToolMarquee 34s linear infinite;
+  will-change: transform;
+}
+
+.toolMarqueeItem {
+  min-width: 142px;
+  height: 48px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid rgba(23, 23, 23, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow:
+    0 6px 18px rgba(23, 23, 23, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.toolMarqueeItem:hover {
+  transform: translateY(-3px);
+  border-color: rgba(23, 23, 23, 0.24);
+  box-shadow:
+    0 10px 22px rgba(23, 23, 23, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.toolMarqueeItem img {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  display: block;
+  object-fit: contain;
+}
+
+.toolMarqueeItem span {
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+@keyframes footerToolMarquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 6px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolMarqueeTrack {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .toolMarqueeItem {
+    min-width: 128px;
+    height: 44px;
+  }
+
+  .toolMarqueeItem img {
+    width: 21px;
+    height: 21px;
+    flex-basis: 21px;
+  }
+}

@@ -728,3 +728,231 @@
 .playerFooter {
   justify-content: center;
 }
+
+
+/* =========================================================
+   FINAL PROFILE SPOTIFY DESIGN
+========================================================= */
+
+.front {
+  filter: none;
+  transition: none;
+}
+
+/* Small Spotify-style front widget */
+.spotifyMiniWidget {
+  position: absolute;
+  left: 50%;
+  bottom: 17px;
+  width: min(calc(100% - 38px), 350px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 13px;
+  background: #181818;
+  color: #fff;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.35),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  transform: translateX(-50%);
+  z-index: 7;
+  cursor: pointer;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.spotifyMiniTop {
+  min-height: 56px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spotifyMiniArtwork {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  background: #282828;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.spotifyMiniArtwork img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.spotifyMiniInfo {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.spotifyMiniTitle {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.spotifyMiniArtist {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 10px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+.spotifyMiniBrand {
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  display: grid;
+  place-items: center;
+}
+
+.spotifyMiniBrand svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: #1ed760;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.spotifyMiniControls {
+  height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  background: #121212;
+}
+
+.spotifyMiniControl {
+  width: 25px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+}
+
+.spotifyMiniControl svg {
+  width: 22px;
+  height: 22px;
+  fill: #fff;
+}
+
+.spotifyMiniPlay {
+  width: 31px;
+  height: 31px;
+}
+
+.spotifyMiniPlay svg {
+  width: 28px;
+  height: 28px;
+}
+
+.spotifyMiniProgress {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #383838;
+}
+
+.spotifyMiniProgress > span {
+  display: block;
+  width: 34%;
+  height: 100%;
+  background: #1ed760;
+}
+
+/* Exact center on flipped side */
+.back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 18px;
+  box-sizing: border-box;
+}
+
+.playerTop,
+.playerIdentity,
+.spotifyFrame,
+.playerFooter {
+  width: min(100%, 360px);
+  margin-inline: auto;
+}
+
+.playerIdentity {
+  justify-content: center;
+  text-align: center;
+}
+
+.spotifyFrame {
+  flex: 0 0 auto;
+  width: min(100%, 360px);
+  height: 152px;
+  margin: 0 auto;
+  align-self: center;
+}
+
+.spotifyFrame iframe {
+  display: block;
+  width: 100%;
+  height: 152px;
+  min-height: 152px;
+  max-width: 360px;
+  margin: 0 auto;
+  border: 0;
+}
+
+.playerFooter {
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .spotifyMiniWidget {
+    width: min(calc(100% - 28px), 330px);
+    bottom: 14px;
+  }
+
+  .spotifyMiniControls {
+    gap: 28px;
+  }
+
+  .back {
+    padding: 14px;
+  }
+
+  .playerTop,
+  .playerIdentity,
+  .spotifyFrame,
+  .playerFooter {
+    width: min(100%, 330px);
+  }
+
+  .spotifyFrame {
+    width: min(100%, 330px);
+  }
+
+  .spotifyFrame iframe {
+    max-width: 330px;
+  }
+}

@@ -2,12 +2,67 @@ import { profile } from '../data/profile'
 import { Label } from './DecorativeMarks'
 import styles from './Footer.module.css'
 
+
+const footerToolLogos = [
+  ['GitHub', profile.social.github, 'https://cdn.simpleicons.org/github/181717'],
+  ['MLH', 'https://www.mlh.com/', 'https://static.mlh.io/brand-assets/logo/official/mlh-logo-color.svg'],
+  ['Instagram', profile.social.instagram, 'https://cdn.simpleicons.org/instagram/E4405F'],
+  ['X', profile.social.x, 'https://cdn.simpleicons.org/x/111111'],
+  ['ChatGPT / OpenAI', 'https://chatgpt.com/', 'https://cdn.simpleicons.org/openai/111111'],
+  ['OpenCode', 'https://opencode.ai/', 'https://opencode.ai/favicon.ico'],
+  ['Spotify', profile.social.spotify, 'https://cdn.simpleicons.org/spotify/1ED760'],
+  ['React', 'https://react.dev/', 'https://cdn.simpleicons.org/react/61DAFB'],
+  ['TypeScript', 'https://www.typescriptlang.org/', 'https://cdn.simpleicons.org/typescript/3178C6'],
+  ['Vite', 'https://vite.dev/', 'https://cdn.simpleicons.org/vite/646CFF'],
+  ['Framer Motion', 'https://motion.dev/', 'https://cdn.simpleicons.org/framer/0055FF'],
+  ['Vercel', 'https://vercel.com/', 'https://cdn.simpleicons.org/vercel/111111'],
+  ['HTML5', 'https://developer.mozilla.org/docs/Web/HTML', 'https://cdn.simpleicons.org/html5/E34F26'],
+  ['CSS3', 'https://developer.mozilla.org/docs/Web/CSS', 'https://cdn.simpleicons.org/css3/1572B6'],
+  ['JavaScript', 'https://developer.mozilla.org/docs/Web/JavaScript', 'https://cdn.simpleicons.org/javascript/F7DF1E'],
+  ['Node.js', 'https://nodejs.org/', 'https://cdn.simpleicons.org/nodedotjs/339933'],
+] as const
+
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
     <footer className={styles.footer} role="contentinfo">
       <div className={styles.container}>
+
+        <div
+          className={styles.toolMarqueeSection}
+          aria-label="Tools, platforms and services used in this portfolio"
+        >
+          <span className={styles.toolMarqueeLabel}>
+            THANKS TO
+          </span>
+
+          <div className={styles.toolMarqueeViewport}>
+            <div className={styles.toolMarqueeTrack}>
+              {[...footerToolLogos, ...footerToolLogos].map(
+                ([label, href, logo], index) => (
+                  <a
+                    key={`${label}-${index}`}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.toolMarqueeItem}
+                    aria-label={label}
+                  >
+                    <img
+                      src={logo}
+                      alt=""
+                      loading="lazy"
+                      aria-hidden="true"
+                    />
+                    <span>{label}</span>
+                  </a>
+                ),
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className={styles.main}>
           <div className={styles.brand}>
             <span className={styles.logo}>ABHIVOCOPEDIA</span>
