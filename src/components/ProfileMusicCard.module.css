@@ -412,3 +412,28 @@
 .spotifyFrame iframe {
   width: 100%;
 }
+
+
+/* Bottom Spotify widget on profile card */
+.musicButton {
+  position: absolute;
+  left: 50%;
+  bottom: 72px;
+  transform: translateX(-50%);
+  width: 46px;
+  height: 46px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 5;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.musicButton:hover {
+  transform: translateX(-50%) scale(1.06);
+}
