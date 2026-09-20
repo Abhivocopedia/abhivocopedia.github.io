@@ -896,3 +896,81 @@
 .bottomCaption {
   display: none !important;
 }
+
+
+/* =========================================================
+   FINAL PROFILE FLIP CORRECTION
+   Spotify must stay inside the photo/card dimensions.
+========================================================= */
+
+.fullscreenPlayer,
+.fullscreenTopbar,
+.fullscreenPlayerStage,
+.fullscreenBottomBar,
+.fullscreenSpotifyEmbed {
+  display: none !important;
+}
+
+.back {
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #191414 !important;
+}
+
+.spotifyEmbed {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  margin: 0 !important;
+  border: 0 !important;
+
+  display: block !important;
+
+  border-radius:
+    calc(var(--radius-xl) - 2px) !important;
+}
+
+.flipBack {
+  position: absolute !important;
+  right: 14px !important;
+  bottom: 12px !important;
+
+  z-index: 30 !important;
+}
+
+
+/* =========================================================
+   EDUCATION FINAL TIN — LAST CARD FULL VISIBILITY
+========================================================= */
+
+@media (min-width: 769px) {
+  .station:last-child .cardBottom {
+    top: calc(50% - 45px) !important;
+  }
+
+  .station:last-child .cardBottom .cardConnector {
+    height: 45px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .station:last-child .cardBottom {
+    top: calc(50% - 45px) !important;
+  }
+
+  .station:last-child .cardBottom .cardConnector {
+    height: 45px !important;
+  }
+}
+
+
+/* Extra horizontal safety for large final can */
+.station:last-child .stationCardWrap {
+  z-index: 20;
+}

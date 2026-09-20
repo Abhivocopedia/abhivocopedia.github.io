@@ -1,10 +1,7 @@
-import { createPortal } from 'react-dom'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { KeyboardEvent, PointerEvent } from 'react'
-
 import { featuredSong } from '../data/featuredSong'
 import { profile } from '../data/profile'
-
 import styles from './ProfileMusicCard.module.css'
 
 function getSpotifyTrackId(url: string) {
@@ -13,10 +10,7 @@ function getSpotifyTrackId(url: string) {
 
 export function ProfileMusicCard() {
   const [flipped, setFlipped] = useState(false)
-  const [fullscreen, setFullscreen] = useState(false)
   const [thumbnail, setThumbnail] = useState('')
-
-  const openTimerRef = useRef<number | null>(null)
 
   const trackId = getSpotifyTrackId(featuredSong.spotifyUrl)
 
@@ -24,10 +18,6 @@ export function ProfileMusicCard() {
     ? `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`
     : ''
 
-  /*
-   * Spotify oEmbed gives us the real artwork for the
-   * little front-side mini-player.
-   */
   useEffect(() => {
     const controller = new AbortController()
 
@@ -35,12 +25,13 @@ export function ProfileMusicCard() {
       `https://open.spotify.com/oembed?url=${encodeURIComponent(
         featuredSong.spotifyUrl,
       )}`,
-      {
-        signal: controller.signal,
-      },
+      { signal: controller.signal },
     )
       .then((response) => {
-        if (!response.ok) throw new Error('Spotify oEmbed failed')
+        if (!response.ok) {
+          throw new Error('Spotify oEmbed request failed')
+        }
+
         return response.json()
       })
       .then((data: { thumbnail_url?: string }) => {
@@ -49,7 +40,7 @@ export function ProfileMusicCard() {
         }
       })
       .catch(() => {
-        // Fallback artwork is handled entirely in CSS.
+        // CSS fallback artwork remains available.
       })
 
     return () => controller.abort()
@@ -57,347 +48,217 @@ export function ProfileMusicCard() {
 
   const openPlayer = useCallback(() => {
     setFlipped(true)
-
-    if (openTimerRef.current !== null) {
-      window.clearTimeout(openTimerRef.current)
-    }
-
-    /*
-     * Let the profile card visibly rotate first,
-     * then promote the player to a real viewport overlay.
-     */
-    openTimerRef.current = window.setTimeout(() => {
-      setFullscreen(true)
-      openTimerRef.current = null
-    }, 430)
   }, [])
 
   const closePlayer = useCallback(() => {
-    setFullscreen(false)
-
-    window.setTimeout(() => {
-      setFlipped(false)
-    }, 80)
+    setFlipped(false)
   }, [])
-
-  useEffect(() => {
-    return () => {
-      if (openTimerRef.current !== null) {
-        window.clearTimeout(openTimerRef.current)
-      }
-    }
-  }, [])
-
-  /*
-   * Lock the page behind the full-screen player.
-   */
-  useEffect(() => {
-    if (!fullscreen) return
-
-    const previousOverflow = document.body.style.overflow
-
-    document.body.style.overflow = 'hidden'
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-    }
-  }, [fullscreen])
-
-  /*
-   * Escape closes the full-screen player.
-   */
-  useEffect(() => {
-    if (!fullscreen) return
-
-    const handleEscape = (event: globalThis.KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        closePlayer()
-      }
-    }
-
-    window.addEventListener('keydown', handleEscape)
-
-    return () => {
-      window.removeEventListener('keydown', handleEscape)
-    }
-  }, [fullscreen, closePlayer])
 
   const handlePointerMove = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
-      if (fullscreen || flipped || event.pointerType === 'touch') {
-        return
-      }
+      if (flipped || event.pointerType === 'touch') return
 
       const rect = event.currentTarget.getBoundingClientRect()
       const y = event.clientY - rect.top
 
-      /*
-       * Upper half -> Spotify experience.
-       */
       if (y <= rect.height * 0.5) {
-        openPlayer()
+        setFlipped(true)
       }
     },
-    [fullscreen, flipped, openPlayer],
+    [flipped],
   )
 
   const handleKeyboard = useCallback(
     (event: KeyboardEvent<HTMLDivElement>) => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault()
-        openPlayer()
+        setFlipped((current) => !current)
       }
 
-      if (event.key === 'Escape' && fullscreen) {
+      if (event.key === 'Escape') {
         event.preventDefault()
-        closePlayer()
+        setFlipped(false)
       }
     },
-    [openPlayer, closePlayer, fullscreen],
+    [],
   )
 
   return (
-    <>
+    <div
+      className={styles.shell}
+      onPointerMove={handlePointerMove}
+      onKeyDown={handleKeyboard}
+      tabIndex={0}
+      aria-label="Profile photo and featured Spotify player"
+    >
       <div
-        className={styles.shell}
-        onPointerMove={handlePointerMove}
-        onKeyDown={handleKeyboard}
-        tabIndex={0}
-        aria-label="Profile photo and featured Spotify player"
+        className={`${styles.card} ${
+          flipped ? styles.cardFlipped : ''
+        }`}
       >
-        <div
-          className={`${styles.card} ${
-            flipped ? styles.cardFlipped : ''
-          }`}
-        >
 
-          {/* =====================================================
-              FRONT
-          ===================================================== */}
+        {/* =====================================================
+            FRONT — PROFILE PHOTO
+        ===================================================== */}
 
-          <div className={`${styles.face} ${styles.front}`}>
+        <div className={`${styles.face} ${styles.front}`}>
 
-            <img
-              src={profile.profilePhoto}
-              alt={`${profile.name} - ${profile.identity}`}
-              className={styles.profileImage}
-              loading="eager"
-            />
+          <img
+            src={profile.profilePhoto}
+            alt={`${profile.name} - ${profile.identity}`}
+            className={styles.profileImage}
+            loading="eager"
+          />
 
-            <div className={styles.photoOverlay} />
+          <div className={styles.photoOverlay} />
 
-            <div className={styles.frontLabel}>
-              ABHIVOCOPEDIA
-            </div>
-
-            {/* =================================================
-                MINI SPOTIFY WIDGET
-                INSPIRED BY THE THIRD REFERENCE IMAGE
-            ================================================= */}
+          {/* Bottom Spotify mini-widget */}
+          <div
+            className={styles.frontMiniPlayer}
+            onClick={(event) => {
+              event.stopPropagation()
+              openPlayer()
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                openPlayer()
+              }
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={`Open ${featuredSong.title}`}
+          >
 
             <div
-              className={styles.frontMiniPlayer}
-              onClick={(event) => {
-                event.stopPropagation()
-                openPlayer()
-              }}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  openPlayer()
-                }
-              }}
-              role="button"
-              tabIndex={0}
-              aria-label={`Open ${featuredSong.title}`}
+              className={styles.miniArtwork}
+              style={
+                thumbnail
+                  ? {
+                      backgroundImage:
+                        `url("${thumbnail}")`,
+                    }
+                  : undefined
+              }
             >
+              {!thumbnail && (
+                <span className={styles.miniMusicIcon}>
+                  ♪
+                </span>
+              )}
+            </div>
 
-              <div
-                className={styles.miniArtwork}
-                style={
-                  thumbnail
-                    ? { backgroundImage: `url("${thumbnail}")` }
-                    : undefined
-                }
+            <div className={styles.miniInfo}>
+              <span className={styles.miniEyebrow}>
+                NOW PLAYING
+              </span>
+
+              <strong>
+                {featuredSong.title}
+              </strong>
+
+              <span>
+                {featuredSong.artist}
+              </span>
+            </div>
+
+            <div className={styles.miniSpotifyIcon}>
+              <svg
+                viewBox="0 0 24 24"
+                aria-hidden="true"
               >
-                {!thumbnail && (
-                  <span className={styles.miniMusicIcon}>
-                    ♪
-                  </span>
-                )}
-              </div>
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  fill="currentColor"
+                />
 
-              <div className={styles.miniInfo}>
-                <span className={styles.miniEyebrow}>
-                  NOW PLAYING
-                </span>
+                <path
+                  d="M7 10.1c3.45-1 7.32-.7 10.2.65"
+                  fill="none"
+                  stroke="#111"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
 
-                <strong>
-                  {featuredSong.title}
-                </strong>
+                <path
+                  d="M7.6 13c2.8-.7 5.8-.45 8.25.6"
+                  fill="none"
+                  stroke="#111"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
 
-                <span>
-                  {featuredSong.artist}
-                </span>
-              </div>
-
-              <div className={styles.miniSpotifyIcon}>
-                <svg
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    fill="currentColor"
-                  />
-
-                  <path
-                    d="M7 10.1c3.45-1 7.32-.7 10.2.65"
-                    fill="none"
-                    stroke="#111"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-
-                  <path
-                    d="M7.6 13c2.8-.7 5.8-.45 8.25.6"
-                    fill="none"
-                    stroke="#111"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-
-                  <path
-                    d="M8.4 15.7c2.1-.4 4.2-.2 5.95.48"
-                    fill="none"
-                    stroke="#111"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-
-              <div className={styles.miniControls}>
-                <span aria-hidden="true">‹</span>
-
-                <button
-                  type="button"
-                  className={styles.miniPlay}
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    openPlayer()
-                  }}
-                  aria-label="Open Spotify player"
-                >
-                  ▶
-                </button>
-
-                <span aria-hidden="true">›</span>
-              </div>
-
+                <path
+                  d="M8.4 15.7c2.1-.4 4.2-.2 5.95.48"
+                  fill="none"
+                  stroke="#111"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                />
+              </svg>
             </div>
-</div>
 
+            <div className={styles.miniControls}>
+              <span aria-hidden="true">‹</span>
 
-          {/* =====================================================
-              BACK
-              The actual full-screen promotion happens through
-              the portal below.
-          ===================================================== */}
+              <button
+                type="button"
+                className={styles.miniPlay}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  openPlayer()
+                }}
+                aria-label="Open Spotify player"
+              >
+                ▶
+              </button>
 
-          <div className={`${styles.face} ${styles.back}`}>
-            <div className={styles.backHint}>
-              OPENING SPOTIFY
+              <span aria-hidden="true">›</span>
             </div>
+
           </div>
+        </div>
+
+
+        {/* =====================================================
+            BACK — SPOTIFY STAYS INSIDE SAME PROFILE CARD
+        ===================================================== */}
+
+        <div className={`${styles.face} ${styles.back}`}>
+
+          {embedUrl ? (
+            <iframe
+              src={embedUrl}
+              title={`${featuredSong.title} by ${featuredSong.artist}`}
+              className={styles.spotifyEmbed}
+              loading="eager"
+              frameBorder="0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <div className={styles.playerFallback}>
+              Spotify track unavailable.
+            </div>
+          )}
+
+          <button
+            type="button"
+            className={styles.flipBack}
+            onClick={(event) => {
+              event.stopPropagation()
+              closePlayer()
+            }}
+            aria-label="Flip back to profile photo"
+          >
+            FLIP BACK ↩
+          </button>
 
         </div>
+
       </div>
-
-
-      {/* =======================================================
-          FULL VIEWPORT SPOTIFY EXPERIENCE
-
-          PORTAL = outside the transformed card
-          so position:fixed really means the whole viewport.
-      ======================================================= */}
-
-      {fullscreen &&
-        typeof document !== 'undefined' &&
-        createPortal(
-          <div className={styles.fullscreenPlayer}>
-
-            <div className={styles.fullscreenTopbar}>
-              <button
-                type="button"
-                className={styles.fullscreenBack}
-                onClick={closePlayer}
-                aria-label="Close Spotify player"
-              >
-                <span>‹</span>
-              </button>
-
-              <div className={styles.fullscreenIdentity}>
-                <span>PLAYING FROM PORTFOLIO</span>
-                <strong>{featuredSong.title}</strong>
-              </div>
-
-              <button
-                type="button"
-                className={styles.fullscreenClose}
-                onClick={closePlayer}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-
-
-            <div className={styles.fullscreenPlayerStage}>
-
-              {embedUrl ? (
-                <iframe
-                  src={embedUrl}
-                  title={`${featuredSong.title} by ${featuredSong.artist}`}
-                  className={styles.fullscreenSpotifyEmbed}
-                  frameBorder="0"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : (
-                <div className={styles.fullscreenFallback}>
-                  Spotify track unavailable.
-                </div>
-              )}
-
-            </div>
-
-
-            <div className={styles.fullscreenBottomBar}>
-
-              <div>
-                <span>NOW PLAYING</span>
-                <strong>{featuredSong.title}</strong>
-                <small>{featuredSong.artist}</small>
-              </div>
-
-              <a
-                href={featuredSong.spotifyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.openSpotify}
-              >
-                OPEN SPOTIFY ↗
-              </a>
-
-            </div>
-
-          </div>,
-          document.body,
-        )}
-    </>
+    </div>
   )
 }
