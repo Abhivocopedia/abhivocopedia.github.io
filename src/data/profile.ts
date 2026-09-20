@@ -36,6 +36,9 @@ export const profile = {
     mlh: 'https://my.mlh.io',
     unstop: 'https://unstop.com/u/abhinbha29455',
     devto: 'https://dev.to/abhivocopedia',
+    facebook: 'https://www.facebook.com/share/14nHq25G65X/',
+    snapchat: 'https://www.snapchat.com/add/abhinandan03110',
+    callofduty: 'https://www.callofduty.com/',
     genesis: 'https://genesis-lab-nu.vercel.app/',
     email: 'abhivocopedia@gmail.com'
   },

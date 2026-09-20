@@ -22,6 +22,9 @@ type LinkPreviewData = {
     | 'mlh'
     | 'unstop'
     | 'devto'
+    | 'facebook'
+    | 'snapchat'
+    | 'callofduty'
     | 'web'
   title: string
   description: string
@@ -52,6 +55,9 @@ type PlatformKey =
   | 'mlh'
   | 'unstop'
   | 'devto'
+  | 'facebook'
+  | 'snapchat'
+  | 'callofduty'
   | 'web'
 
 type PlatformInfo = {
@@ -292,6 +298,28 @@ function detectPlatform(
     return 'devto'
   }
 
+  if (
+    value.includes('facebook.com') ||
+    value.includes('facebook')
+  ) {
+    return 'facebook'
+  }
+
+  if (
+    value.includes('snapchat.com') ||
+    value.includes('snapchat')
+  ) {
+    return 'snapchat'
+  }
+
+  if (
+    value.includes('callofduty.com') ||
+    value.includes('call of duty') ||
+    value.includes('callofduty')
+  ) {
+    return 'callofduty'
+  }
+
   return 'web'
 }
 
@@ -382,6 +410,27 @@ function getPlatformInfo(
         name: 'Dev.to',
         color: '#f5f5f5',
         icon: <DevToIcon />,
+      }
+
+    case 'facebook':
+      return {
+        name: 'Facebook',
+        color: '#1877f2',
+        icon: <FacebookIcon />,
+      }
+
+    case 'snapchat':
+      return {
+        name: 'Snapchat',
+        color: '#fffc00',
+        icon: <SnapchatIcon />,
+      }
+
+    case 'callofduty':
+      return {
+        name: 'Call of Duty',
+        color: '#6dbb45',
+        icon: <CallOfDutyIcon />,
       }
 
     default:
@@ -1104,6 +1153,54 @@ function DevToIcon() {
       >
         DEV
       </text>
+    </svg>
+  )
+}
+
+function FacebookIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        fill="currentColor"
+      />
+      <path
+        d="M13.5 8H15V5.5h-1.5c-2.1 0-3.5 1.4-3.5 3.7V11H8v2.5h2V19h3v-5.5h2l.5-2.5H13v-1.5c0-.9.2-1.5.5-1.5Z"
+        fill="#111"
+      />
+    </svg>
+  )
+}
+
+function SnapchatIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 3.2c-3.1 0-5.4 2.3-5.4 5.6v2.6c0 .8-.4 1.4-1.1 1.8l-1.2.6c-.4.2-.3.8.1.9l2 .6c.2.1.4.3.4.5.1.8.6 1.3 1.4 1.4.6.1 1.2.3 1.7.7.6.5 1.2 1.1 2.1 1.1s1.5-.6 2.1-1.1c.5-.4 1.1-.6 1.7-.7.8-.1 1.3-.6 1.4-1.4 0-.2.2-.4.4-.5l2-.6c.4-.1.5-.7.1-.9l-1.2-.6c-.7-.4-1.1-1-1.1-1.8V8.8c0-3.3-2.3-5.6-5.4-5.6Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+function CallOfDutyIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        d="M6 5h12v3H9v3h6v3H9v5H6V5Zm9 0h3v14h-3V5Z"
+        fill="currentColor"
+      />
     </svg>
   )
 }

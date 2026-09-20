@@ -23,6 +23,9 @@ type SocialPlatform =
   | 'discord'
   | 'spotify'
   | 'devfolio'
+  | 'callofduty'
+  | 'snapchat'
+  | 'facebook'
   | 'devto'
   | 'unstop'
   | 'mlh'
@@ -119,6 +122,27 @@ const socialLinks: SocialLink[] = [
     href: profile.social.devto,
     platform: 'devto',
     color: '#f5f5f5',
+  },
+  {
+    label: 'Facebook',
+    username: 'Abhinandana Bhatta',
+    href: profile.social.facebook,
+    platform: 'facebook',
+    color: '#1877F2',
+  },
+  {
+    label: 'Snapchat',
+    username: 'abhinandan03110',
+    href: profile.social.snapchat,
+    platform: 'snapchat',
+    color: '#FFFC00',
+  },
+  {
+    label: 'Call of Duty',
+    username: 'Abhi.vocopedia',
+    href: profile.social.callofduty,
+    platform: 'callofduty',
+    color: '#6DBB45',
   },
 ]
 
