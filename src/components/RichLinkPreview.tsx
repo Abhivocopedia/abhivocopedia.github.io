@@ -16,6 +16,9 @@ type LinkPreviewData = {
     | 'linkedin'
     | 'youtube'
     | 'x'
+    | 'discord'
+    | 'spotify'
+    | 'devfolio'
     | 'web'
   title: string
   description: string
@@ -40,6 +43,9 @@ type PlatformKey =
   | 'youtube'
   | 'x'
   | 'photography'
+  | 'discord'
+  | 'spotify'
+  | 'devfolio'
   | 'web'
 
 type PlatformInfo = {
@@ -190,7 +196,7 @@ function detectPlatform(
   url: string,
   label?: string,
 ): PlatformKey {
-  const value = `${url} ${label || ''}`.toLowerCase()
+  const value = (url + ' ' + (label || '')).toLowerCase()
 
   if (
     value.includes('instagram.com') ||
@@ -236,12 +242,30 @@ function detectPlatform(
     return 'photography'
   }
 
+  if (
+    value.includes('discord.com') ||
+    value.includes('discord')
+  ) {
+    return 'discord'
+  }
+
+  if (
+    value.includes('spotify.com') ||
+    value.includes('spotify')
+  ) {
+    return 'spotify'
+  }
+
+  if (
+    value.includes('devfolio.co') ||
+    value.includes('devfolio')
+  ) {
+    return 'devfolio'
+  }
+
   return 'web'
 }
 
-/* =========================================================
-   PLATFORM INFO
-========================================================= */
 
 function getPlatformInfo(
   platform: PlatformKey,
@@ -287,6 +311,27 @@ function getPlatformInfo(
         name: 'Photography',
         color: '#65a884',
         icon: <CameraIcon />,
+      }
+
+    case 'discord':
+      return {
+        name: 'Discord',
+        color: '#5865f2',
+        icon: <DiscordIcon />,
+      }
+
+    case 'spotify':
+      return {
+        name: 'Spotify',
+        color: '#1db954',
+        icon: <SpotifyIcon />,
+      }
+
+    case 'devfolio':
+      return {
+        name: 'Devfolio',
+        color: '#3770ff',
+        icon: <DevfolioIcon />,
       }
 
     default:
@@ -879,6 +924,57 @@ function CameraIcon() {
         fill="none"
         stroke="currentColor"
         strokeWidth="1.7"
+      />
+    </svg>
+  )
+}
+
+function DiscordIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="M19.54 5.32A16.9 16.9 0 0 0 15.6 4l-.47.96a14.8 14.8 0 0 0-6.26 0L8.4 4a16.9 16.9 0 0 0-3.94 1.32C1.98 9.05 1.3 12.68 1.64 16.26a16.7 16.7 0 0 0 5.1 2.6l1.23-1.68c-.68-.25-1.33-.57-1.94-.94l.47-.35c3.74 1.72 9.2 1.72 12.9 0l.48.35c-.62.38-1.27.69-1.95.94l1.23 1.68a16.7 16.7 0 0 0 5.1-2.6c.4-4.14-.7-7.73-3.72-10.94ZM8.83 14.77c-1.1 0-2-1.02-2-2.28s.88-2.29 2-2.29 2.02 1.02 2 2.29c0 1.26-.89 2.28-2 2.28Zm6.34 0c-1.1 0-2-1.02-2-2.28s.88-2.29 2-2.29 2.02 1.02 2 2.29c0 1.26-.89 2.28-2 2.28Z"
+      />
+    </svg>
+  )
+}
+
+function SpotifyIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        fill="currentColor"
+      />
+      <path
+        d="M7 9.4c3.7-1.1 6.9-.8 10 .5M7.5 12.2c3-.8 5.9-.55 8.9.58M8 14.9c2.25-.55 4.5-.35 6.8.45"
+        fill="none"
+        stroke="#111"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function DevfolioIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path
+        fill="currentColor"
+        d="M5 3h8.1a6.9 6.9 0 0 1 0 13.8H9.4V21H5V3Zm4.4 4v5.8h3.5a2.9 2.9 0 0 0 0-5.8H9.4Z"
       />
     </svg>
   )

@@ -1,0 +1,2010 @@
+==================== GIT STATUS ====================
+ M src/data/profile.ts
+?? current-contact-source.txt
+?? src/components/Contact.tsx.before-clean-socials.20260920-224157
+?? src/components/Contact.tsx.before-extras-clean.20260920-223942
+?? src/data/profile.ts.before-clean-socials.20260920-224157
+?? src/data/profile.ts.before-extras-clean.20260920-223942
+
+==================== PROFILE.TS ====================
+     1	export const profile = {
+     2	  name: 'Abhinandana Bhatta',
+     3	  identity: 'Abhivocopedia',
+     4	  tagline: 'CSE Student · Full-Stack Developer · Independent Builder',
+     5	  location: 'Karnataka, India',
+     6	  heroStatement: 'I BUILD SYSTEMS THAT TURN IDEAS INTO WORKING PRODUCTS.',
+     7	  profilePhoto: '/images/profile/abhinandana.webp',
+     8	  bio: 'I enjoy turning ideas into working products — from web applications and AI-powered tools to cloud deployments and experimental systems.',
+     9	  themes: [
+    10	    'Software Engineering',
+    11	    'Full-Stack Development',
+    12	    'AI',
+    13	    'Systems',
+    14	    'Cloud Deployment',
+    15	    'Product Engineering',
+    16	    'Experimentation',
+    17	    'Learning by Building'
+    18	  ],
+    19	  currentStatus: {
+    20	    program: 'B.E. Computer Science and Engineering',
+    21	    institution: 'Jain Institute of Technology, Davangere (VTU)',
+    22	    period: '2026–Present',
+    23	    semester: '3rd Semester',
+    24	    expectedGraduation: '2029'
+    25	  },
+    26	  social: {
+    27	    github: 'https://github.com/Abhivocopedia',
+    28	    linkedin: 'https://linkedin.com/in/abhinandana-bhatta',
+    29	    instagram: 'https://instagram.com/abhivocopedia',
+    30	    youtube: 'https://youtube.com/@abhinandanabhatta-s7b',
+    31	    x: 'https://x.com/Abhinandan43024',
+    32	    photography: 'https://abhivocopedia.github.io/Abhis_Unscripted-Photography/',
+    33	    discord: 'https://discord.com',
+    34	    spotify: 'https://open.spotify.com/user/31xuz4tl6ckxuno63m4ckq7evpim',
+    35	    devfolio: 'https://devfolio.co/@abhivocopedia',
+    36	    discord: 'https://discord.com',
+    37	    spotify: 'https://open.spotify.com/user/31xuz4tl6ckxuno63m4ckq7evpim',
+    38	    devfolio: 'https://devfolio.co/@abhivocopedia',
+    39	    genesis: 'https://genesis-lab-nu.vercel.app/',
+    40	    email: 'abhivocopedia@gmail.com'
+    41	  },
+    42	  vexr: {
+    43	    lines: [
+    44	      'MAKE SOMETHING',
+    45	      'MAKE IT MATTER',
+    46	      'MAKE MONEY'
+    47	    ]
+    48	  },
+    49	  beyondCode: [
+    50	    'Tabla',
+    51	    'Piano',
+    52	    'Flute',
+    53	    'Emcee'
+    54	  ]
+    55	}
+==================== CONTACT.TSX ===================
+     1	import { motion } from 'framer-motion'
+     2	import type { CSSProperties } from 'react'
+     3	import { profile } from '../data/profile'
+     4	import {
+     5	  Star,
+     6	  Arrow,
+     7	  Label,
+     8	  Crosshair,
+     9	  DotPattern,
+    10	  DecorativeCorner,
+    11	  OrganicShape,
+    12	} from './DecorativeMarks'
+    13	import { RichLinkPreview } from './RichLinkPreview'
+    14	import styles from './Contact.module.css'
+    15	
+    16	type SocialPlatform =
+    17	  | 'github'
+    18	  | 'linkedin'
+    19	  | 'instagram'
+    20	  | 'youtube'
+    21	  | 'x'
+    22	  | 'photography'
+    23	
+    24	type SocialLink = {
+    25	  label: string
+    26	  username: string
+    27	  href: string
+    28	  platform: SocialPlatform
+    29	  color: string
+    30	}
+    31	
+    32	const socialLinks: SocialLink[] = [
+    33	  {
+    34	    label: 'GitHub',
+    35	    username: 'Abhivocopedia',
+    36	    href: profile.social.github,
+    37	    platform: 'github',
+    38	    color: '#171717',
+    39	  },
+    40	  {
+    41	    label: 'LinkedIn',
+    42	    username: 'abhinandana-bhatta',
+    43	    href: profile.social.linkedin,
+    44	    platform: 'linkedin',
+    45	    color: '#0A66C2',
+    46	  },
+    47	  {
+    48	    label: 'Instagram',
+    49	    username: 'abhivocopedia',
+    50	    href: profile.social.instagram,
+    51	    platform: 'instagram',
+    52	    color: '#E1306C',
+    53	  },
+    54	  {
+    55	    label: 'YouTube',
+    56	    username: '@abhinandanabhatta-s7b',
+    57	    href: profile.social.youtube,
+    58	    platform: 'youtube',
+    59	    color: '#FF0000',
+    60	  },
+    61	  {
+    62	    label: 'X',
+    63	    username: '@Abhinandan43024',
+    64	    href: profile.social.x,
+    65	    platform: 'x',
+    66	    color: '#171717',
+    67	  },
+    68	  {
+    69	    label: 'Photography',
+    70	    username: "Abhi's Unscripted",
+    71	    href: profile.social.photography,
+    72	    platform: 'photography',
+    73	    color: '#274D3A',
+    74	  },
+    75	]
+    76	
+    77	const extraSocialLinks = [
+    78	  {
+    79	    label: 'Discord',
+    80	    username: 'abhivocopedia_32437',
+    81	    href: profile.social.discord,
+    82	    color: '#5865F2',
+    83	    type: 'discord',
+    84	  },
+    85	  {
+    86	    label: 'Spotify',
+    87	    username: 'Abhivocopedia',
+    88	    href: profile.social.spotify,
+    89	    color: '#1DB954',
+    90	    type: 'spotify',
+    91	  },
+    92	  {
+    93	    label: 'Devfolio',
+    94	    username: '@abhivocopedia',
+    95	    href: profile.social.devfolio,
+    96	    color: '#3770FF',
+    97	    type: 'devfolio',
+    98	  },
+    99	]
+   100	
+   101	export function Contact() {
+   102	  return (
+   103	    <section
+   104	      id="contact"
+   105	      className={styles.section}
+   106	      aria-labelledby="contact-title"
+   107	    >
+   108	      <div className={styles.bgDecoration} aria-hidden="true">
+   109	        <DotPattern color="warm-white" />
+   110	
+   111	        <OrganicShape
+   112	          variant={1}
+   113	          style={{ top: '5%', right: '5%' }}
+   114	        />
+   115	
+   116	        <OrganicShape
+   117	          variant={2}
+   118	          style={{ bottom: '10%', left: '3%' }}
+   119	        />
+   120	
+   121	        <DecorativeCorner
+   122	          position="tl"
+   123	          color="mustard"
+   124	          style={{ top: '8%', left: '4%' }}
+   125	        />
+   126	
+   127	        <DecorativeCorner
+   128	          position="tr"
+   129	          color="warm-white"
+   130	          style={{ top: '8%', right: '4%' }}
+   131	        />
+   132	
+   133	        <DecorativeCorner
+   134	          position="bl"
+   135	          color="warm-white"
+   136	          style={{ bottom: '8%', left: '4%' }}
+   137	        />
+   138	
+   139	        <DecorativeCorner
+   140	          position="br"
+   141	          color="mustard"
+   142	          style={{ bottom: '8%', right: '4%' }}
+   143	        />
+   144	
+   145	        <Crosshair
+   146	          color="orange"
+   147	          style={{ top: '15%', left: '10%' }}
+   148	        />
+   149	
+   150	        <Crosshair
+   151	          color="teal"
+   152	          style={{ bottom: '15%', right: '10%' }}
+   153	        />
+   154	      </div>
+   155	
+   156	      <div className={styles.container}>
+   157	        {/* HEADER */}
+   158	        <motion.div
+   159	          className={styles.header}
+   160	          initial={{ opacity: 0, y: 30 }}
+   161	          whileInView={{ opacity: 1, y: 0 }}
+   162	          viewport={{ once: true, margin: '-50px' }}
+   163	          transition={{
+   164	            duration: 0.6,
+   165	            ease: [0.25, 0.46, 0.45, 0.94],
+   166	          }}
+   167	        >
+   168	          <Label variant="number">07</Label>
+   169	
+   170	          <h2
+   171	            id="contact-title"
+   172	            className={styles.title}
+   173	          >
+   174	            CONTACT
+   175	          </h2>
+   176	
+   177	          <div
+   178	            className={styles.divider}
+   179	            aria-hidden="true"
+   180	          >
+   181	            <Star
+   182	              size="md"
+   183	              color="mustard"
+   184	            />
+   185	          </div>
+   186	
+   187	          <p className={styles.subtitle}>
+   188	            Open to opportunities, collaborations, and conversations
+   189	          </p>
+   190	        </motion.div>
+   191	
+   192	        {/* CTA BANNER */}
+   193	        <motion.div
+   194	          className={styles.ctaBanner}
+   195	          initial={{ opacity: 0, y: 30 }}
+   196	          whileInView={{ opacity: 1, y: 0 }}
+   197	          viewport={{ once: true, margin: '-50px' }}
+   198	          transition={{
+   199	            duration: 0.6,
+   200	            delay: 0.1,
+   201	            ease: [0.25, 0.46, 0.45, 0.94],
+   202	          }}
+   203	        >
+   204	          <div className={styles.bannerContent}>
+   205	            <div className={styles.bannerText}>
+   206	              <Label
+   207	                variant="meta"
+   208	                style={{ color: 'var(--mustard)' }}
+   209	              >
+   210	                LET'S BUILD
+   211	              </Label>
+   212	
+   213	              <h3 className={styles.bannerTitle}>
+   214	                Ready to create something that matters?
+   215	              </h3>
+   216	
+   217	              <p className={styles.bannerDesc}>
+   218	                I'm always open to discussing new projects,
+   219	                creative ideas, or just chatting about software
+   220	                and systems.
+   221	              </p>
+   222	            </div>
+   223	
+   224	            <div className={styles.bannerActions}>
+   225	              <a
+   226	                href={`mailto:${profile.social.email}`}
+   227	                className={`btn btn-primary ${styles.bannerBtn}`}
+   228	              >
+   229	                Start a Conversation
+   230	
+   231	                <Arrow
+   232	                  direction="right"
+   233	                  size={18}
+   234	                  color="warm-white"
+   235	                />
+   236	              </a>
+   237	
+   238	              <a
+   239	                href="#projects"
+   240	                className={`btn btn-ghost ${styles.bannerBtn}`}
+   241	              >
+   242	                View Work First
+   243	
+   244	                <Arrow
+   245	                  direction="right"
+   246	                  size={18}
+   247	                  color="warm-white"
+   248	                />
+   249	              </a>
+   250	            </div>
+   251	          </div>
+   252	        </motion.div>
+   253	
+   254	        {/* RICH SOCIAL LINK PREVIEWS */}
+   255	        <motion.div
+   256	          className={styles.socialGrid}
+   257	          role="list"
+   258	          aria-label="Social profiles"
+   259	          initial={{ opacity: 0, y: 30 }}
+   260	          whileInView={{ opacity: 1, y: 0 }}
+   261	          viewport={{ once: true, margin: '-50px' }}
+   262	          transition={{
+   263	            duration: 0.6,
+   264	            delay: 0.2,
+   265	            ease: [0.25, 0.46, 0.45, 0.94],
+   266	          }}
+   267	        >
+   268	          {socialLinks.map((link, index) => (
+   269	            <SocialProfileCard
+   270	              key={link.label}
+   271	              link={link}
+   272	              index={index}
+   273	            />
+   274	          ))}
+   275	
+   276	          {extraSocialLinks.map((link, index) => (
+   277	            <ExtraSocialProfileCard
+   278	              key={link.label}
+   279	              link={link}
+   280	              index={index}
+   281	            />
+   282	          ))}
+   283	        </motion.div>
+   284	
+   285	        {/* DIRECT EMAIL */}
+   286	        <motion.div
+   287	          className={styles.emailDirect}
+   288	          initial={{ opacity: 0, y: 20 }}
+   289	          whileInView={{ opacity: 1, y: 0 }}
+   290	          viewport={{ once: true, margin: '-50px' }}
+   291	          transition={{
+   292	            duration: 0.6,
+   293	            delay: 0.5,
+   294	            ease: [0.25, 0.46, 0.45, 0.94],
+   295	          }}
+   296	        >
+   297	          <Label variant="meta">
+   298	            DIRECT EMAIL
+   299	          </Label>
+   300	
+   301	          <a
+   302	            href={`mailto:${profile.social.email}`}
+   303	            className={styles.emailLink}
+   304	          >
+   305	            {profile.social.email}
+   306	
+   307	            <Arrow
+   308	              direction="right"
+   309	              size={18}
+   310	              color="mustard"
+   311	            />
+   312	          </a>
+   313	        </motion.div>
+   314	      </div>
+   315	    </section>
+   316	  )
+   317	}
+   318	
+   319	/* =========================================================
+   320	   RICH SOCIAL PROFILE CARD
+   321	========================================================= */
+   322	
+   323	
+   324	function ExtraSocialProfileCard({
+   325	  link,
+   326	  index,
+   327	}: {
+   328	  link: {
+   329	    label: string
+   330	    username: string
+   331	    href: string
+   332	    color: string
+   333	    type: string
+   334	  }
+   335	  index: number
+   336	}) {
+   337	  return (
+   338	    <motion.a
+   339	      href={link.href}
+   340	      target="_blank"
+   341	      rel="noopener noreferrer"
+   342	      className={styles.profileCard}
+   343	      role="listitem"
+   344	      aria-label={`Open ${link.label} profile`}
+   345	      style={
+   346	        {
+   347	          '--profile-color': link.color,
+   348	        } as React.CSSProperties
+   349	      }
+   350	      initial={{
+   351	        opacity: 0,
+   352	        y: 30,
+   353	      }}
+   354	      animate={{
+   355	        opacity: 1,
+   356	        y: 0,
+   357	      }}
+   358	      transition={{
+   359	        duration: 0.5,
+   360	        delay: 0.66 + index * 0.06,
+   361	      }}
+   362	      whileHover={{
+   363	        y: -6,
+   364	      }}
+   365	      whileTap={{
+   366	        scale: 0.985,
+   367	      }}
+   368	    >
+   369	      <div className={styles.profileHeader}>
+   370	
+   371	        <div className={styles.avatarWrapper}>
+   372	          {profile.profilePhoto ? (
+   373	            <img
+   374	              src={profile.profilePhoto}
+   375	              alt=""
+   376	              className={styles.avatar}
+   377	              loading="lazy"
+   378	            />
+   379	          ) : (
+   380	            <div
+   381	              className={styles.avatarFallback}
+   382	              aria-hidden="true"
+   383	            >
+   384	              AB
+   385	            </div>
+   386	          )}
+   387	        </div>
+   388	
+   389	        <div className={styles.profileIdentity}>
+   390	          <strong className={styles.profileUsername}>
+   391	            {link.username}
+   392	          </strong>
+   393	
+   394	          <span className={styles.profileName}>
+   395	            {profile.name}
+   396	          </span>
+   397	        </div>
+   398	
+   399	        <div
+   400	          className={styles.platformIcon}
+   401	          aria-hidden="true"
+   402	          style={{
+   403	            color: link.color,
+   404	          }}
+   405	        >
+   406	          {renderExtraSocialIcon(link.type)}
+   407	        </div>
+   408	
+   409	      </div>
+   410	
+   411	      <div
+   412	        style={{
+   413	          minHeight: '180px',
+   414	          display: 'flex',
+   415	          alignItems: 'center',
+   416	          justifyContent: 'center',
+   417	          flexDirection: 'column',
+   418	          gap: '12px',
+   419	          padding: '24px',
+   420	          boxSizing: 'border-box',
+   421	          borderTop: '1px solid rgba(255,255,255,0.08)',
+   422	          borderBottom: '1px solid rgba(255,255,255,0.08)',
+   423	          textAlign: 'center',
+   424	          background:
+   425	            'linear-gradient(135deg, rgba(255,255,255,0.055), rgba(255,255,255,0.012))',
+   426	        }}
+   427	      >
+   428	        <div
+   429	          style={{
+   430	            width: '56px',
+   431	            height: '56px',
+   432	            display: 'grid',
+   433	            placeItems: 'center',
+   434	            borderRadius: '50%',
+   435	            background: link.color,
+   436	            color: '#ffffff',
+   437	          }}
+   438	        >
+   439	          {renderExtraSocialIcon(link.type, 30)}
+   440	        </div>
+   441	
+   442	        <strong
+   443	          style={{
+   444	            fontSize: '1rem',
+   445	            letterSpacing: '0.04em',
+   446	          }}
+   447	        >
+   448	          {link.label}
+   449	        </strong>
+   450	
+   451	        <span
+   452	          style={{
+   453	            fontSize: '0.78rem',
+   454	            opacity: 0.62,
+   455	          }}
+   456	        >
+   457	          {link.username}
+   458	        </span>
+   459	      </div>
+   460	
+   461	      <div className={styles.profileFooter}>
+   462	        <span className={styles.platformName}>
+   463	          {link.label}
+   464	        </span>
+   465	
+   466	        <span className={styles.openProfile}>
+   467	          OPEN PROFILE
+   468	          <span aria-hidden="true">↗</span>
+   469	        </span>
+   470	      </div>
+   471	    </motion.a>
+   472	  )
+   473	}
+   474	
+   475	function renderExtraSocialIcon(
+   476	  type: string,
+   477	  size = 22,
+   478	) {
+   479	  if (type === 'discord') {
+   480	    return (
+   481	      <svg
+   482	        width={size}
+   483	        height={size}
+   484	        viewBox="0 0 24 24"
+   485	        fill="currentColor"
+   486	        aria-hidden="true"
+   487	      >
+   488	        <path d="M19.54 5.32A16.9 16.9 0 0 0 15.6 4l-.47.96a14.8 14.8 0 0 0-6.26 0L8.4 4a16.9 16.9 0 0 0-3.94 1.32C1.98 9.05 1.3 12.68 1.64 16.26a16.7 16.7 0 0 0 5.1 2.6l1.23-1.68c-.68-.25-1.33-.57-1.94-.94l.47-.35c3.74 1.72 9.2 1.72 12.9 0l.48.35c-.62.38-1.27.69-1.95.94l1.23 1.68a16.7 16.7 0 0 0 5.1-2.6c.4-4.14-.7-7.73-3.72-10.94ZM8.83 14.77c-1.1 0-2-1.02-2-2.28s.88-2.29 2-2.29 2.02 1.02 2 2.29c0 1.26-.89 2.28-2 2.28Zm6.34 0c-1.1 0-2-1.02-2-2.28s.88-2.29 2-2.29 2.02 1.02 2 2.29c0 1.26-.89 2.28-2 2.28Z" />
+   489	      </svg>
+   490	    )
+   491	  }
+   492	
+   493	  if (type === 'spotify') {
+   494	    return (
+   495	      <svg
+   496	        width={size}
+   497	        height={size}
+   498	        viewBox="0 0 24 24"
+   499	        aria-hidden="true"
+   500	      >
+   501	        <circle
+   502	          cx="12"
+   503	          cy="12"
+   504	          r="10"
+   505	          fill="currentColor"
+   506	        />
+   507	        <path
+   508	          d="M7 9.4c3.7-1.1 6.9-.8 10 .5M7.5 12.2c3-.8 5.9-.55 8.9.58M8 14.9c2.25-.55 4.5-.35 6.8.45"
+   509	          fill="none"
+   510	          stroke="#111"
+   511	          strokeWidth="1.3"
+   512	          strokeLinecap="round"
+   513	        />
+   514	      </svg>
+   515	    )
+   516	  }
+   517	
+   518	  return (
+   519	    <svg
+   520	      width={size}
+   521	      height={size}
+   522	      viewBox="0 0 24 24"
+   523	      fill="currentColor"
+   524	      aria-hidden="true"
+   525	    >
+   526	      <path d="M5 3h8.1a6.9 6.9 0 0 1 0 13.8H9.4V21H5V3Zm4.4 4v5.8h3.5a2.9 2.9 0 0 0 0-5.8H9.4Z" />
+   527	    </svg>
+   528	  )
+   529	}
+   530	
+   531	function SocialProfileCard({
+   532	  link,
+   533	  index,
+   534	}: {
+   535	  link: SocialLink
+   536	  index: number
+   537	}) {
+   538	  return (
+   539	    <motion.a
+   540	      href={link.href}
+   541	      target="_blank"
+   542	      rel="noopener noreferrer"
+   543	      className={`${styles.profileCard} ${styles[`platform-${link.platform}`]}`}
+   544	      role="listitem"
+   545	      aria-label={`Open ${link.label} profile`}
+   546	      style={
+   547	        {
+   548	          '--profile-color': link.color,
+   549	        } as CSSProperties
+   550	      }
+   551	      initial={{
+   552	        opacity: 0,
+   553	        y: 30,
+   554	      }}
+   555	      animate={{
+   556	        opacity: 1,
+   557	        y: 0,
+   558	      }}
+   559	      transition={{
+   560	        duration: 0.5,
+   561	        delay: 0.3 + index * 0.06,
+   562	      }}
+   563	      whileHover={{
+   564	        y: -6,
+   565	      }}
+   566	      whileTap={{
+   567	        scale: 0.985,
+   568	      }}
+   569	    >
+   570	      <RichLinkPreview
+   571	        url={link.href}
+   572	        label={link.label}
+   573	        username={link.username}
+   574	        accent={link.color}
+   575	      />
+   576	    </motion.a>
+   577	  )
+   578	}
+
+==================== CONTACT.MODULE.CSS ===========
+     1	.section {
+     2	  position: relative;
+     3	  padding: var(--space-5xl) 0;
+     4	  background: var(--ink);
+     5	  color: var(--warm-white);
+     6	  overflow: hidden;
+     7	}
+     8	
+     9	.bgDecoration {
+    10	  position: absolute;
+    11	  inset: 0;
+    12	  pointer-events: none;
+    13	  z-index: 0;
+    14	}
+    15	
+    16	.container {
+    17	  position: relative;
+    18	  z-index: 1;
+    19	  max-width: var(--container-max);
+    20	  margin: 0 auto;
+    21	  padding: 0 var(--container-padding);
+    22	}
+    23	
+    24	.header {
+    25	  text-align: center;
+    26	  margin-bottom: var(--space-3xl);
+    27	}
+    28	
+    29	.title {
+    30	  font-family: var(--font-display);
+    31	  font-size: clamp(2.5rem, 6vw, 4.5rem);
+    32	  font-weight: 700;
+    33	  letter-spacing: -0.02em;
+    34	  color: var(--warm-white);
+    35	  line-height: 1;
+    36	}
+    37	
+    38	.divider {
+    39	  display: flex;
+    40	  align-items: center;
+    41	  justify-content: center;
+    42	  gap: var(--space-md);
+    43	  margin-top: var(--space-lg);
+    44	}
+    45	
+    46	.divider::before,
+    47	.divider::after {
+    48	  content: '';
+    49	  flex: 1;
+    50	  max-width: 150px;
+    51	  height: 2px;
+    52	  background: linear-gradient(90deg, transparent, var(--mustard), transparent);
+    53	}
+    54	
+    55	.subtitle {
+    56	  font-family: var(--font-body);
+    57	  font-size: 1.125rem;
+    58	  color: rgba(255, 253, 246, 0.7);
+    59	  margin-top: var(--space-lg);
+    60	  max-width: 60ch;
+    61	  margin-left: auto;
+    62	  margin-right: auto;
+    63	}
+    64	
+    65	.ctaBanner {
+    66	  position: relative;
+    67	  border-radius: var(--radius-xl);
+    68	  overflow: hidden;
+    69	  margin-bottom: var(--space-3xl);
+    70	}
+    71	
+    72	.ctaBanner::before {
+    73	  content: '';
+    74	  position: absolute;
+    75	  inset: 0;
+    76	  background: linear-gradient(135deg, var(--deep-green) 0%, color-mix(in srgb, var(--deep-green) 85%, black) 100%);
+    77	  z-index: 0;
+    78	}
+    79	
+    80	.ctaBanner::after {
+    81	  content: '';
+    82	  position: absolute;
+    83	  inset: 0;
+    84	  background-image: radial-gradient(var(--mustard) 1px, transparent 1px);
+    85	  background-size: 30px 30px;
+    86	  opacity: 0.05;
+    87	  z-index: 1;
+    88	  pointer-events: none;
+    89	}
+    90	
+    91	.bannerContent {
+    92	  position: relative;
+    93	  z-index: 2;
+    94	  display: flex;
+    95	  flex-direction: column;
+    96	  align-items: center;
+    97	  text-align: center;
+    98	  padding: var(--space-3xl) var(--space-xl);
+    99	  gap: var(--space-xl);
+   100	}
+   101	
+   102	@media (min-width: 769px) {
+   103	  .bannerContent {
+   104	    flex-direction: row;
+   105	    justify-content: space-between;
+   106	    text-align: left;
+   107	  }
+   108	}
+   109	
+   110	.bannerText {
+   111	  max-width: 500px;
+   112	}
+   113	
+   114	.bannerTitle {
+   115	  font-family: var(--font-display);
+   116	  font-size: clamp(1.75rem, 4vw, 2.5rem);
+   117	  font-weight: 700;
+   118	  color: var(--warm-white);
+   119	  line-height: 1.1;
+   120	  margin-top: var(--space-sm);
+   121	  margin-bottom: var(--space-md);
+   122	}
+   123	
+   124	.bannerDesc {
+   125	  font-family: var(--font-body);
+   126	  font-size: 1rem;
+   127	  color: rgba(255, 253, 246, 0.85);
+   128	  line-height: 1.7;
+   129	}
+   130	
+   131	.bannerActions {
+   132	  display: flex;
+   133	  flex-wrap: wrap;
+   134	  gap: var(--space-md);
+   135	  justify-content: center;
+   136	}
+   137	
+   138	@media (min-width: 769px) {
+   139	  .bannerActions {
+   140	    justify-content: flex-end;
+   141	  }
+   142	}
+   143	
+   144	.bannerBtn {
+   145	  padding: var(--space-md) var(--space-xl);
+   146	  font-family: var(--font-display);
+   147	  font-size: 0.875rem;
+   148	  font-weight: 600;
+   149	  border-radius: var(--radius-lg);
+   150	  display: inline-flex;
+   151	  align-items: center;
+   152	  gap: var(--space-sm);
+   153	  white-space: nowrap;
+   154	}
+   155	
+   156	.grid {
+   157	  display: grid;
+   158	  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+   159	  gap: var(--space-md);
+   160	  margin-bottom: var(--space-2xl);
+   161	}
+   162	
+   163	.card {
+   164	  display: flex;
+   165	  align-items: center;
+   166	  gap: var(--space-md);
+   167	  padding: var(--space-lg) var(--space-xl);
+   168	  background: rgba(255, 253, 246, 0.05);
+   169	  border: 2px solid rgba(255, 253, 246, 0.1);
+   170	  border-radius: var(--radius-lg);
+   171	  text-decoration: none;
+   172	  transition: all var(--transition-base);
+   173	  position: relative;
+   174	  overflow: hidden;
+   175	}
+   176	
+   177	.card::before {
+   178	  content: '';
+   179	  position: absolute;
+   180	  left: 0;
+   181	  top: 0;
+   182	  bottom: 0;
+   183	  width: 4px;
+   184	  background: var(--link-color, var(--mustard));
+   185	  transform: scaleY(0);
+   186	  transform-origin: top;
+   187	  transition: transform var(--transition-base);
+   188	}
+   189	
+   190	.card:hover {
+   191	  border-color: var(--link-color, var(--mustard));
+   192	  background: rgba(255, 253, 246, 0.08);
+   193	  transform: translateY(-4px);
+   194	  box-shadow: var(--shadow-xl);
+   195	}
+   196	
+   197	.card:hover::before {
+   198	  transform: scaleY(1);
+   199	}
+   200	
+   201	.card:focus-visible {
+   202	  outline: 3px solid var(--mustard);
+   203	  outline-offset: 3px;
+   204	}
+   205	
+   206	.cardIcon {
+   207	  display: flex;
+   208	  align-items: center;
+   209	  justify-content: center;
+   210	  width: 52px;
+   211	  height: 52px;
+   212	  background: rgba(255, 253, 246, 0.08);
+   213	  border-radius: var(--radius-md);
+   214	  color: var(--warm-white);
+   215	  transition: all var(--transition-base);
+   216	  flex-shrink: 0;
+   217	}
+   218	
+   219	.card:hover .cardIcon {
+   220	  background: var(--link-color, var(--mustard));
+   221	  color: var(--ink);
+   222	  transform: scale(1.1);
+   223	}
+   224	
+   225	.cardInfo {
+   226	  display: flex;
+   227	  flex-direction: column;
+   228	  gap: 2px;
+   229	  flex: 1;
+   230	  min-width: 0;
+   231	}
+   232	
+   233	.cardLabel {
+   234	  font-family: var(--font-display);
+   235	  font-size: 1rem;
+   236	  font-weight: 600;
+   237	  color: var(--warm-white);
+   238	  white-space: nowrap;
+   239	  overflow: hidden;
+   240	  text-overflow: ellipsis;
+   241	}
+   242	
+   243	.cardHint {
+   244	  font-family: var(--font-mono);
+   245	  font-size: 0.625rem;
+   246	  font-weight: 500;
+   247	  letter-spacing: 0.1em;
+   248	  text-transform: uppercase;
+   249	  color: var(--link-color, var(--mustard));
+   250	  opacity: 0;
+   251	  transform: translateX(-8px);
+   252	  transition: all var(--transition-base);
+   253	  white-space: nowrap;
+   254	}
+   255	
+   256	.card:hover .cardHint {
+   257	  opacity: 1;
+   258	  transform: translateX(0);
+   259	}
+   260	
+   261	.cardArrow {
+   262	  color: var(--ink-muted);
+   263	  opacity: 0;
+   264	  transform: translateX(-8px);
+   265	  transition: all var(--transition-base);
+   266	  flex-shrink: 0;
+   267	}
+   268	
+   269	.card:hover .cardArrow {
+   270	  opacity: 1;
+   271	  transform: translateX(0);
+   272	  color: var(--mustard);
+   273	}
+   274	
+   275	.emailDirect {
+   276	  text-align: center;
+   277	  padding-top: var(--space-2xl);
+   278	  border-top: 2px solid rgba(255, 253, 246, 0.1);
+   279	}
+   280	
+   281	.emailLink {
+   282	  display: inline-flex;
+   283	  align-items: center;
+   284	  gap: var(--space-md);
+   285	  font-family: var(--font-display);
+   286	  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+   287	  font-weight: 600;
+   288	  color: var(--warm-white);
+   289	  text-decoration: none;
+   290	  transition: all var(--transition-base);
+   291	  padding: var(--space-md) var(--space-lg);
+   292	  border-radius: var(--radius-lg);
+   293	  border: 2px solid transparent;
+   294	}
+   295	
+   296	.emailLink:hover {
+   297	  color: var(--mustard);
+   298	  border-color: var(--mustard);
+   299	  background: rgba(224, 174, 62, 0.1);
+   300	  transform: translateY(-2px);
+   301	}
+   302	
+   303	.emailLink:focus-visible {
+   304	  outline: 3px solid var(--mustard);
+   305	  outline-offset: 3px;
+   306	}
+   307	
+   308	.emailLink svg {
+   309	  flex-shrink: 0;
+   310	  transition: transform var(--transition-base);
+   311	}
+   312	
+   313	.emailLink:hover svg {
+   314	  transform: translateX(6px);
+   315	}
+   316	
+   317	@media (max-width: 768px) {
+   318	  .section {
+   319	    padding: var(--space-4xl) 0;
+   320	  }
+   321	
+   322	  .ctaBanner {
+   323	    margin-bottom: var(--space-2xl);
+   324	  }
+   325	
+   326	  .bannerContent {
+   327	    padding: var(--space-2xl) var(--space-lg);
+   328	  }
+   329	
+   330	  .bannerTitle {
+   331	    font-size: clamp(1.5rem, 5vw, 2rem);
+   332	  }
+   333	
+   334	  .grid {
+   335	    grid-template-columns: repeat(2, 1fr);
+   336	  }
+   337	
+   338	  .card {
+   339	    padding: var(--space-md) var(--space-lg);
+   340	    flex-direction: column;
+   341	    text-align: center;
+   342	  }
+   343	
+   344	  .cardInfo {
+   345	    align-items: center;
+   346	  }
+   347	
+   348	  .cardArrow {
+   349	    display: none;
+   350	  }
+   351	
+   352	  .emailLink {
+   353	    font-size: 1.125rem;
+   354	    padding: var(--space-sm) var(--space-md);
+   355	  }
+   356	}
+   357	/* =========================================================
+   358	   RICH PREVIEW OVERRIDE
+   359	   The preview itself is the visual.
+   360	========================================================= */
+   361	
+   362	.socialGrid {
+   363	  display: grid;
+   364	  grid-template-columns: repeat(
+   365	    3,
+   366	    minmax(0, 1fr)
+   367	  );
+   368	  gap: clamp(1.6rem, 3vw, 3rem);
+   369	  align-items: start;
+   370	  margin-bottom: var(--space-3xl);
+   371	}
+   372	
+   373	.profileCard {
+   374	  display: block;
+   375	
+   376	  min-width: 0;
+   377	
+   378	  padding: 0 !important;
+   379	
+   380	  overflow: visible !important;
+   381	
+   382	  border: 0 !important;
+   383	  border-radius: 0 !important;
+   384	
+   385	  background: transparent !important;
+   386	
+   387	  box-shadow: none !important;
+   388	
+   389	  color: inherit;
+   390	
+   391	  text-decoration: none;
+   392	}
+   393	
+   394	.profileCard::before {
+   395	  display: none !important;
+   396	}
+   397	
+   398	.profileCard:hover {
+   399	  border: 0 !important;
+   400	  background: transparent !important;
+   401	  box-shadow: none !important;
+   402	  transform: none;
+   403	}
+   404	
+   405	.profileCard:focus-visible {
+   406	  outline: 3px solid var(--mustard);
+   407	  outline-offset: 8px;
+   408	}
+   409	
+   410	@media (max-width: 1050px) {
+   411	  .socialGrid {
+   412	    grid-template-columns: repeat(
+   413	      2,
+   414	      minmax(0, 1fr)
+   415	    );
+   416	  }
+   417	}
+   418	
+   419	@media (max-width: 680px) {
+   420	  .socialGrid {
+   421	    grid-template-columns: 1fr;
+   422	    gap: 2.6rem;
+   423	  }
+   424	}
+   425	
+
+==================== RICH LINK PREVIEW =============
+     1	import {
+     2	  useEffect,
+     3	  useMemo,
+     4	  useState,
+     5	} from 'react'
+     6	import type { CSSProperties } from 'react'
+     7	import { motion } from 'framer-motion'
+     8	import styles from './RichLinkPreview.module.css'
+     9	
+    10	type LinkPreviewData = {
+    11	  ok: boolean
+    12	  url: string
+    13	  platform:
+    14	    | 'instagram'
+    15	    | 'github'
+    16	    | 'linkedin'
+    17	    | 'youtube'
+    18	    | 'x'
+    19	    | 'web'
+    20	  title: string
+    21	  description: string
+    22	  siteName: string
+    23	  favicon: string
+    24	  images: string[]
+    25	  image: string | null
+    26	  error?: string
+    27	}
+    28	
+    29	type RichLinkPreviewProps = {
+    30	  url: string
+    31	  label?: string
+    32	  username?: string
+    33	  accent?: string
+    34	}
+    35	
+    36	type PlatformKey =
+    37	  | 'github'
+    38	  | 'linkedin'
+    39	  | 'instagram'
+    40	  | 'youtube'
+    41	  | 'x'
+    42	  | 'photography'
+    43	  | 'web'
+    44	
+    45	type PlatformInfo = {
+    46	  name: string
+    47	  color: string
+    48	  icon: JSX.Element
+    49	}
+    50	
+    51	const MICROLINK_API =
+    52	  'https://api.microlink.io'
+    53	
+    54	function buildApiUrl(url: string) {
+    55	  return `${MICROLINK_API}/?url=${encodeURIComponent(url)}`
+    56	}
+    57	
+    58	type MicrolinkValue =
+    59	  | string
+    60	  | {
+    61	      url?: string
+    62	    }
+    63	  | null
+    64	  | undefined
+    65	
+    66	function readMicrolinkUrl(
+    67	  value: MicrolinkValue,
+    68	) {
+    69	  if (typeof value === 'string') {
+    70	    return value
+    71	  }
+    72	
+    73	  if (
+    74	    value &&
+    75	    typeof value === 'object' &&
+    76	    typeof value.url === 'string'
+    77	  ) {
+    78	    return value.url
+    79	  }
+    80	
+    81	  return ''
+    82	}
+    83	
+    84	function normalizeMicrolinkPreview(
+    85	  url: string,
+    86	  label: string | undefined,
+    87	  username: string | undefined,
+    88	  payload: unknown,
+    89	): LinkPreviewData {
+    90	  if (
+    91	    !payload ||
+    92	    typeof payload !== 'object' ||
+    93	    !('data' in payload)
+    94	  ) {
+    95	    throw new Error(
+    96	      'Preview service returned invalid data.',
+    97	    )
+    98	  }
+    99	
+   100	  const data = (
+   101	    payload as {
+   102	      data?: Record<string, unknown>
+   103	    }
+   104	  ).data
+   105	
+   106	  if (!data) {
+   107	    throw new Error(
+   108	      'Preview service returned no metadata.',
+   109	    )
+   110	  }
+   111	
+   112	  const detected =
+   113	    detectPlatform(
+   114	      url,
+   115	      label,
+   116	    )
+   117	
+   118	  const platform:
+   119	    LinkPreviewData['platform'] =
+   120	    detected === 'photography'
+   121	      ? 'web'
+   122	      : detected
+   123	
+   124	  let hostname = url
+   125	
+   126	  try {
+   127	    hostname =
+   128	      new URL(url).hostname.replace(
+   129	        /^www\./,
+   130	        '',
+   131	      )
+   132	  } catch {
+   133	    // Keep original URL.
+   134	  }
+   135	
+   136	  const title =
+   137	    typeof data.title === 'string'
+   138	      ? data.title
+   139	      : label ||
+   140	        username ||
+   141	        hostname
+   142	
+   143	  const description =
+   144	    typeof data.description === 'string'
+   145	      ? data.description
+   146	      : `Preview for ${hostname}.`
+   147	
+   148	  const siteName =
+   149	    typeof data.publisher === 'string'
+   150	      ? data.publisher
+   151	      : typeof data.siteName === 'string'
+   152	        ? data.siteName
+   153	        : username ||
+   154	          hostname
+   155	
+   156	  const image =
+   157	    readMicrolinkUrl(
+   158	      data.image as MicrolinkValue,
+   159	    )
+   160	
+   161	  const favicon =
+   162	    readMicrolinkUrl(
+   163	      data.logo as MicrolinkValue,
+   164	    ) ||
+   165	    readMicrolinkUrl(
+   166	      data.favicon as MicrolinkValue,
+   167	    )
+   168	
+   169	  return {
+   170	    ok: true,
+   171	    url,
+   172	    platform,
+   173	    title,
+   174	    description,
+   175	    siteName,
+   176	    favicon,
+   177	    images: image
+   178	      ? [image]
+   179	      : [],
+   180	    image: image || null,
+   181	  }
+   182	}
+   183	
+   184	/* =========================================================
+   185	   PLATFORM DETECTION
+   186	========================================================= */
+   187	
+   188	
+   189	function detectPlatform(
+   190	  url: string,
+   191	  label?: string,
+   192	): PlatformKey {
+   193	  const value = `${url} ${label || ''}`.toLowerCase()
+   194	
+   195	  if (
+   196	    value.includes('instagram.com') ||
+   197	    value.includes('instagram')
+   198	  ) {
+   199	    return 'instagram'
+   200	  }
+   201	
+   202	  if (
+   203	    value.includes('github.com') ||
+   204	    value.includes('github')
+   205	  ) {
+   206	    return 'github'
+   207	  }
+   208	
+   209	  if (
+   210	    value.includes('linkedin.com') ||
+   211	    value.includes('linkedin')
+   212	  ) {
+   213	    return 'linkedin'
+   214	  }
+   215	
+   216	  if (
+   217	    value.includes('youtube.com') ||
+   218	    value.includes('youtu.be') ||
+   219	    value.includes('youtube')
+   220	  ) {
+   221	    return 'youtube'
+   222	  }
+   223	
+   224	  if (
+   225	    value.includes('x.com') ||
+   226	    value.includes('twitter.com') ||
+   227	    value.includes(' twitter')
+   228	  ) {
+   229	    return 'x'
+   230	  }
+   231	
+   232	  if (
+   233	    value.includes('photography') ||
+   234	    value.includes('camera')
+   235	  ) {
+   236	    return 'photography'
+   237	  }
+   238	
+   239	  return 'web'
+   240	}
+   241	
+   242	/* =========================================================
+   243	   PLATFORM INFO
+   244	========================================================= */
+   245	
+   246	function getPlatformInfo(
+   247	  platform: PlatformKey,
+   248	): PlatformInfo {
+   249	  switch (platform) {
+   250	    case 'github':
+   251	      return {
+   252	        name: 'GitHub',
+   253	        color: '#f0f0f0',
+   254	        icon: <GitHubIcon />,
+   255	      }
+   256	
+   257	    case 'linkedin':
+   258	      return {
+   259	        name: 'LinkedIn',
+   260	        color: '#0a66c2',
+   261	        icon: <LinkedInIcon />,
+   262	      }
+   263	
+   264	    case 'instagram':
+   265	      return {
+   266	        name: 'Instagram',
+   267	        color: '#e1306c',
+   268	        icon: <InstagramIcon />,
+   269	      }
+   270	
+   271	    case 'youtube':
+   272	      return {
+   273	        name: 'YouTube',
+   274	        color: '#ff0000',
+   275	        icon: <YouTubeIcon />,
+   276	      }
+   277	
+   278	    case 'x':
+   279	      return {
+   280	        name: 'X',
+   281	        color: '#ffffff',
+   282	        icon: <XIcon />,
+   283	      }
+   284	
+   285	    case 'photography':
+   286	      return {
+   287	        name: 'Photography',
+   288	        color: '#65a884',
+   289	        icon: <CameraIcon />,
+   290	      }
+   291	
+   292	    default:
+   293	      return {
+   294	        name: 'Web',
+   295	        color: '#ffffff',
+   296	        icon: <GlobeIcon />,
+   297	      }
+   298	  }
+   299	}
+   300	
+   301	/* =========================================================
+   302	   IMAGE NORMALIZATION
+   303	========================================================= */
+   304	
+   305	function getPreviewImages(
+   306	  data: LinkPreviewData | null,
+   307	) {
+   308	  if (!data) {
+   309	    return []
+   310	  }
+   311	
+   312	  const values = [
+   313	    data.image,
+   314	    ...(data.images || []),
+   315	  ].filter(
+   316	    (value): value is string =>
+   317	      Boolean(value),
+   318	  )
+   319	
+   320	  return [...new Set(values)]
+   321	}
+   322	
+   323	/* =========================================================
+   324	   COMPONENT
+   325	========================================================= */
+   326	
+   327	export function RichLinkPreview({
+   328	  url,
+   329	  label,
+   330	  username,
+   331	  accent,
+   332	}: RichLinkPreviewProps) {
+   333	  const [data, setData] =
+   334	    useState<LinkPreviewData | null>(null)
+   335	
+   336	  const [loading, setLoading] =
+   337	    useState(true)
+   338	
+   339	  const [error, setError] =
+   340	    useState<string | null>(null)
+   341	
+   342	  useEffect(() => {
+   343	    let cancelled = false
+   344	
+   345	    setLoading(true)
+   346	    setError(null)
+   347	    setData(null)
+   348	
+   349	    fetch(buildApiUrl(url))
+   350	      .then(async (response) => {
+   351	        let payload: unknown
+   352	
+   353	        try {
+   354	          payload = await response.json()
+   355	        } catch {
+   356	          throw new Error(
+   357	            'Preview service returned invalid JSON.',
+   358	          )
+   359	        }
+   360	
+   361	        if (!response.ok) {
+   362	          throw new Error(
+   363	            'Preview request failed.',
+   364	          )
+   365	        }
+   366	
+   367	        return normalizeMicrolinkPreview(
+   368	          url,
+   369	          label,
+   370	          username,
+   371	          payload,
+   372	        )
+   373	      })
+   374	      .then((result) => {
+   375	        if (cancelled) {
+   376	          return
+   377	        }
+   378	
+   379	        setData(result)
+   380	      })
+   381	      .catch((reason) => {
+   382	        if (cancelled) {
+   383	          return
+   384	        }
+   385	
+   386	        setError(
+   387	          reason instanceof Error
+   388	            ? reason.message
+   389	            : 'Preview unavailable.',
+   390	        )
+   391	      })
+   392	      .finally(() => {
+   393	        if (!cancelled) {
+   394	          setLoading(false)
+   395	        }
+   396	      })
+   397	
+   398	    return () => {
+   399	      cancelled = true
+   400	    }
+   401	  }, [
+   402	    url,
+   403	    label,
+   404	    username,
+   405	  ])
+   406	
+   407	  const detectedPlatform = useMemo(
+   408	    () =>
+   409	      detectPlatform(
+   410	        data?.url || url,
+   411	        label,
+   412	      ),
+   413	    [data?.url, label, url],
+   414	  )
+   415	
+   416	  const platform =
+   417	    data?.platform || detectedPlatform
+   418	
+   419	  const platformInfo = getPlatformInfo(
+   420	    platform as PlatformKey,
+   421	  )
+   422	
+   423	  const images = getPreviewImages(data)
+   424	
+   425	  const displayTitle =
+   426	    data?.title ||
+   427	    label ||
+   428	    platformInfo.name
+   429	
+   430	  const displayUsername =
+   431	    username ||
+   432	    data?.siteName ||
+   433	    platformInfo.name
+   434	
+   435	  const hasPreview =
+   436	    !error &&
+   437	    !loading &&
+   438	    Boolean(data)
+   439	
+   440	  const rootStyle = {
+   441	    '--preview-accent':
+   442	      accent || platformInfo.color,
+   443	    '--platform-color':
+   444	      platformInfo.color,
+   445	  } as CSSProperties
+   446	
+   447	  return (
+   448	    <div
+   449	      className={`${styles.root} ${
+   450	        loading
+   451	          ? styles.rootLoading
+   452	          : hasPreview
+   453	            ? styles.rootPreview
+   454	            : styles.rootFallback
+   455	      }`}
+   456	      style={rootStyle}
+   457	    >
+   458	      {/* =====================================================
+   459	          PROFILE HEADER
+   460	      ===================================================== */}
+   461	
+   462	      <div className={styles.identity}>
+   463	        <div className={styles.avatar}>
+   464	          {data?.image ? (
+   465	            <img
+   466	              src={data.image}
+   467	              alt=""
+   468	              loading="lazy"
+   469	              onError={(event) => {
+   470	                event.currentTarget.style.display =
+   471	                  'none'
+   472	              }}
+   473	            />
+   474	          ) : data?.favicon ? (
+   475	            <img
+   476	              src={data.favicon}
+   477	              alt=""
+   478	              loading="lazy"
+   479	            />
+   480	          ) : (
+   481	            <span>
+   482	              {platformInfo.icon}
+   483	            </span>
+   484	          )}
+   485	        </div>
+   486	
+   487	        <div className={styles.identityText}>
+   488	          <strong>
+   489	            {displayUsername}
+   490	          </strong>
+   491	
+   492	          <span>
+   493	            {displayTitle}
+   494	          </span>
+   495	        </div>
+   496	
+   497	        <span className={styles.platform}>
+   498	          {data
+   499	            ? getPlatformInfo(
+   500	                data.platform,
+   501	              ).name
+   502	            : platformInfo.name}
+   503	        </span>
+   504	      </div>
+   505	
+   506	      {/* =====================================================
+   507	          PREVIEW / FALLBACK CONTAINER
+   508	      ===================================================== */}
+   509	
+   510	      <div className={styles.previewContainer}>
+   511	        {loading && (
+   512	          <div
+   513	            className={styles.loadingState}
+   514	            aria-label="Loading preview"
+   515	          >
+   516	            <div
+   517	              className={
+   518	                styles.loadingOrb
+   519	              }
+   520	            />
+   521	
+   522	            <span>
+   523	              FETCHING PREVIEW
+   524	            </span>
+   525	          </div>
+   526	        )}
+   527	
+   528	        {!loading &&
+   529	          hasPreview &&
+   530	          images.length > 0 && (
+   531	            <PreviewMedia
+   532	              images={images}
+   533	              title={displayTitle}
+   534	            />
+   535	          )}
+   536	
+   537	        {!loading &&
+   538	          hasPreview &&
+   539	          images.length === 0 && (
+   540	            <PreviewContent
+   541	              title={displayTitle}
+   542	              description={
+   543	                data?.description || ''
+   544	              }
+   545	              favicon={data?.favicon}
+   546	            />
+   547	          )}
+   548	
+   549	        {!loading &&
+   550	          !hasPreview && (
+   551	            <FallbackPreview
+   552	              platform={platformInfo}
+   553	            />
+   554	          )}
+   555	      </div>
+   556	
+   557	      {/* =====================================================
+   558	          FOOTER
+   559	      ===================================================== */}
+   560	
+   561	      <div className={styles.footer}>
+   562	        <div className={styles.footerInfo}>
+   563	          <span>
+   564	            {data?.siteName ||
+   565	              label ||
+   566	              platformInfo.name}
+   567	          </span>
+   568	
+   569	          <small>
+   570	            {hasPreview
+   571	              ? data?.description ||
+   572	                'Public page preview'
+   573	              : 'Preview unavailable — open the original page'}
+   574	          </small>
+   575	        </div>
+   576	
+   577	        <motion.span
+   578	          className={styles.open}
+   579	          whileHover={{
+   580	            x: 4,
+   581	          }}
+   582	        >
+   583	          OPEN ↗
+   584	        </motion.span>
+   585	      </div>
+   586	    </div>
+   587	  )
+   588	}
+   589	
+   590	/* =========================================================
+   591	   REAL IMAGE PREVIEW
+   592	========================================================= */
+   593	
+   594	function PreviewMedia({
+   595	  images,
+   596	  title,
+   597	}: {
+   598	  images: string[]
+   599	  title: string
+   600	}) {
+   601	  const visibleImages = images.slice(0, 5)
+   602	
+   603	  const [failedImages, setFailedImages] =
+   604	    useState<string[]>([])
+   605	
+   606	  const validImages =
+   607	    visibleImages.filter(
+   608	      (image) =>
+   609	        !failedImages.includes(image),
+   610	    )
+   611	
+   612	  const markFailed = (
+   613	    image: string,
+   614	  ) => {
+   615	    setFailedImages((current) =>
+   616	      current.includes(image)
+   617	        ? current
+   618	        : [...current, image],
+   619	    )
+   620	  }
+   621	
+   622	  if (validImages.length === 0) {
+   623	    return (
+   624	      <div className={styles.imageFailure}>
+   625	        <span>
+   626	          PREVIEW IMAGE UNAVAILABLE
+   627	        </span>
+   628	      </div>
+   629	    )
+   630	  }
+   631	
+   632	  return (
+   633	    <div className={styles.mediaStage}>
+   634	      <div
+   635	        className={styles.primaryImage}
+   636	      >
+   637	        <img
+   638	          src={validImages[0]}
+   639	          alt={title}
+   640	          loading="lazy"
+   641	          onError={() =>
+   642	            markFailed(validImages[0])
+   643	          }
+   644	        />
+   645	      </div>
+   646	
+   647	      {validImages
+   648	        .slice(1, 5)
+   649	        .map((image, index) => (
+   650	          <div
+   651	            key={image}
+   652	            className={`${styles.floatingImage} ${
+   653	              styles[
+   654	                `floatingImage${index + 1}`
+   655	              ]
+   656	            }`}
+   657	          >
+   658	            <img
+   659	              src={image}
+   660	              alt=""
+   661	              loading="lazy"
+   662	              onError={() =>
+   663	                markFailed(image)
+   664	              }
+   665	            />
+   666	          </div>
+   667	        ))}
+   668	
+   669	      <div
+   670	        className={styles.mediaBadge}
+   671	      >
+   672	        LIVE PREVIEW
+   673	      </div>
+   674	    </div>
+   675	  )
+   676	}
+   677	
+   678	/* =========================================================
+   679	   TEXT / META PREVIEW
+   680	========================================================= */
+   681	
+   682	function PreviewContent({
+   683	  title,
+   684	  description,
+   685	  favicon,
+   686	}: {
+   687	  title: string
+   688	  description: string
+   689	  favicon?: string
+   690	}) {
+   691	  return (
+   692	    <div className={styles.contentPreview}>
+   693	      <div className={styles.contentMark}>
+   694	        {favicon ? (
+   695	          <img
+   696	            src={favicon}
+   697	            alt=""
+   698	            loading="lazy"
+   699	          />
+   700	        ) : (
+   701	          <GlobeIcon />
+   702	        )}
+   703	      </div>
+   704	
+   705	      <div
+   706	        className={styles.contentText}
+   707	      >
+   708	        <span>
+   709	          PAGE PREVIEW
+   710	        </span>
+   711	
+   712	        <strong>
+   713	          {title}
+   714	        </strong>
+   715	
+   716	        {description && (
+   717	          <p>
+   718	            {description}
+   719	          </p>
+   720	        )}
+   721	      </div>
+   722	    </div>
+   723	  )
+   724	}
+   725	
+   726	/* =========================================================
+   727	   FALLBACK LOGO
+   728	========================================================= */
+   729	
+   730	function FallbackPreview({
+   731	  platform,
+   732	}: {
+   733	  platform: PlatformInfo
+   734	}) {
+   735	  return (
+   736	    <div
+   737	      className={styles.fallback}
+   738	    >
+   739	      <div
+   740	        className={styles.fallbackLogo}
+   741	        aria-hidden="true"
+   742	      >
+   743	        {platform.icon}
+   744	      </div>
+   745	
+   746	      <span
+   747	        className={styles.fallbackLabel}
+   748	      >
+   749	        {platform.name}
+   750	      </span>
+   751	
+   752	      <span
+   753	        className={styles.fallbackHint}
+   754	      >
+   755	        PREVIEW UNAVAILABLE · OPEN PROFILE
+   756	      </span>
+   757	    </div>
+   758	  )
+   759	}
+   760	
+   761	/* =========================================================
+   762	   ICONS
+   763	========================================================= */
+   764	
+   765	function GitHubIcon() {
+   766	  return (
+   767	    <svg
+   768	      viewBox="0 0 24 24"
+   769	      aria-hidden="true"
+   770	    >
+   771	      <path
+   772	        fill="currentColor"
+   773	        d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.79-.26.79-.58v-2.23c-3.34.73-4.03-1.42-4.03-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.49 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.31-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02.01 2.05.14 3 .4 2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.87.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.63-5.49 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.19.69.8.58C20.57 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0Z"
+   774	      />
+   775	    </svg>
+   776	  )
+   777	}
+   778	
+   779	function LinkedInIcon() {
+   780	  return (
+   781	    <svg
+   782	      viewBox="0 0 24 24"
+   783	      aria-hidden="true"
+   784	    >
+   785	      <path
+   786	        fill="currentColor"
+   787	        d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13ZM7.12 20.45H3.55V9h3.57v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.23 0Z"
+   788	      />
+   789	    </svg>
+   790	  )
+   791	}
+   792	
+   793	function InstagramIcon() {
+   794	  return (
+   795	    <svg
+   796	      viewBox="0 0 24 24"
+   797	      aria-hidden="true"
+   798	    >
+   799	      <rect
+   800	        x="2.5"
+   801	        y="2.5"
+   802	        width="19"
+   803	        height="19"
+   804	        rx="5"
+   805	        fill="none"
+   806	        stroke="currentColor"
+   807	        strokeWidth="2"
+   808	      />
+   809	
+   810	      <circle
+   811	        cx="12"
+   812	        cy="12"
+   813	        r="4"
+   814	        fill="none"
+   815	        stroke="currentColor"
+   816	        strokeWidth="2"
+   817	      />
+   818	
+   819	      <circle
+   820	        cx="17.5"
+   821	        cy="6.5"
+   822	        r="1.1"
+   823	        fill="currentColor"
+   824	      />
+   825	    </svg>
+   826	  )
+   827	}
+   828	
+   829	function YouTubeIcon() {
+   830	  return (
+   831	    <svg
+   832	      viewBox="0 0 24 24"
+   833	      aria-hidden="true"
+   834	    >
+   835	      <path
+   836	        fill="currentColor"
+   837	        d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.58A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.9.58 9.4.58 9.4.58s7.5 0 9.4-.58a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8Z"
+   838	      />
+   839	
+   840	      <path
+   841	        d="m9.5 8.5 6 3.5-6 3.5v-7Z"
+   842	        fill="#111"
+   843	      />
+   844	    </svg>
+   845	  )
+   846	}
+   847	
+   848	function XIcon() {
+   849	  return (
+   850	    <svg
+   851	      viewBox="0 0 24 24"
+   852	      aria-hidden="true"
+   853	    >
+   854	      <path
+   855	        fill="currentColor"
+   856	        d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.66l-5.21-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64Z"
+   857	      />
+   858	    </svg>
+   859	  )
+   860	}
+   861	
+   862	function CameraIcon() {
+   863	  return (
+   864	    <svg
+   865	      viewBox="0 0 24 24"
+   866	      aria-hidden="true"
+   867	    >
+   868	      <path
+   869	        d="M3 7h4l1.5-2h7L17 7h4a1.5 1.5 0 0 1 1.5 1.5v10A1.5 1.5 0 0 1 21 20H3a1.5 1.5 0 0 1-1.5-1.5v-10A1.5 1.5 0 0 1 3 7Z"
+   870	        fill="none"
+   871	        stroke="currentColor"
+   872	        strokeWidth="1.7"
+   873	      />
+   874	
+   875	      <circle
+   876	        cx="12"
+   877	        cy="13"
+   878	        r="4"
+   879	        fill="none"
+   880	        stroke="currentColor"
+   881	        strokeWidth="1.7"
+   882	      />
+   883	    </svg>
+   884	  )
+   885	}
+   886	
+   887	function GlobeIcon() {
+   888	  return (
+   889	    <svg
+   890	      viewBox="0 0 24 24"
+   891	      aria-hidden="true"
+   892	    >
+   893	      <circle
+   894	        cx="12"
+   895	        cy="12"
+   896	        r="9"
+   897	        fill="none"
+   898	        stroke="currentColor"
+   899	        strokeWidth="1.7"
+   900	      />
+   901	
+   902	      <path
+   903	        d="M3 12h18M12 3c2.1 2.5 3.2 5.5 3.2 9s-1.1 6.5-3.2 9c-2.1-2.5-3.2-5.5-3.2-9S9.9 5.5 12 3Z"
+   904	        fill="none"
+   905	        stroke="currentColor"
+   906	        strokeWidth="1.7"
+   907	      />
+   908	    </svg>
+   909	  )
+   910	}
+
+==================== PACKAGE.JSON ===================
+     1	{
+     2	  "name": "abhivocopedia-portfolio",
+     3	  "version": "1.0.0",
+     4	  "type": "module",
+     5	  "scripts": {
+     6	    "dev": "vite",
+     7	    "build": "tsc && vite build",
+     8	    "preview": "vite preview",
+     9	    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    10	    "preview-api": "vercel dev"
+    11	  },
+    12	  "dependencies": {
+    13	    "cheerio": "^1.2.0",
+    14	    "counterapi": "^3.1.0",
+    15	    "framer-motion": "^10.16.16",
+    16	    "react": "^18.2.0",
+    17	    "react-dom": "^18.2.0"
+    18	  },
+    19	  "devDependencies": {
+    20	    "@types/react": "^18.2.43",
+    21	    "@types/react-dom": "^18.2.17",
+    22	    "@vitejs/plugin-react": "^4.2.1",
+    23	    "typescript": "^5.3.3",
+    24	    "vite": "^5.0.8"
+    25	  }
+    26	}

@@ -1,0 +1,52 @@
+export const profile = {
+  name: 'Abhinandana Bhatta',
+  identity: 'Abhivocopedia',
+  tagline: 'CSE Student · Full-Stack Developer · Independent Builder',
+  location: 'Karnataka, India',
+  heroStatement: 'I BUILD SYSTEMS THAT TURN IDEAS INTO WORKING PRODUCTS.',
+  profilePhoto: '/images/profile/abhinandana.webp',
+  bio: 'I enjoy turning ideas into working products — from web applications and AI-powered tools to cloud deployments and experimental systems.',
+  themes: [
+    'Software Engineering',
+    'Full-Stack Development',
+    'AI',
+    'Systems',
+    'Cloud Deployment',
+    'Product Engineering',
+    'Experimentation',
+    'Learning by Building'
+  ],
+  currentStatus: {
+    program: 'B.E. Computer Science and Engineering',
+    institution: 'Jain Institute of Technology, Davangere (VTU)',
+    period: '2026–Present',
+    semester: '3rd Semester',
+    expectedGraduation: '2029'
+  },
+  social: {
+    github: 'https://github.com/Abhivocopedia',
+    linkedin: 'https://linkedin.com/in/abhinandana-bhatta',
+    instagram: 'https://instagram.com/abhivocopedia',
+    youtube: 'https://youtube.com/@abhinandanabhatta-s7b',
+    x: 'https://x.com/Abhinandan43024',
+    photography: 'https://abhivocopedia.github.io/Abhis_Unscripted-Photography/',
+    discord: 'https://discord.com',
+    spotify: 'https://open.spotify.com/user/31xuz4tl6ckxuno63m4ckq7evpim',
+    devfolio: 'https://devfolio.co/@abhivocopedia',
+    genesis: 'https://genesis-lab-nu.vercel.app/',
+    email: 'abhivocopedia@gmail.com'
+  },
+  vexr: {
+    lines: [
+      'MAKE SOMETHING',
+      'MAKE IT MATTER',
+      'MAKE MONEY'
+    ]
+  },
+  beyondCode: [
+    'Tabla',
+    'Piano',
+    'Flute',
+    'Emcee'
+  ]
+}
