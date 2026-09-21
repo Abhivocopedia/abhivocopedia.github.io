@@ -2493,3 +2493,307 @@
   }
 }
 
+
+
+/* =========================================================
+   ACTIVE CHECKPOINT LIFT
+   The tin normally stays in its normal position.
+   When the F1 car reaches the station, the active tin
+   rises across the red/white checkpoint kerb.
+========================================================= */
+
+.station {
+  z-index: 6;
+}
+
+.stationActive {
+  z-index: 40 !important;
+}
+
+/* Top-side station:
+   rise slightly so the can visually crosses the kerb. */
+.stationActive .cardTop.cardVisible {
+  transform:
+    translateX(-50%)
+    translateY(-42px)
+    scale(1.035) !important;
+
+  z-index: 50 !important;
+
+  filter:
+    brightness(1.08)
+    saturate(1.08);
+
+  transition:
+    transform 420ms cubic-bezier(.16,1,.3,1),
+    filter 320ms ease;
+}
+
+/* Bottom-side station:
+   pull the can upward toward/over the kerb. */
+.stationActive .cardBottom.cardVisible {
+  transform:
+    translateX(-50%)
+    translateY(-78px)
+    scale(1.035) !important;
+
+  z-index: 50 !important;
+
+  filter:
+    brightness(1.08)
+    saturate(1.08);
+
+  transition:
+    transform 420ms cubic-bezier(.16,1,.3,1),
+    filter 320ms ease;
+}
+
+/* Active can gets a stronger race-session edge. */
+.stationActive .stationCard {
+  border-color: #e30613 !important;
+
+  box-shadow:
+    inset 10px 0 18px rgba(255,255,255,.10),
+    inset -12px 0 22px rgba(0,0,0,.34),
+    inset 0 10px 12px rgba(255,255,255,.14),
+    inset 0 -18px 22px rgba(0,0,0,.42),
+    0 28px 58px rgba(0,0,0,.38),
+    0 0 0 2px rgba(227,6,19,.28),
+    0 5px 0 rgba(0,0,0,.18);
+}
+
+/* Make the active card visually sit above the kerb. */
+.stationActive .cardConnector {
+  z-index: 45 !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(227,6,19,.0),
+      rgba(227,6,19,.75),
+      rgba(255,255,255,.2)
+    ) !important;
+}
+
+
+/* =========================================================
+   EDUCATION BASE DIMENSIONS
+========================================================= */
+
+.stationCardWrap {
+  width: 350px !important;
+}
+
+.stationCard {
+  height: 245px !important;
+  min-height: 245px !important;
+
+  padding:
+    23px
+    24px
+    28px !important;
+
+  border-radius: 30px !important;
+}
+
+.cardTop {
+  top: 22px !important;
+  bottom: auto !important;
+}
+
+.cardBottom {
+  bottom: 22px !important;
+  top: auto !important;
+}
+
+.cardTop .cardConnector,
+.cardBottom .cardConnector {
+  height: 44px !important;
+}
+
+.cardTitle {
+  font-size: 1.12rem !important;
+  line-height: 1.12 !important;
+}
+
+.cardDetail {
+  font-size: .70rem !important;
+  line-height: 1.38 !important;
+}
+
+.cardPeriod {
+  font-size: .55rem !important;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+
+  .stationCardWrap {
+    width: 330px !important;
+  }
+
+  .stationCard {
+    height: 230px !important;
+    min-height: 230px !important;
+  }
+
+  .cardTop {
+    top: 18px !important;
+  }
+
+  .cardBottom {
+    bottom: 18px !important;
+  }
+
+  .cardTop .cardConnector,
+  .cardBottom .cardConnector {
+    height: 38px !important;
+  }
+
+  .stationActive .cardTop.cardVisible {
+    transform:
+      translateX(-50%)
+      translateY(-32px)
+      scale(1.025) !important;
+  }
+
+  .stationActive .cardBottom.cardVisible {
+    transform:
+      translateX(-50%)
+      translateY(-60px)
+      scale(1.025) !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  .stationCardWrap {
+    width: min(310px, 84vw) !important;
+  }
+
+  .stationCard {
+    height: 220px !important;
+    min-height: 220px !important;
+
+    padding:
+      19px
+      19px
+      23px !important;
+
+    border-radius: 27px !important;
+  }
+
+  .cardTop {
+    top: 14px !important;
+  }
+
+  .cardBottom {
+    bottom: 14px !important;
+  }
+
+  .cardTop .cardConnector,
+  .cardBottom .cardConnector {
+    height: 30px !important;
+  }
+
+  .cardTitle {
+    font-size: .96rem !important;
+  }
+
+  .cardDetail {
+    font-size: .62rem !important;
+  }
+
+  .stationActive .cardTop.cardVisible {
+    transform:
+      translateX(-50%)
+      translateY(-24px)
+      scale(1.018) !important;
+  }
+
+  .stationActive .cardBottom.cardVisible {
+    transform:
+      translateX(-50%)
+      translateY(-42px)
+      scale(1.018) !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 480px) {
+
+  .stationCardWrap {
+    width: min(285px, 84vw) !important;
+  }
+
+  .stationCard {
+    height: 205px !important;
+    min-height: 205px !important;
+
+    padding:
+      17px
+      17px
+      21px !important;
+
+    border-radius: 24px !important;
+  }
+
+  .cardTop {
+    top: 10px !important;
+  }
+
+  .cardBottom {
+    bottom: 10px !important;
+  }
+
+  .cardTitle {
+    font-size: .88rem !important;
+  }
+
+  .cardDetail {
+    font-size: .58rem !important;
+  }
+
+  .stationActive .cardTop.cardVisible {
+    transform:
+      translateX(-50%)
+      translateY(-18px)
+      scale(1.012) !important;
+  }
+
+  .stationActive .cardBottom.cardVisible {
+    transform:
+      translateX(-50%)
+      translateY(-32px)
+      scale(1.012) !important;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .stationActive .cardTop.cardVisible,
+  .stationActive .cardBottom.cardVisible {
+    transform:
+      translateX(-50%) !important;
+
+    filter: none;
+  }
+}
