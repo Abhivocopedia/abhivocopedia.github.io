@@ -240,32 +240,6 @@ export function Footer() {
   const githubLanguageValue =
     githubStats?.languages ?? 0
 
-  const githubBars = githubStats
-    ? [
-        Math.min(
-          100,
-          Math.max(
-            18,
-            (githubCommitValue / 500) * 100,
-          ),
-        ),
-        Math.min(
-          100,
-          Math.max(
-            18,
-            (githubRepoValue / 40) * 100,
-          ),
-        ),
-        Math.min(
-          100,
-          Math.max(
-            18,
-            (githubLanguageValue / 20) * 100,
-          ),
-        ),
-      ]
-    : [28, 20, 24]
-
   const githubUpdatedLabel =
     githubStats
       ? new Date(
@@ -280,6 +254,30 @@ export function Footer() {
           },
         )
       : '--:--:--'
+
+  const githubTickerItems = [
+    [
+      'COMMITS',
+      githubLoading
+        ? '---'
+        : githubCommitValue.toLocaleString(),
+    ],
+    [
+      'REPOSITORIES',
+      githubLoading
+        ? '---'
+        : githubRepoValue.toLocaleString(),
+    ],
+    [
+      'LANGUAGES',
+      githubLoading
+        ? '---'
+        : githubLanguageValue.toLocaleString(),
+    ],
+    ['STATUS', githubStats ? 'ONLINE' : 'CONNECTING'],
+    ['SOURCE', 'GITHUB API'],
+    ['SYNC', githubUpdatedLabel],
+  ] as const
 
   return (
     <footer className={styles.footer} role="contentinfo">
@@ -323,77 +321,6 @@ export function Footer() {
           <div className={styles.brand}>
             <span className={styles.logo}>ABHIVOCOPEDIA</span>
             <p className={styles.tagline}>{profile.tagline}</p>
-          <a
-            href={profile.social.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.githubLive}
-            aria-label="Open Abhivocopedia GitHub profile"
-          >
-            <div className={styles.githubLiveGlow} />
-
-            <div className={styles.githubLiveTop}>
-              <div className={styles.githubLiveHeading}>
-                <span className={styles.githubLivePrompt}>01</span>
-                <span>GITHUB // LIVE</span>
-              </div>
-
-              <div className={styles.githubLiveOnline}>
-                <span />
-                ONLINE
-              </div>
-            </div>
-
-            <div className={styles.githubLiveRule} />
-
-            <div className={styles.githubLiveStats}>
-              <div className={styles.githubLiveStat}>
-                <span className={styles.githubLiveLabel}>COMMITS</span>
-                <strong>
-                  {githubLoading
-                    ? '---'
-                    : githubCommitValue.toLocaleString()}
-                </strong>
-              </div>
-
-              <div className={styles.githubLiveStat}>
-                <span className={styles.githubLiveLabel}>REPOS</span>
-                <strong>
-                  {githubLoading
-                    ? '---'
-                    : githubRepoValue.toLocaleString()}
-                </strong>
-              </div>
-
-              <div className={styles.githubLiveStat}>
-                <span className={styles.githubLiveLabel}>LANGS</span>
-                <strong>
-                  {githubLoading
-                    ? '---'
-                    : githubLanguageValue.toLocaleString()}
-                </strong>
-              </div>
-            </div>
-
-            <div className={styles.githubLiveGraph}>
-              {githubBars.map((width, index) => (
-                <div
-                  key={index}
-                  className={styles.githubLiveGraphRow}
-                >
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <div className={styles.githubLiveGraphTrack}>
-                    <i style={{ width: `${width}%` }} />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.githubLiveBottom}>
-              <span>API.GITHUB.COM / {GITHUB_USERNAME}</span>
-              <span>SYNC {githubUpdatedLabel}</span>
-            </div>
-          </a>
           </div>
 
           <div className={styles.genesisPreview}>
@@ -427,6 +354,72 @@ export function Footer() {
             </div>
           </div>
 
+
+          <a
+            href={profile.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.githubLiveMarquee}
+            aria-label="Live GitHub statistics for Abhivocopedia"
+          >
+            <span
+              className={styles.githubLiveMarqueeGrid}
+              aria-hidden="true"
+            />
+
+            <span
+              className={styles.githubLiveMarqueeGlow}
+              aria-hidden="true"
+            />
+
+            <span className={styles.githubLiveMarqueeViewport}>
+              <span className={styles.githubLiveMarqueeTrack}>
+                {[0, 1].map((copy) => (
+                  <span
+                    className={styles.githubLiveMarqueeGroup}
+                    key={copy}
+                    aria-hidden={copy === 1}
+                  >
+                    {githubTickerItems.map(
+                      ([label, value], index) => (
+                        <span
+                          className={styles.githubLiveMarqueeItem}
+                          key={`${copy}-${label}-${index}`}
+                        >
+                          <span
+                            className={styles.githubLiveMarqueeLabel}
+                          >
+                            {label}
+                          </span>
+
+                          <strong>
+                            {value}
+                          </strong>
+
+                          <span
+                            className={
+                              styles.githubLiveMarqueeSeparator
+                            }
+                          >
+                            //
+                          </span>
+                        </span>
+                      ),
+                    )}
+
+                    <span
+                      className={
+                        styles.githubLiveMarqueeSignal
+                      }
+                    >
+                      <i />
+                      LIVE GITHUB SIGNAL
+                    </span>
+                  </span>
+                ))}
+              </span>
+            </span>
+          </a>
 
           <div className={styles.vexr}>
             <Label variant="meta" className={styles.vexrLabel}>VEX-R</Label>
