@@ -8,7 +8,6 @@ import styles from './Navbar.module.css'
 
 import { soundFX } from '../lib/SoundFX'
 import { SoundToggle } from './SoundToggle'
-import { VisitorCount } from './VisitorCount'
 
 type AppRoute =
   | 'home'
@@ -461,8 +460,6 @@ export function Navbar({
                 </a>
               ),
             )}
-
-              <VisitorCount />
 
             <a
               href="#resume"
