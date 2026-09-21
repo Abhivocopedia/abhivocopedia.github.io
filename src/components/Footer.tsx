@@ -2,6 +2,9 @@ import { profile } from '../data/profile'
 import { Label } from './DecorativeMarks'
 import styles from './Footer.module.css'
 
+const GENESIS_LAB_PREVIEW_URL =
+  'https://genesis-lab-nu.vercel.app/browser?url=https%3A%2F%2Fgithub.com%2FAbhivocopedia'
+
 
 const footerToolLogos = [
   ['GitHub', profile.social.github, 'https://cdn.simpleicons.org/github/181717'],
@@ -101,6 +104,37 @@ export function Footer() {
           <div className={styles.brand}>
             <span className={styles.logo}>ABHIVOCOPEDIA</span>
             <p className={styles.tagline}>{profile.tagline}</p>
+          </div>
+
+          <div className={styles.genesisPreview}>
+            <div className={styles.genesisPreviewHeader}>
+              <span className={styles.genesisPreviewDots} aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              <span className={styles.genesisPreviewTitle}>
+                GENESIS LAB
+              </span>
+              <a
+                href={GENESIS_LAB_PREVIEW_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.genesisPreviewOpen}
+              >
+                OPEN ↗
+              </a>
+            </div>
+
+            <div className={styles.genesisPreviewFrame}>
+              <iframe
+                src={GENESIS_LAB_PREVIEW_URL}
+                title="Genesis Lab GitHub Browser Preview"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+                className={styles.genesisPreviewIframe}
+              />
+            </div>
           </div>
 
           <div className={styles.vexr}>

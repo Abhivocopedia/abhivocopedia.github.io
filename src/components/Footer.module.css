@@ -33,8 +33,9 @@
 
 @media (min-width: 769px) {
   .main {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 1.7fr) minmax(0, 1fr);
     align-items: start;
+    gap: clamp(18px, 2vw, 34px);
   }
 }
 
@@ -65,6 +66,97 @@
   align-items: center;
   gap: var(--space-sm);
   opacity: 0.6;
+}
+
+.genesisPreview {
+  min-width: 0;
+  width: 100%;
+  align-self: stretch;
+}
+
+.genesisPreviewHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 253, 246, 0.14);
+  border-bottom: 0;
+  background: rgba(255, 253, 246, 0.045);
+  border-radius: 12px 12px 0 0;
+}
+
+.genesisPreviewDots {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.genesisPreviewDots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  display: block;
+  background: rgba(255, 253, 246, 0.32);
+}
+
+.genesisPreviewTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255, 253, 246, 0.72);
+}
+
+.genesisPreviewOpen {
+  margin-left: auto;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--mustard);
+  text-decoration: none;
+}
+
+.genesisPreviewOpen:hover {
+  color: var(--warm-white);
+}
+
+.genesisPreviewFrame {
+  position: relative;
+  width: 100%;
+  height: clamp(180px, 18vw, 235px);
+  overflow: hidden;
+  border: 1px solid rgba(255, 253, 246, 0.14);
+  border-radius: 0 0 12px 12px;
+  background: #050505;
+  box-shadow:
+    0 16px 35px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.genesisPreviewIframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #050505;
+}
+
+@media (max-width: 768px) {
+  .genesisPreview {
+    width: 100%;
+  }
+
+  .genesisPreviewFrame {
+    height: 210px;
+  }
 }
 
 .vexr {
