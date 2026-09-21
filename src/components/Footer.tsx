@@ -184,9 +184,6 @@ export function Footer() {
   const [githubLoading, setGithubLoading] =
     useState(() => !readGitHubCache())
 
-  const [githubError, setGithubError] =
-    useState(false)
-
   useEffect(() => {
     let cancelled = false
 
@@ -203,7 +200,6 @@ export function Footer() {
         }
 
         setGithubLoading(true)
-        setGithubError(false)
 
         const data =
           await fetchGitHubLiveStats()
@@ -213,7 +209,6 @@ export function Footer() {
         }
       } catch {
         if (!cancelled) {
-          setGithubError(true)
         }
       } finally {
         if (!cancelled) {
@@ -335,33 +330,25 @@ export function Footer() {
             className={styles.githubLive}
             aria-label="Open Abhivocopedia GitHub profile"
           >
-            <div className={styles.githubLiveScanline} />
+            <div className={styles.githubLiveGlow} />
 
-            <div className={styles.githubLiveHeader}>
-              <div className={styles.githubLiveTitle}>
-                <span className={styles.githubLivePrompt}>
-                  &gt;_
-                </span>
+            <div className={styles.githubLiveTop}>
+              <div className={styles.githubLiveHeading}>
+                <span className={styles.githubLivePrompt}>01</span>
                 <span>GITHUB // LIVE</span>
               </div>
 
-              <div className={styles.githubLiveStatus}>
-                <span
-                  className={
-                    githubError
-                      ? styles.githubLiveStatusDotError
-                      : styles.githubLiveStatusDot
-                  }
-                />
-                {githubError
-                  ? 'OFFLINE'
-                  : 'LIVE'}
+              <div className={styles.githubLiveOnline}>
+                <span />
+                ONLINE
               </div>
             </div>
 
+            <div className={styles.githubLiveRule} />
+
             <div className={styles.githubLiveStats}>
               <div className={styles.githubLiveStat}>
-                <span>COMMITS</span>
+                <span className={styles.githubLiveLabel}>COMMITS</span>
                 <strong>
                   {githubLoading
                     ? '---'
@@ -370,7 +357,7 @@ export function Footer() {
               </div>
 
               <div className={styles.githubLiveStat}>
-                <span>REPOSITORIES</span>
+                <span className={styles.githubLiveLabel}>REPOS</span>
                 <strong>
                   {githubLoading
                     ? '---'
@@ -379,7 +366,7 @@ export function Footer() {
               </div>
 
               <div className={styles.githubLiveStat}>
-                <span>LANGUAGES</span>
+                <span className={styles.githubLiveLabel}>LANGS</span>
                 <strong>
                   {githubLoading
                     ? '---'
@@ -388,28 +375,23 @@ export function Footer() {
               </div>
             </div>
 
-            <div className={styles.githubLiveBars}>
-              {githubBars.map(
-                (width, index) => (
-                  <span
-                    key={index}
-                    style={{
-                      width: `${width}%`,
-                    }}
-                  />
-                ),
-              )}
+            <div className={styles.githubLiveGraph}>
+              {githubBars.map((width, index) => (
+                <div
+                  key={index}
+                  className={styles.githubLiveGraphRow}
+                >
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <div className={styles.githubLiveGraphTrack}>
+                    <i style={{ width: `${width}%` }} />
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className={styles.githubLiveFooter}>
-              <span>
-                API://GITHUB.COM/
-                {GITHUB_USERNAME}
-              </span>
-
-              <span>
-                SYNC {githubUpdatedLabel}
-              </span>
+            <div className={styles.githubLiveBottom}>
+              <span>API.GITHUB.COM / {GITHUB_USERNAME}</span>
+              <span>SYNC {githubUpdatedLabel}</span>
             </div>
           </a>
           </div>
