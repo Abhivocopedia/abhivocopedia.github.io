@@ -50,17 +50,5 @@ export const projects: Project[] = [
     githubUrl: 'ADD LINK',
     color: '#2C7C7A',
     featured: true
-  },
-  {
-    id: 'SOMETHING CRAZY ON THE WAY',
-    number: '04',
-    category: 'FULL-STACK',
-    title: 'CRAZY',
-    description: '',
-    tech: ['HTML','CSS','JS'],
-    liveUrl: 'https://.app',
-    githubUrl: 'ADD LINK',
-    color: '#2C7C7A',
-    featured: true
   }
 ]
