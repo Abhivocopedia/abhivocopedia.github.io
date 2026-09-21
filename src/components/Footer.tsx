@@ -355,72 +355,6 @@ export function Footer() {
           </div>
 
 
-          <a
-            href={profile.social.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.githubLiveMarquee}
-            aria-label="Live GitHub statistics for Abhivocopedia"
-          >
-            <span
-              className={styles.githubLiveMarqueeGrid}
-              aria-hidden="true"
-            />
-
-            <span
-              className={styles.githubLiveMarqueeGlow}
-              aria-hidden="true"
-            />
-
-            <span className={styles.githubLiveMarqueeViewport}>
-              <span className={styles.githubLiveMarqueeTrack}>
-                {[0, 1].map((copy) => (
-                  <span
-                    className={styles.githubLiveMarqueeGroup}
-                    key={copy}
-                    aria-hidden={copy === 1}
-                  >
-                    {githubTickerItems.map(
-                      ([label, value], index) => (
-                        <span
-                          className={styles.githubLiveMarqueeItem}
-                          key={`${copy}-${label}-${index}`}
-                        >
-                          <span
-                            className={styles.githubLiveMarqueeLabel}
-                          >
-                            {label}
-                          </span>
-
-                          <strong>
-                            {value}
-                          </strong>
-
-                          <span
-                            className={
-                              styles.githubLiveMarqueeSeparator
-                            }
-                          >
-                            //
-                          </span>
-                        </span>
-                      ),
-                    )}
-
-                    <span
-                      className={
-                        styles.githubLiveMarqueeSignal
-                      }
-                    >
-                      <i />
-                      LIVE GITHUB SIGNAL
-                    </span>
-                  </span>
-                ))}
-              </span>
-            </span>
-          </a>
-
           <div className={styles.vexr}>
             <Label variant="meta" className={styles.vexrLabel}>VEX-R</Label>
             <ul className={styles.vexrLines} aria-label="Vex-R philosophy">
@@ -430,6 +364,96 @@ export function Footer() {
             </ul>
           </div>
         </div>
+
+        <a
+          href={profile.social.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.githubLiveMarquee}
+          aria-label="Live GitHub statistics for Abhivocopedia"
+        >
+          <span
+            className={styles.githubLiveMarqueeGrid}
+            aria-hidden="true"
+          />
+
+          <span
+            className={styles.githubLiveMarqueeGlow}
+            aria-hidden="true"
+          />
+
+          <span className={styles.githubLiveMarqueeHeader}>
+            <span className={styles.githubLiveMarqueeBrand}>
+              <span className={styles.githubLiveMarqueePrompt}>
+                &gt;_
+              </span>
+              GITHUB // LIVE
+            </span>
+
+            <span className={styles.githubLiveMarqueeOnline}>
+              <i />
+              ONLINE
+            </span>
+          </span>
+
+          <span className={styles.githubLiveMarqueeViewport}>
+            <span className={styles.githubLiveMarqueeTrack}>
+              {[0, 1].map((copy) => (
+                <span
+                  className={styles.githubLiveMarqueeGroup}
+                  key={copy}
+                  aria-hidden={copy === 1}
+                >
+                  {githubTickerItems.map(
+                    ([label, value], index) => (
+                      <span
+                        className={styles.githubLiveMarqueeItem}
+                        key={`${copy}-${label}-${index}`}
+                      >
+                        <span
+                          className={
+                            styles.githubLiveMarqueeLabel
+                          }
+                        >
+                          {label}
+                        </span>
+
+                        <strong>{value}</strong>
+
+                        <span
+                          className={
+                            styles.githubLiveMarqueeSeparator
+                          }
+                        >
+                          //
+                        </span>
+                      </span>
+                    ),
+                  )}
+
+                  <span
+                    className={
+                      styles.githubLiveMarqueeSignal
+                    }
+                  >
+                    <i />
+                    LIVE GITHUB SIGNAL
+                  </span>
+                </span>
+              ))}
+            </span>
+          </span>
+
+          <span className={styles.githubLiveMarqueeFooter}>
+            <span>
+              API.GITHUB.COM / {GITHUB_USERNAME}
+            </span>
+
+            <span>
+              SYNC {githubUpdatedLabel}
+            </span>
+          </span>
+        </a>
 
         <div className={styles.divider} aria-hidden="true"></div>
 

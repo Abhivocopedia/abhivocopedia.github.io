@@ -159,6 +159,323 @@
   }
 }
 
+/* =========================================================
+   GITHUB // LIVE — CYBERPUNK TELEMETRY MARQUEE
+========================================================= */
+
+.githubLiveMarquee {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 72px;
+  margin: 0 0 var(--space-xl);
+  overflow: hidden;
+  color: #eaffff;
+  text-decoration: none;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2, 8, 13, 0.98),
+      rgba(7, 19, 28, 0.98),
+      rgba(2, 8, 13, 0.98)
+    );
+  border-top: 1px solid rgba(34, 211, 238, 0.35);
+  border-bottom: 1px solid rgba(34, 211, 238, 0.2);
+  box-shadow:
+    0 0 20px rgba(34, 211, 238, 0.07),
+    inset 0 0 35px rgba(34, 211, 238, 0.035);
+  clip-path: polygon(
+    0 7px,
+    7px 0,
+    calc(100% - 7px) 0,
+    100% 7px,
+    100% calc(100% - 7px),
+    calc(100% - 7px) 100%,
+    7px 100%,
+    0 calc(100% - 7px)
+  );
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.githubLiveMarquee:hover {
+  border-top-color: rgba(34, 211, 238, 0.7);
+  border-bottom-color: rgba(34, 211, 238, 0.42);
+  box-shadow:
+    0 0 28px rgba(34, 211, 238, 0.12),
+    inset 0 0 35px rgba(34, 211, 238, 0.05);
+}
+
+.githubLiveMarqueeGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(
+      rgba(34, 211, 238, 0.045) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(34, 211, 238, 0.045) 1px,
+      transparent 1px
+    );
+  background-size: 20px 20px;
+}
+
+.githubLiveMarqueeGlow {
+  position: absolute;
+  left: 48%;
+  top: -90px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: rgba(34, 211, 238, 0.08);
+  filter: blur(35px);
+  pointer-events: none;
+}
+
+.githubLiveMarqueeHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 27px;
+  padding: 0 13px;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.11);
+  background: rgba(2, 8, 13, 0.72);
+  backdrop-filter: blur(5px);
+}
+
+.githubLiveMarqueeBrand {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  color: #d8fbff;
+}
+
+.githubLiveMarqueePrompt {
+  color: #21e6ff;
+  text-shadow:
+    0 0 8px rgba(33, 230, 255, 0.75);
+}
+
+.githubLiveMarqueeOnline {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.42rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  color: rgba(215, 255, 238, 0.52);
+}
+
+.githubLiveMarqueeOnline > i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4dff9b;
+  box-shadow:
+    0 0 6px #4dff9b,
+    0 0 12px rgba(77, 255, 155, 0.6);
+  animation: githubLiveSignalPulse 1.5s ease-in-out infinite;
+}
+
+.githubLiveMarqueeViewport {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 27px;
+  bottom: 20px;
+  z-index: 2;
+  overflow: hidden;
+  mask-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      #000 6%,
+      #000 94%,
+      transparent
+    );
+  -webkit-mask-image:
+    linear-gradient(
+      90deg,
+      transparent,
+      #000 6%,
+      #000 94%,
+      transparent
+    );
+}
+
+.githubLiveMarqueeTrack {
+  width: max-content;
+  min-width: max-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  will-change: transform;
+  animation:
+    githubLiveMarqueeRight
+    26s
+    linear
+    infinite;
+}
+
+.githubLiveMarqueeGroup {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 100%;
+  padding-right: 30px;
+}
+
+.githubLiveMarqueeItem {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 0 16px;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+}
+
+.githubLiveMarqueeLabel {
+  font-size: 0.42rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  color: rgba(186, 247, 255, 0.42);
+}
+
+.githubLiveMarqueeItem strong {
+  font-size: 0.82rem;
+  line-height: 1;
+  font-weight: 800;
+  color: #f1ffff;
+  text-shadow:
+    0 0 9px rgba(34, 211, 238, 0.28);
+}
+
+.githubLiveMarqueeSeparator {
+  margin-left: 7px;
+  color: rgba(34, 211, 238, 0.26);
+  font-size: 0.48rem;
+}
+
+.githubLiveMarqueeSignal {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  margin-left: 4px;
+  padding: 4px 9px;
+  border: 1px solid rgba(34, 211, 238, 0.16);
+  background: rgba(34, 211, 238, 0.035);
+  font-family: var(--font-mono);
+  font-size: 0.41rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: rgba(190, 250, 255, 0.6);
+}
+
+.githubLiveMarqueeSignal > i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4dff9b;
+  box-shadow:
+    0 0 6px #4dff9b,
+    0 0 12px rgba(77, 255, 155, 0.6);
+}
+
+.githubLiveMarqueeFooter {
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 4px;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.38rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: rgba(186, 247, 255, 0.3);
+  pointer-events: none;
+}
+
+.githubLiveMarqueeFooter span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes githubLiveMarqueeRight {
+  from {
+    transform: translateX(-50%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes githubLiveSignalPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .githubLiveMarqueeTrack {
+    animation: none;
+  }
+
+  .githubLiveMarqueeOnline > i {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .githubLiveMarquee {
+    height: 68px;
+    margin-bottom: var(--space-lg);
+  }
+
+  .githubLiveMarqueeItem {
+    padding: 0 11px;
+  }
+
+  .githubLiveMarqueeItem strong {
+    font-size: 0.76rem;
+  }
+
+  .githubLiveMarqueeFooter {
+    font-size: 0.34rem;
+  }
+}
+
 .vexr {
   text-align: right;
 }
