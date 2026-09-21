@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050607"/>
+      <stop offset="48%" stop-color="#09111a"/>
+      <stop offset="100%" stop-color="#16070a"/>
+    </linearGradient>
+
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1ed760"/>
+      <stop offset="100%" stop-color="#0ea94b"/>
+    </linearGradient>
+
+    <linearGradient id="speed" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0d47ff"/>
+      <stop offset="45%" stop-color="#e91e2f"/>
+      <stop offset="100%" stop-color="#ffd43b"/>
+    </linearGradient>
+
+    <filter id="glowGreen">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="glowRed">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Ambient glow -->
+  <circle cx="1030" cy="120" r="180" fill="#e91e2f" opacity=".10" filter="url(#glowRed)"/>
+  <circle cx="170" cy="500" r="200" fill="#1ed760" opacity=".08" filter="url(#glowGreen)"/>
+
+  <!-- Racing / speed lines -->
+  <g opacity=".9">
+    <path d="M720 95 L1160 18" stroke="#0d47ff" stroke-width="10"/>
+    <path d="M700 125 L1130 54" stroke="#e91e2f" stroke-width="8"/>
+    <path d="M670 155 L1090 92" stroke="#ffd43b" stroke-width="6"/>
+    <path d="M760 520 L1180 445" stroke="#0d47ff" stroke-width="8"/>
+    <path d="M735 548 L1150 482" stroke="#e91e2f" stroke-width="6"/>
+    <path d="M710 575 L1110 515" stroke="#ffd43b" stroke-width="5"/>
+  </g>
+
+  <!-- Header -->
+  <text x="74" y="72"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="25"
+        font-weight="800"
+        letter-spacing="7">
+    ABHIVOCOPEDIA
+  </text>
+
+  <text x="74" y="108"
+        fill="#7f8a96"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="15"
+        font-weight="500"
+        letter-spacing="4">
+    ENGINEERING • AI • SOFTWARE • BUILDER
+  </text>
+
+  <!-- Main name -->
+  <text x="74" y="205"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="63"
+        font-weight="900"
+        letter-spacing="-2">
+    ABHINANDANA
+  </text>
+
+  <text x="74" y="270"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="63"
+        font-weight="900"
+        letter-spacing="-2">
+    BHATTA
+  </text>
+
+  <text x="78" y="312"
+        fill="#9ba7b3"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="22"
+        font-weight="500"
+        letter-spacing="1">
+    CSE • FULL-STACK • AI • CLOUD • PRODUCT ENGINEERING
+  </text>
+
+  <!-- Music card -->
+  <rect x="74" y="365" width="500" height="148" rx="22"
+        fill="#0d1116" stroke="#252c33" stroke-width="2"/>
+
+  <circle cx="124" cy="439" r="31" fill="url(#green)"/>
+  <circle cx="124" cy="439" r="19" fill="#061008"/>
+  <path d="M118 428 L118 450 L136 439 Z" fill="#1ed760"/>
+
+  <text x="176" y="404"
+        fill="#1ed760"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="13"
+        font-weight="800"
+        letter-spacing="3">
+    FEATURED TRACK
+  </text>
+
+  <text x="176" y="438"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="26"
+        font-weight="800">
+    Pesamale
+  </text>
+
+  <text x="176" y="466"
+        fill="#8b96a1"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="16"
+        font-weight="500">
+    Siri Xander • Arra Aria Khayal
+  </text>
+
+  <!-- Equalizer -->
+  <g transform="translate(176 482)">
+    <rect x="0" y="8" width="4" height="15" rx="2" fill="#1ed760"/>
+    <rect x="10" y="3" width="4" height="20" rx="2" fill="#1ed760"/>
+    <rect x="20" y="11" width="4" height="12" rx="2" fill="#1ed760"/>
+    <rect x="30" y="0" width="4" height="23" rx="2" fill="#1ed760"/>
+    <rect x="40" y="6" width="4" height="17" rx="2" fill="#1ed760"/>
+    <rect x="50" y="12" width="4" height="11" rx="2" fill="#1ed760"/>
+    <rect x="60" y="4" width="4" height="19" rx="2" fill="#1ed760"/>
+    <rect x="70" y="9" width="4" height="14" rx="2" fill="#1ed760"/>
+    <rect x="80" y="1" width="4" height="22" rx="2" fill="#1ed760"/>
+    <rect x="90" y="10" width="4" height="13" rx="2" fill="#1ed760"/>
+  </g>
+
+  <!-- Speed / energy panel -->
+  <g transform="translate(650 265)">
+    <text x="0" y="0"
+          fill="#ffffff"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="16"
+          font-weight="800"
+          letter-spacing="4">
+      BUILD MODE
+    </text>
+
+    <text x="0" y="48"
+          fill="#8e99a5"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="17">
+      THINK
+    </text>
+
+    <text x="0" y="84"
+          fill="#8e99a5"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="17">
+      CODE
+    </text>
+
+    <text x="0" y="120"
+          fill="#8e99a5"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="17">
+      SHIP
+    </text>
+
+    <text x="110" y="48"
+          fill="#ffffff"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="18"
+          font-weight="800">
+      →
+    </text>
+
+    <text x="110" y="84"
+          fill="#ffffff"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="18"
+          font-weight="800">
+      →
+    </text>
+
+    <text x="110" y="120"
+          fill="#ffffff"
+          font-family="Arial, Helvetica, sans-serif"
+          font-size="18"
+          font-weight="800">
+      →
+    </text>
+
+    <rect x="150" y="25" width="270" height="12" rx="6" fill="url(#speed)"/>
+    <rect x="150" y="61" width="210" height="12" rx="6" fill="url(#speed)"/>
+    <rect x="150" y="97" width="320" height="12" rx="6" fill="url(#speed)"/>
+  </g>
+
+  <!-- Bottom -->
+  <text x="650" y="475"
+        fill="#ffffff"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="28"
+        font-weight="900"
+        letter-spacing="1">
+    SOFTWARE × AI × MUSIC × ENERGY
+  </text>
+
+  <text x="650" y="513"
+        fill="#7d8995"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="17"
+        font-weight="500">
+    abhivocopedia.github.io
+  </text>
+
+  <rect x="74" y="568" width="1052" height="2" fill="url(#speed)" opacity=".8"/>
+
+  <text x="74" y="602"
+        fill="#697582"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="13"
+        font-weight="700"
+        letter-spacing="4">
+    BUILD • BREAK • LEARN • REPEAT
+  </text>
+</svg>
