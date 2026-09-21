@@ -51,9 +51,9 @@ const footerToolLogos = [
   ['Nvim', 'https://neovim.io/', '/icons/neovim.svg'],
   ['Linux', 'https://www.linux.org/', '/icons/linux.svg'],
   ['Windows', 'https://www.microsoft.com/windows/', '/icons/windows.svg'],
-  ['WSL', 'https://learn.microsoft.com/windows/wsl/', '/icons/wsl.svg'],  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/cocacola.svg'],
+  ['WSL', 'https://learn.microsoft.com/windows/wsl/', '/icons/wsl.svg'],  
+  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/cocacola.svg'],
   ['Red Bull', 'https://www.redbull.com/', '/icons/redbull.svg'],
-  ['Coca-Cola', 'https://www.coca-cola.com/', '/icons/coca-cola.svg'],
   ['Diet Coke', 'https://www.coca-cola.com/', '/icons/diet-coke.svg'],] as const
 
 export function Footer() {
