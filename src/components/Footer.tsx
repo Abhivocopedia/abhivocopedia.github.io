@@ -1,9 +1,123 @@
+import { useEffect, useState } from 'react'
 import { profile } from '../data/profile'
 import { Label } from './DecorativeMarks'
 import styles from './Footer.module.css'
 
 const GENESIS_LAB_PREVIEW_URL =
   'https://genesis-lab-nu.vercel.app/browser?url=https%3A%2F%2Fgithub.com%2FAbhivocopedia'
+
+const GITHUB_USERNAME = 'Abhivocopedia'
+const GITHUB_CACHE_KEY = 'abhivocopedia-github-live-stats'
+const GITHUB_CACHE_TTL = 5 * 60 * 1000
+
+interface GitHubLiveStats {
+  commits: number
+  repositories: number
+  languages: number
+  updatedAt: string
+}
+
+function readGitHubCache(): GitHubLiveStats | null {
+  try {
+    const raw = localStorage.getItem(GITHUB_CACHE_KEY)
+
+    if (!raw) {
+      return null
+    }
+
+    const parsed = JSON.parse(raw) as {
+      timestamp: number
+      data: GitHubLiveStats
+    }
+
+    if (
+      Date.now() - parsed.timestamp >
+      GITHUB_CACHE_TTL
+    ) {
+      return null
+    }
+
+    return parsed.data
+  } catch {
+    return null
+  }
+}
+
+async function fetchGitHubLiveStats(): Promise<GitHubLiveStats> {
+  const headers = {
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2026-03-10',
+  }
+
+  const [profileResponse, reposResponse, commitsResponse] =
+    await Promise.all([
+      fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}`,
+        { headers },
+      ),
+      fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=pushed`,
+        { headers },
+      ),
+      fetch(
+        `https://api.github.com/search/commits?q=author:${GITHUB_USERNAME}`,
+        { headers },
+      ),
+    ])
+
+  if (
+    !profileResponse.ok ||
+    !reposResponse.ok ||
+    !commitsResponse.ok
+  ) {
+    throw new Error('GitHub API request failed')
+  }
+
+  const profileData =
+    (await profileResponse.json()) as {
+      public_repos: number
+    }
+
+  const reposData =
+    (await reposResponse.json()) as Array<{
+      language: string | null
+    }>
+
+  const commitsData =
+    (await commitsResponse.json()) as {
+      total_count: number
+    }
+
+  const languages = new Set(
+    reposData
+      .map((repo) => repo.language)
+      .filter(
+        (language): language is string =>
+          Boolean(language),
+      ),
+  ).size
+
+  const data: GitHubLiveStats = {
+    commits: commitsData.total_count,
+    repositories: profileData.public_repos,
+    languages,
+    updatedAt: new Date().toISOString(),
+  }
+
+  try {
+    localStorage.setItem(
+      GITHUB_CACHE_KEY,
+      JSON.stringify({
+        timestamp: Date.now(),
+        data,
+      }),
+    )
+  } catch {
+    // Ignore cache storage errors.
+  }
+
+  return data
+}
 
 
 const footerToolLogos = [
@@ -62,6 +176,116 @@ const footerToolLogos = [
 export function Footer() {
   const currentYear = new Date().getFullYear()
 
+  const [githubStats, setGithubStats] =
+    useState<GitHubLiveStats | null>(
+      () => readGitHubCache(),
+    )
+
+  const [githubLoading, setGithubLoading] =
+    useState(() => !readGitHubCache())
+
+  const [githubError, setGithubError] =
+    useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const updateGitHubStats = async () => {
+      try {
+        const cached = readGitHubCache()
+
+        if (cached) {
+          if (!cancelled) {
+            setGithubStats(cached)
+            setGithubLoading(false)
+          }
+          return
+        }
+
+        setGithubLoading(true)
+        setGithubError(false)
+
+        const data =
+          await fetchGitHubLiveStats()
+
+        if (!cancelled) {
+          setGithubStats(data)
+        }
+      } catch {
+        if (!cancelled) {
+          setGithubError(true)
+        }
+      } finally {
+        if (!cancelled) {
+          setGithubLoading(false)
+        }
+      }
+    }
+
+    updateGitHubStats()
+
+    const interval =
+      window.setInterval(
+        updateGitHubStats,
+        GITHUB_CACHE_TTL,
+      )
+
+    return () => {
+      cancelled = true
+      window.clearInterval(interval)
+    }
+  }, [])
+
+  const githubCommitValue =
+    githubStats?.commits ?? 0
+
+  const githubRepoValue =
+    githubStats?.repositories ?? 0
+
+  const githubLanguageValue =
+    githubStats?.languages ?? 0
+
+  const githubBars = githubStats
+    ? [
+        Math.min(
+          100,
+          Math.max(
+            18,
+            (githubCommitValue / 500) * 100,
+          ),
+        ),
+        Math.min(
+          100,
+          Math.max(
+            18,
+            (githubRepoValue / 40) * 100,
+          ),
+        ),
+        Math.min(
+          100,
+          Math.max(
+            18,
+            (githubLanguageValue / 20) * 100,
+          ),
+        ),
+      ]
+    : [28, 20, 24]
+
+  const githubUpdatedLabel =
+    githubStats
+      ? new Date(
+          githubStats.updatedAt,
+        ).toLocaleTimeString(
+          'en-IN',
+          {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+          },
+        )
+      : '--:--:--'
+
   return (
     <footer className={styles.footer} role="contentinfo">
       <div className={styles.container}>
@@ -104,6 +328,90 @@ export function Footer() {
           <div className={styles.brand}>
             <span className={styles.logo}>ABHIVOCOPEDIA</span>
             <p className={styles.tagline}>{profile.tagline}</p>
+          <a
+            href={profile.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.githubLive}
+            aria-label="Open Abhivocopedia GitHub profile"
+          >
+            <div className={styles.githubLiveScanline} />
+
+            <div className={styles.githubLiveHeader}>
+              <div className={styles.githubLiveTitle}>
+                <span className={styles.githubLivePrompt}>
+                  &gt;_
+                </span>
+                <span>GITHUB // LIVE</span>
+              </div>
+
+              <div className={styles.githubLiveStatus}>
+                <span
+                  className={
+                    githubError
+                      ? styles.githubLiveStatusDotError
+                      : styles.githubLiveStatusDot
+                  }
+                />
+                {githubError
+                  ? 'OFFLINE'
+                  : 'LIVE'}
+              </div>
+            </div>
+
+            <div className={styles.githubLiveStats}>
+              <div className={styles.githubLiveStat}>
+                <span>COMMITS</span>
+                <strong>
+                  {githubLoading
+                    ? '---'
+                    : githubCommitValue.toLocaleString()}
+                </strong>
+              </div>
+
+              <div className={styles.githubLiveStat}>
+                <span>REPOSITORIES</span>
+                <strong>
+                  {githubLoading
+                    ? '---'
+                    : githubRepoValue.toLocaleString()}
+                </strong>
+              </div>
+
+              <div className={styles.githubLiveStat}>
+                <span>LANGUAGES</span>
+                <strong>
+                  {githubLoading
+                    ? '---'
+                    : githubLanguageValue.toLocaleString()}
+                </strong>
+              </div>
+            </div>
+
+            <div className={styles.githubLiveBars}>
+              {githubBars.map(
+                (width, index) => (
+                  <span
+                    key={index}
+                    style={{
+                      width: `${width}%`,
+                    }}
+                  />
+                ),
+              )}
+            </div>
+
+            <div className={styles.githubLiveFooter}>
+              <span>
+                API://GITHUB.COM/
+                {GITHUB_USERNAME}
+              </span>
+
+              <span>
+                SYNC {githubUpdatedLabel}
+              </span>
+            </div>
+          </a>
           </div>
 
           <div className={styles.genesisPreview}>
@@ -136,6 +444,7 @@ export function Footer() {
               />
             </div>
           </div>
+
 
           <div className={styles.vexr}>
             <Label variant="meta" className={styles.vexrLabel}>VEX-R</Label>
