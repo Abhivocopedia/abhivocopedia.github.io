@@ -28,18 +28,6 @@ export const projects: Project[] = [
     featured: true
   },
   {
-    id: 'feelsafe',
-    number: '02',
-    category: 'WEB APPLICATION',
-    title: 'FeelSafe',
-    description: 'Anonymous feedback platform designed to let people share honest feedback without revealing their identity.',
-    tech: ['Next.js', 'TypeScript', 'Supabase', 'SQL', 'Vercel'],
-    liveUrl: 'https://feelsafe-sigma.vercel.app',
-    githubUrl: 'ADD LINK',
-    color: '#6B2C2C',
-    featured: true
-  },
-  {
     id: 'janani-stores',
     number: '03',
     category: 'FULL-STACK',
