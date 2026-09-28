@@ -1,117 +1,235 @@
-import { useId } from 'react'
+import { useCallback, useState } from 'react'
+import type { PointerEvent } from 'react'
+import { featuredSong } from '../data/featuredSong'
 import { profile } from '../data/profile'
 import styles from './LuminousProfileCard.module.css'
 
+function getSpotifyTrackId(url: string) {
+  return url.match(/track\/([A-Za-z0-9]+)/)?.[1] ?? ''
+}
+
 export function LuminousProfileCard() {
-  const id = useId().replace(/:/g, '')
-  const iconGradientId = `iconGradient-${id}`
-  const strongInnerId = `strongInner-${id}`
+  const [lumenOn, setLumenOn] = useState(false)
+  const [flipped, setFlipped] = useState(false)
+
+  const trackId = getSpotifyTrackId(featuredSong.spotifyUrl)
+
+  const embedUrl = trackId
+    ? `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`
+    : ''
+
+  const handlePointerMove = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (flipped || event.pointerType === 'touch') return
+
+      const rect = event.currentTarget.getBoundingClientRect()
+      const y = event.clientY - rect.top
+
+      // Original behaviour:
+      // hovering the upper half flips to Spotify.
+      if (y <= rect.height * 0.5) {
+        setFlipped(true)
+      }
+    },
+    [flipped],
+  )
+
+  const handleCardClick = () => {
+    if (flipped) {
+      setFlipped(false)
+    }
+  }
 
   return (
-    <div className={styles.container}>
-      <input
-        type="checkbox"
-        className={styles.toggleInput}
-        id={`luminousToggle-${id}`}
-      />
+    <div
+      className={styles.shell}
+      onPointerMove={handlePointerMove}
+      onClick={handleCardClick}
+      tabIndex={0}
+      role="button"
+      aria-label="Profile card with luminous photo and Spotify player"
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
 
-      <label
-        htmlFor={`luminousToggle-${id}`}
-        className={styles.card}
+          if (flipped) {
+            setFlipped(false)
+          }
+        }
+      }}
+    >
+      <div
+        className={`${styles.card} ${
+          flipped ? styles.cardFlipped : ''
+        } ${lumenOn ? styles.lumenOn : ''}`}
       >
-        <div className={styles.lightLayer}>
-          <div className={styles.slit} />
-
-          <div className={styles.lumen}>
-            <div className={styles.min} />
-            <div className={styles.mid} />
-            <div className={styles.hi} />
+        {/* =====================================================
+            FRONT — LUMINOUS PROFILE
+        ===================================================== */}
+        <div className={`${styles.face} ${styles.front}`}>
+          {/* PROFILE PHOTO */}
+          <div className={styles.photo}>
+            <img
+              src={profile.profilePhoto}
+              alt={`${profile.name} - ${profile.identity}`}
+              draggable="false"
+              loading="eager"
+            />
           </div>
 
-          <div className={styles.darken}>
-            <div className={styles.sl} />
-            <div className={styles.ll} />
-            <div className={styles.slt} />
-            <div className={styles.srt} />
+          {/* ORIGINAL LUMINOUS LIGHT SYSTEM */}
+          <div className={styles.lightLayer} aria-hidden="true">
+            <div className={styles.slit} />
+
+            <div className={styles.lumen}>
+              <div className={styles.min} />
+              <div className={styles.mid} />
+              <div className={styles.hi} />
+            </div>
+
+            <div className={styles.darken}>
+              <div className={styles.sl} />
+              <div className={styles.ll} />
+              <div className={styles.slt} />
+              <div className={styles.srt} />
+            </div>
+          </div>
+
+          {/* CONTENT */}
+          <div className={styles.content}>
+            <div className={styles.bottom}>
+              <div className={styles.title}>
+                ABHIVOCOPEDIA
+              </div>
+
+              <p className={styles.description}>
+                LIGHT FOLDS AROUND FORM
+                <br />
+                REVEALING LAYERS OF DEPTH
+              </p>
+
+              {/* SPOTIFY MINI WIDGET */}
+              <button
+                type="button"
+                className={styles.spotifyMini}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setFlipped(true)
+                }}
+                aria-label={`Open Spotify player for ${featuredSong.title}`}
+              >
+                <span className={styles.spotifyArtwork}>
+                  ♪
+                </span>
+
+                <span className={styles.spotifyInfo}>
+                  <strong>{featuredSong.title}</strong>
+                  <span>{featuredSong.artist}</span>
+                </span>
+
+                <span className={styles.spotifyPlay}>
+                  ▶
+                </span>
+              </button>
+
+              {/* LUMEN TOGGLE */}
+              <button
+                type="button"
+                className={styles.luminousToggle}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setLumenOn((current) => !current)
+                }}
+                aria-pressed={lumenOn}
+                aria-label={
+                  lumenOn
+                    ? 'Deactivate Lumen'
+                    : 'Activate Lumen'
+                }
+              >
+                <span className={styles.luminousToggleRail}>
+                  <span className={styles.luminousHandle} />
+                </span>
+
+                <span className={styles.luminousToggleLabel}>
+                  {lumenOn
+                    ? 'DEACTIVATE LUMEN'
+                    : 'ACTIVATE LUMEN'}
+                </span>
+              </button>
+            </div>
           </div>
         </div>
 
-        <div className={styles.photo}>
-          <img
-            src={profile.profilePhoto}
-            alt={`${profile.name} - ${profile.identity}`}
-            draggable="false"
-          />
-        </div>
+        {/* =====================================================
+            BACK — SPOTIFY
+        ===================================================== */}
+        <div className={`${styles.face} ${styles.back}`}>
+          <div className={styles.playerTop}>
+            <span className={styles.playerEyebrow}>
+              NOW PLAYING
+            </span>
 
-        <div className={styles.content}>
-          <div className={styles.icon}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="3.2rem"
-              height="3.2rem"
-              viewBox="0 0 1024 1024"
-              aria-hidden="true"
-            >
-              <path
-                fill={`url(#${iconGradientId})`}
-                d="M488.1 414.7V303.4L300.9 428l83.6 55.8zm254.1 137.7v-79.8l-59.8 39.9zM512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64m278 533c0 1.1-.1 2.1-.2 3.1c0 .4-.1.7-.2 1a14.2 14.2 0 0 1-.8 3.2c-.2.6-.4 1.2-.6 1.7c-.2.4-.4.8-.5 1.2c-.3.5-.5 1.1-.8 1.6c-.2.4-.4.7-.7 1.1c-.3.5-.7 1-1 1.5c-.3.4-.5.7-.8 1c-.4.4-.8.9-1.2 1.3c-.3.3-.6.6-1 .9c-.4.4-.9.8-1.4 1.1c-.4.3-.7.6-1.1.8c-.1.1-.3.2-.4.3L525.2 786c-4 2.7-8.6 4-13.2 4c-4.7 0-9.3-1.4-13.3-4L244.6 616.9c-.1-.1-.3-.2-.4-.3l-1.1-.8c-.5-.4-.9-.7-1.3-1.1c-.3-.3-.6-.6-1-.9c-.4-.4-.8-.8-1.2-1.3a7 7 0 0 1-.8-1c-.4-.5-.7-1-1-1.5c-.2-.4-.5-.7-.7-1.1c-.3-.5-.6-1.1-.8-1.6c-.2-.4-.4-.8-.5-1.2c-.2-.6-.4-1.2-.6-1.7c-.1-.4-.3-.8-.4-1.2c-.2-.7-.3-1.3-.4-2c-.1-.3-.1-.7-.2-1c-.1-1-.2-2.1-.2-3.1V427.9c0-1 .1-2.1.2-3.1c.1-.3.1-.7.2-1a14.2 14.2 0 0 1 .8-3.2c.2-.6.4-1.2.6-1.7c.2-.4.4-.8.5-1.2c.2-.5.5-1.1.8-1.6c.2-.4.4-.7.7-1.1c.6-.9 1.2-1.7 1.8-2.5c.4-.4.8-.9 1.2-1.3c.3-.3.6-.6 1-.9c.4-.4.9-.8 1.3-1.1s.7-.6 1.1-.8c.1-.1.3-.2.4-.3L498.7 239c8-5.3 18.5-5.3 26.5 0l254.1 169.1c.1.1.3.2.4.3l1.1.8l1.4 1.1c.3.3.6.6 1 .9c.4.4.8.8 1.2 1.3c.7.8 1.3 1.6 1.8 2.5c.2.4.5.7.7 1.1c.3.5.6 1 .8 1.6c.2.4.4.8.5 1.2c.2.6.4 1.2.6 1.7c.1.4.3.8.4 1.2c.2.7.3 1.3.4 2c.1.3.1.7.2 1c.1 1 .2 2.1.2 3.1zm-254.1 13.3v111.3L723.1 597l-83.6-55.8zM281.8 472.6v79.8l59.8-39.9zM512 456.1l-84.5 56.4l84.5 56.4l84.5-56.4zM723.1 428L535.9 303.4v111.3l103.6 69.1zM384.5 541.2L300.9 597l187.2 124.6V610.3z"
-                filter={`url(#${strongInnerId})`}
+            <span className={styles.spotifyBadge}>
+              SPOTIFY
+            </span>
+          </div>
+
+          <div className={styles.playerIdentity}>
+            <div className={styles.musicDot}>
+              <span />
+              <span />
+              <span />
+            </div>
+
+            <div>
+              <strong>{featuredSong.title}</strong>
+              <span>{featuredSong.artist}</span>
+            </div>
+          </div>
+
+          <div className={styles.spotifyFrame}>
+            {embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title={`${featuredSong.title} by ${featuredSong.artist}`}
+                loading="lazy"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                allowFullScreen
               />
-
-              <defs>
-                <linearGradient
-                  id={iconGradientId}
-                  x1="0"
-                  x2="0"
-                  y1="-1"
-                  y2="0.8"
-                >
-                  <stop offset="0%" stopColor="#bbb" />
-                  <stop offset="100%" stopColor="#555" />
-                </linearGradient>
-
-                <filter id={strongInnerId}>
-                  <feFlood floodColor="#fff2" />
-                  <feComposite
-                    operator="out"
-                    in2="SourceGraphic"
-                  />
-                  <feMorphology
-                    operator="dilate"
-                    radius={8}
-                  />
-                  <feGaussianBlur stdDeviation={32} />
-                  <feComposite
-                    operator="atop"
-                    in2="SourceGraphic"
-                  />
-                </filter>
-              </defs>
-            </svg>
+            ) : (
+              <div className={styles.playerFallback}>
+                <p>Spotify track unavailable.</p>
+              </div>
+            )}
           </div>
 
-          <div className={styles.bottom}>
-            <div className={styles.title}>
-              Luminous Design
-            </div>
+          <div className={styles.playerFooter}>
+            <a
+              href={featuredSong.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.spotifyLink}
+              onClick={(event) => event.stopPropagation()}
+            >
+              OPEN IN SPOTIFY
+              <span>↗</span>
+            </a>
 
-            <p className={styles.description}>
-              Light Folds Around Form
-              <br />
-              Revealing Layers Of Depth
-            </p>
-
-            <div className={styles.toggle}>
-              <div className={styles.handle} />
-
-              <span className={styles.toggleLabel}>
-                Activate Lumen
-              </span>
-            </div>
+            <button
+              type="button"
+              className={styles.flipBack}
+              onClick={(event) => {
+                event.stopPropagation()
+                setFlipped(false)
+              }}
+            >
+              FLIP BACK
+              <span>↩</span>
+            </button>
           </div>
         </div>
-      </label>
+      </div>
     </div>
   )
 }

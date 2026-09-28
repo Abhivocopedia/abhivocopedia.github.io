@@ -1,36 +1,61 @@
-.container {
-  box-sizing: border-box;
-  scroll-behavior: smooth;
-  margin: 0;
-  padding: 0;
-
-  --sz: clamp(17px, min(2%, 3%), 24px);
-
-  font-size: var(--sz);
-  display: grid;
-  place-items: center;
-
-  min-height: 100%;
-  min-width: 100%;
-  overflow: hidden;
-
-  font-family: var(--font-body);
-}
-
-.container *,
-.container *::before,
-.container *::after {
-  box-sizing: border-box;
-}
-
-
 /* =========================================================
-   CARD
+   LUMINOUS PROFILE CARD
+   Exact Luminous structure + profile photo + Spotify flip
 ========================================================= */
+
+.shell {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  aspect-ratio: 18 / 24;
+  perspective: 1800px;
+  outline: none;
+}
 
 .card {
   position: relative;
 
+  width: 100%;
+  height: 100%;
+
+  transform-style: preserve-3d;
+
+  transition:
+    transform 0.8s cubic-bezier(.16, 1, .3, 1),
+    translate 0.4s ease-out;
+}
+
+.cardFlipped {
+  transform: rotateY(180deg);
+}
+
+.card:not(.cardFlipped):hover {
+  translate: 0 -0.2rem;
+}
+
+.cardFlipped:hover {
+  translate: 0 -0.2rem;
+}
+
+
+/* =========================================================
+   COMMON FACE
+========================================================= */
+
+.face {
+  position: absolute;
+  inset: 0;
+
+  overflow: hidden;
+
+  border-radius: 1.8rem;
+  border: 3px solid var(--ink);
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.front {
   background:
     radial-gradient(
       circle at 50% 0%,
@@ -46,117 +71,42 @@
     0 0 0 1px #fff3,
     0 4px 4px 0 #0004,
     0 0 0 1px #333;
-
-  width: 18rem;
-  height: 24rem;
-
-  border-radius: 1.8rem;
-
-  color: #fff;
-
-  padding: 1rem;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: end;
-
-  overflow: hidden;
-
-  cursor: pointer;
-
-  transition:
-    all 0.4s ease-in-out,
-    translate 0.4s ease-out;
-}
-
-.card::before {
-  content: "";
-
-  display: block;
-
-  --offset: 1rem;
-
-  width: calc(100% + 2 * var(--offset));
-  height: calc(100% + 2 * var(--offset));
-
-  position: absolute;
-
-  left: calc(-1 * var(--offset));
-  right: calc(-1 * var(--offset));
-  top: calc(-1 * var(--offset));
-  bottom: calc(-1 * var(--offset));
-
-  margin: auto;
-
-  box-shadow:
-    inset 0 0 0px 0.06rem #fff2;
-
-  border-radius: 2.6rem;
-
-  --ax: 4rem;
-
-  clip-path: polygon(
-    var(--ax) 0,
-    0 0,
-    0 var(--ax),
-    var(--ax) var(--ax),
-    var(--ax) calc(100% - var(--ax)),
-    0 calc(100% - var(--ax)),
-    0 100%,
-    var(--ax) 100%,
-    var(--ax) calc(100% - var(--ax)),
-    calc(100% - var(--ax)) calc(100% - var(--ax)),
-    calc(100% - var(--ax)) 100%,
-    100% 100%,
-    100% calc(100% - var(--ax)),
-    calc(100% - var(--ax)) calc(100% - var(--ax)),
-    calc(100% - var(--ax)) var(--ax),
-    100% var(--ax),
-    100% 0,
-    calc(100% - var(--ax)) 0,
-    calc(100% - var(--ax)) var(--ax),
-    var(--ax) var(--ax)
-  );
-
-  transition: all 0.4s ease-in-out;
-
-  z-index: 10;
-
-  pointer-events: none;
-}
-
-.card:hover {
-  translate: 0 -0.2rem;
-}
-
-.card:hover::before {
-  --offset: 0.5rem;
-  --ax: 8rem;
-
-  border-radius: 2.2rem;
-
-  box-shadow:
-    inset 0 0 0 0.08rem #fff1;
 }
 
 
 /* =========================================================
    PROFILE PHOTO
-   Hidden until lumen is activated
 ========================================================= */
 
 .photo {
   position: absolute;
-
   inset: 0;
 
   z-index: 0;
 
   overflow: hidden;
 
-  background: #111;
+  background: #090909;
+}
+
+.photo::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
 
   pointer-events: none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.55),
+      rgba(0,0,0,.1) 35%,
+      rgba(0,0,0,.72) 100%
+    );
+
+  transition:
+    opacity .7s ease;
 }
 
 .photo img {
@@ -167,79 +117,79 @@
 
   object-fit: cover;
 
-  opacity: 0;
+  /* Slightly larger than the old card */
+  transform: scale(1.08);
+
+  opacity: .16;
 
   filter:
     grayscale(100%)
-    brightness(.58)
+    brightness(.22)
     contrast(1.18);
 
-  transform: scale(1.015);
-
   transition:
-    opacity .55s ease-in-out,
-    filter .55s ease-in-out,
-    transform .8s cubic-bezier(.16,1,.3,1);
+    opacity .85s cubic-bezier(.16,1,.3,1),
+    filter .85s cubic-bezier(.16,1,.3,1),
+    transform 1s cubic-bezier(.16,1,.3,1);
 }
 
 
 /* =========================================================
-   ORIGINAL LUMINOUS LIGHT LAYERS
+   LUMINOUS LIGHT LAYER
 ========================================================= */
 
 .lightLayer {
   position: absolute;
+  inset: 0;
 
-  left: 0;
-  top: 0;
-
-  height: 100%;
-  width: 100%;
+  z-index: 2;
 
   transform-style: preserve-3d;
+
   perspective: 400px;
 
   pointer-events: none;
-
-  z-index: 2;
 }
+
+
+/* =========================================================
+   FLASH BAR
+   MOVED TO THE BOTTOM
+========================================================= */
 
 .slit {
   position: absolute;
 
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  left: 13%;
+  right: 13%;
+  bottom: 4.75rem;
 
-  margin: auto;
+  width: auto;
+  height: .82rem;
 
-  width: 64%;
-  height: 1.2rem;
+  background: #101010;
 
-  transform: rotateX(-76deg);
-
-  background: #121212;
+  border-radius: 999px;
 
   box-shadow:
-    0 0 4px 0 #fff0;
+    0 0 5px #fff0;
+
+  filter: blur(.15px);
+
+  opacity: .85;
 
   transition:
-    all 0.4s ease-in-out;
+    all .45s ease-in-out;
 }
+
+
+/* =========================================================
+   LIGHT FIELDS
+========================================================= */
 
 .lumen {
   position: absolute;
-
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-
-  margin: auto;
-
-  width: 100%;
-  height: 100%;
+  inset: 0;
 
   pointer-events: none;
 
@@ -248,7 +198,7 @@
   opacity: 0;
 
   transition:
-    opacity 0.4s ease-in-out;
+    opacity .5s ease-in-out;
 }
 
 .lumen .min {
@@ -269,7 +219,7 @@
 
   transform: rotateX(-42deg);
 
-  opacity: 0.4;
+  opacity: .4;
 }
 
 .lumen .mid {
@@ -292,7 +242,7 @@
 
   filter: blur(1rem);
 
-  opacity: 0.8;
+  opacity: .8;
 
   border-radius:
     100% 100% 0 0;
@@ -318,7 +268,7 @@
 
   filter: blur(1rem);
 
-  opacity: 0.6;
+  opacity: .6;
 
   border-radius:
     100% 100% 0 0;
@@ -326,18 +276,12 @@
 
 
 /* =========================================================
-   ORIGINAL DARKEN LAYERS
+   DARKEN
 ========================================================= */
 
 .darken {
   position: absolute;
-
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-
-  margin: auto;
+  inset: 0;
 
   width: 100%;
   height: 100%;
@@ -347,14 +291,14 @@
   perspective: 400px;
 
   transition:
-    opacity 0.4s ease-in-out;
+    opacity .4s ease-in-out;
 
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .darken > * {
   transition:
-    opacity 0.4s ease-in-out;
+    opacity .4s ease-in-out;
 }
 
 .darken .sl {
@@ -373,9 +317,9 @@
 
   margin: auto;
 
-  filter: blur(0.2rem);
+  filter: blur(.2rem);
 
-  opacity: 0.1;
+  opacity: .1;
 
   border-radius:
     0 0 100% 100%;
@@ -399,9 +343,9 @@
 
   margin: auto;
 
-  filter: blur(0.8rem);
+  filter: blur(.8rem);
 
-  opacity: 0.4;
+  opacity: .4;
 
   border-radius:
     0 0 100% 100%;
@@ -410,7 +354,7 @@
 }
 
 .darken .slt {
-  width: 0.5rem;
+  width: .5rem;
   height: 4rem;
 
   background:
@@ -425,7 +369,7 @@
 
   margin: auto;
 
-  opacity: 0.6;
+  opacity: .6;
 
   border-radius:
     0 0 100% 100%;
@@ -434,7 +378,7 @@
 }
 
 .darken .srt {
-  width: 0.5rem;
+  width: .5rem;
   height: 4rem;
 
   background:
@@ -449,7 +393,7 @@
 
   margin: auto;
 
-  opacity: 0.6;
+  opacity: .6;
 
   border-radius:
     0 0 100% 100%;
@@ -466,49 +410,52 @@
   position: relative;
 
   z-index: 4;
-}
 
-.icon {
-  position: absolute;
+  width: 100%;
+  height: 100%;
 
-  top: -13rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 
-  left: 0;
-  right: 0;
+  padding: 1rem;
 
-  margin: auto;
-
-  width: fit-content;
-
-  filter:
-    drop-shadow(0 -1.2rem 1px transparent);
-
-  transition:
-    filter 0.4s ease-in-out;
+  color: #fff;
 }
 
 .bottom {
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: .7rem;
 }
 
 .title {
   margin: 0;
-  margin-bottom: 1rem;
+  margin-bottom: .2rem;
 
   font-size: 1.2rem;
 
   color: #fff;
 
-  font-weight: normal;
+  font-weight: 500;
+
+  letter-spacing: -.02em;
+
+  text-shadow:
+    0 2px 12px rgba(0,0,0,.45);
 }
 
 .description {
   margin: 0;
-  padding-bottom: 0.6rem;
+
+  padding-bottom: .55rem;
 
   color: #aaa;
 
-  font-size: 0.6rem;
+  font-size: .6rem;
 
   font-weight: 100;
 
@@ -517,20 +464,154 @@
   max-width: 64%;
 }
 
-.toggleInput {
-  display: none;
+
+/* =========================================================
+   SPOTIFY MINI WIDGET
+========================================================= */
+
+.spotifyMini {
+  width: 100%;
+
+  min-height: 47px;
+
+  display: flex;
+  align-items: center;
+
+  gap: .55rem;
+
+  padding: .42rem .5rem;
+
+  border:
+    1px solid
+    rgba(255,255,255,.16);
+
+  border-radius: .8rem;
+
+  background:
+    rgba(0,0,0,.6);
+
+  color: #fff;
+
+  box-shadow:
+    0 8px 24px rgba(0,0,0,.28),
+    inset 0 1px 0 rgba(255,255,255,.05);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  cursor: pointer;
+
+  text-align: left;
+
+  transition:
+    transform .2s ease,
+    background .2s ease;
 }
 
-.toggle {
-  position: absolute;
+.spotifyMini:hover {
+  transform: translateY(-2px);
+  background:
+    rgba(10,10,10,.78);
+}
 
-  right: 0;
-  bottom: 0;
+.spotifyArtwork {
+  width: 30px;
+  height: 30px;
 
-  height: 2rem;
-  width: 4.8rem;
+  flex: 0 0 30px;
 
-  border-radius: 0.6rem;
+  display: grid;
+  place-items: center;
+
+  border-radius: .4rem;
+
+  background:
+    linear-gradient(
+      135deg,
+      #1ed760,
+      #0d6f34
+    );
+
+  color: #08190e;
+
+  font-size: .85rem;
+  font-weight: 900;
+}
+
+.spotifyInfo {
+  min-width: 0;
+
+  flex: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.spotifyInfo strong {
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-size: .58rem;
+  font-weight: 600;
+}
+
+.spotifyInfo span {
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  margin-top: 2px;
+
+  color:
+    rgba(255,255,255,.55);
+
+  font-size: .42rem;
+}
+
+.spotifyPlay {
+  width: 25px;
+  height: 25px;
+
+  flex: 0 0 25px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #111;
+
+  font-size: .55rem;
+}
+
+
+/* =========================================================
+   LUMEN TOGGLE
+========================================================= */
+
+.luminousToggle {
+  position: relative;
+
+  align-self: flex-end;
+
+  display: flex;
+  align-items: center;
+
+  gap: .5rem;
+
+  min-height: 32px;
+
+  padding: .2rem .45rem .2rem .25rem;
+
+  border: 0;
+  border-radius: .65rem;
 
   background: #000;
 
@@ -541,53 +622,37 @@
     inset 0 1px 2px 0.3rem #0006,
     inset 0 0 1px 0.8rem #aaa;
 
-  cursor: pointer;
+  color: #999;
 
-  transition:
-    all 0.4s ease-in-out;
+  cursor: pointer;
 }
 
-.toggle::before {
-  content: "";
+.luminousToggleRail {
+  position: relative;
 
-  display: block;
+  width: 54px;
+  height: 11px;
 
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-
-  margin: auto;
-
-  width: 3.4rem;
-  height: 0.68rem;
-
-  border-radius: 0.2rem;
+  border-radius: .2rem;
 
   background: #000;
 
-  transition:
-    all 0.4s ease-in-out;
+  box-shadow:
+    inset 0 0 4px rgba(255,255,255,.12);
 }
 
-.handle {
+.luminousHandle {
   position: absolute;
 
-  top: 0;
-  bottom: 0.04rem;
+  top: -2px;
+  left: 6px;
 
-  margin: auto;
+  width: 21px;
+  height: 15px;
 
-  left: 0.68rem;
-
-  width: 40%;
-  height: 30%;
+  border-radius: .2rem;
 
   background: #aaa;
-
-  border-radius: 0.2rem;
 
   box-shadow:
     inset 0 1px 4px 0 #fff,
@@ -596,113 +661,91 @@
     1px 3px 6px 1px #000a;
 
   transition:
-    all 0.4s ease-in-out;
-
-  pointer-events: none;
+    transform .4s cubic-bezier(.34,1.56,.64,1),
+    box-shadow .4s ease;
 }
 
-.toggleLabel {
-  pointer-events: none;
+.luminousToggleLabel {
+  white-space: nowrap;
 
-  text-align: center;
+  font-family: var(--font-mono);
 
-  position: absolute;
+  font-size: .43rem;
 
-  left: 0;
-  right: 0;
+  font-weight: 700;
 
-  margin: auto;
-
-  bottom: calc(100% + 0.4rem);
-
-  font-size: 0.6rem;
-
-  font-weight: 100;
-
-  color: #999;
-
-  opacity: 0;
-
-  transition:
-    opacity 0.4s ease-in-out;
-}
-
-.toggle:hover .toggleLabel {
-  opacity: 1;
+  letter-spacing: .08em;
 }
 
 
 /* =========================================================
-   CHECKED — ORIGINAL LUMINOUS STATE
+   LUMEN ON
 ========================================================= */
 
-.toggleInput:checked ~ .card {
+.lumenOn .photo img {
+  opacity: .96;
+
+  filter:
+    grayscale(100%)
+    brightness(.92)
+    contrast(1.1);
+
+  transform: scale(1.095);
+}
+
+.lumenOn .photo::after {
+  opacity: .17;
+}
+
+.lumenOn .front {
   box-shadow:
-    inset 0 1.01rem 0.1rem -1rem #fffa,
+    inset 0 1.01rem .1rem -1rem #fffa,
     inset 0 -4rem 3rem -3rem #000a,
-    0 -1.02rem 0.2rem -1rem #fffa,
-    0 1rem 0.2rem -1rem #000,
+    0 -1.02rem .2rem -1rem #fffa,
+    0 1rem .2rem -1rem #000,
     0 0 0 1px #fff2,
     0 4px 4px 0 #0004,
     0 0 0 1px #333;
 }
 
-.toggleInput:checked ~ .card .photo img {
-  opacity: .92;
-
-  filter:
-    grayscale(100%)
-    brightness(.82)
-    contrast(1.22);
-
-  transform: scale(1);
-}
-
-.toggleInput:checked ~ .card .slit {
+.lumenOn .slit {
   background: #fff;
 
   box-shadow:
-    0 0 4px 0 #fff;
+    0 0 5px 1px #fff,
+    0 0 22px rgba(255,255,255,.55);
+
+  animation:
+    bottomFlash 1s cubic-bezier(.16,1,.3,1);
 }
 
-.toggleInput:checked ~ .card .lumen {
-  opacity: 0.5;
+.lumenOn .lumen {
+  opacity: .62;
 }
 
-.toggleInput:checked ~ .card .darken {
-  opacity: 0.8;
+.lumenOn .darken {
+  opacity: .82;
 }
 
-.toggleInput:checked ~ .card .darken .sl {
-  opacity: 0.2;
+.lumenOn .darken .sl {
+  opacity: .18;
 }
 
-.toggleInput:checked ~ .card .darken .ll {
+.lumenOn .darken .ll {
   opacity: 1;
 }
 
-.toggleInput:checked ~ .card .darken .slt {
+.lumenOn .darken .slt {
   opacity: 1;
 }
 
-.toggleInput:checked ~ .card .darken .srt {
+.lumenOn .darken .srt {
   opacity: 1;
 }
 
-.toggleInput:checked ~ .card .icon {
-  filter:
-    drop-shadow(0 -1.2rem 2px #0003)
-    brightness(1.64);
-}
+.lumenOn .luminousHandle {
+  transform: translateX(32px);
 
-.toggleInput:checked ~ .card .toggle::before {
-  background: #fffc;
-
-  box-shadow:
-    0 0 0.3rem 0.2rem #fff7;
-}
-
-.toggleInput:checked ~ .card .handle {
   box-shadow:
     inset 0 1px 12px 0 #fff,
     inset 0 -1px 1px 0 #fffa,
@@ -710,46 +753,356 @@
     1px 3px 6px 1px #0004;
 }
 
-.toggleInput:checked ~ .card .handle {
-  transform: translateX(1.58rem);
+.lumenOn .luminousToggleRail::after {
+  content: "";
+
+  position: absolute;
+  inset: -3px;
+
+  border-radius: .3rem;
+
+  box-shadow:
+    0 0 10px 2px rgba(255,255,255,.55);
+
+  pointer-events: none;
 }
 
 
 /* =========================================================
-   ACCESSIBILITY
+   FLASH ANIMATION
 ========================================================= */
 
-.toggleInput:focus-visible + .card {
+@keyframes bottomFlash {
+  0% {
+    opacity: .15;
+    transform: scaleX(.35);
+  }
+
+  35% {
+    opacity: 1;
+    transform: scaleX(1.08);
+  }
+
+  100% {
+    opacity: .9;
+    transform: scaleX(1);
+  }
+}
+
+
+/* =========================================================
+   BACK — SPOTIFY
+========================================================= */
+
+.back {
+  transform: rotateY(180deg);
+
+  padding: 1rem;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      #262626,
+      #101010 68%
+    );
+
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: .75rem;
+}
+
+.playerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .5rem;
+}
+
+.playerEyebrow {
+  font-family: var(--font-mono);
+
+  font-size: .5rem;
+
+  letter-spacing: .12em;
+
+  color: rgba(255,255,255,.5);
+}
+
+.spotifyBadge {
+  padding: .28rem .48rem;
+
+  border-radius: .45rem;
+
+  background: #1ed760;
+
+  color: #07140b;
+
+  font-family: var(--font-mono);
+
+  font-size: .42rem;
+
+  font-weight: 800;
+
+  letter-spacing: .08em;
+}
+
+.playerIdentity {
+  display: flex;
+
+  align-items: center;
+
+  gap: .7rem;
+}
+
+.playerIdentity > div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.playerIdentity strong {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: .78rem;
+}
+
+.playerIdentity span {
+  margin-top: .15rem;
+
+  color: rgba(255,255,255,.55);
+
+  font-size: .5rem;
+}
+
+.musicDot {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  border-radius: .55rem;
+
+  background: #1ed760;
+}
+
+.musicDot span {
+  width: 3px;
+  height: 11px;
+
+  border-radius: 99px;
+
+  background: #07140b;
+
+  animation:
+    spotifyBars 1s ease-in-out infinite;
+}
+
+.musicDot span:nth-child(2) {
+  animation-delay: .12s;
+}
+
+.musicDot span:nth-child(3) {
+  animation-delay: .24s;
+}
+
+@keyframes spotifyBars {
+  0%, 100% {
+    transform: scaleY(.45);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.spotifyFrame {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius: .95rem;
+
+  background: #191414;
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.35);
+}
+
+.spotifyFrame iframe {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 300px;
+
+  border: 0;
+
+  border-radius: .95rem;
+}
+
+.playerFallback {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  place-items: center;
+
+  color: rgba(255,255,255,.65);
+
+  font-size: .6rem;
+}
+
+.playerFooter {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .5rem;
+}
+
+.spotifyLink,
+.flipBack {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: .35rem;
+
+  padding: .45rem .6rem;
+
+  border-radius: .55rem;
+
+  font-family: var(--font-mono);
+
+  font-size: .42rem;
+
+  font-weight: 700;
+
+  letter-spacing: .07em;
+}
+
+.spotifyLink {
+  background: #1ed760;
+
+  color: #07140b;
+
+  text-decoration: none;
+}
+
+.flipBack {
+  border:
+    1px solid
+    rgba(255,255,255,.14);
+
+  background:
+    rgba(255,255,255,.05);
+
+  color:
+    rgba(255,255,255,.72);
+
+  cursor: pointer;
+}
+
+.flipBack:hover {
+  color: #fff;
+}
+
+
+/* =========================================================
+   FOCUS
+========================================================= */
+
+.shell:focus-visible {
   outline:
     3px solid
     var(--mustard);
 
-  outline-offset: 6px;
+  outline-offset: 7px;
+
+  border-radius: 2rem;
 }
 
 
 /* =========================================================
-   RESPONSIVE
+   MOBILE
 ========================================================= */
 
 @media (max-width: 768px) {
-  .container {
-    width: min(100%, 520px);
+  .shell {
+    width: min(100%, 420px);
   }
 
-  .card {
-    width: 18rem;
-    height: 24rem;
+  .content {
+    padding: .85rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: .55rem;
+  }
+
+  .spotifyMini {
+    min-height: 44px;
+  }
+
+  .spotifyInfo strong {
+    font-size: .54rem;
+  }
+
+  .spotifyInfo span {
+    font-size: .39rem;
+  }
+
+  .luminousToggleLabel {
+    font-size: .4rem;
   }
 }
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .card,
   .photo img,
-  .handle,
-  .slit,
+  .photo::after,
   .lumen,
-  .darken {
+  .darken,
+  .slit,
+  .luminousHandle {
     transition: none !important;
+  }
+
+  .lumenOn .slit {
+    animation: none !important;
+  }
+
+  .musicDot span {
+    animation: none !important;
   }
 }
