@@ -212,8 +212,8 @@
 
   left: 0;
   right: 0;
-  top: auto;
-  bottom: 1.2rem;
+  top: 0;
+  bottom: 2.5rem;
 
   margin: auto;
 
@@ -233,8 +233,8 @@
 
   left: 0;
   right: 0;
-  top: auto;
-  bottom: -2.5rem;
+  top: 0;
+  bottom: 10em;
 
   margin: auto;
 
@@ -259,8 +259,8 @@
 
   left: 0;
   right: 0;
-  top: auto;
-  bottom: -3.5rem;
+  top: 0;
+  bottom: 12em;
 
   margin: auto;
 
