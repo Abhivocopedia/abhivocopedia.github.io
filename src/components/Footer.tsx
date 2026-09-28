@@ -4,7 +4,7 @@ import { Label } from './DecorativeMarks'
 import styles from './Footer.module.css'
 
 const GENESIS_LAB_PREVIEW_URL =
-  'https://genesis-lab-nu.vercel.app/browser?url=https%3A%2F%2Fgithub.com%2FAbhivocopedia'
+  'https://www.youtube.com/watch?v=qldmRVrPfiA'
 
 const GITHUB_USERNAME = 'Abhivocopedia'
 const GITHUB_CACHE_KEY = 'abhivocopedia-github-live-stats'
