@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
 import { Star, Arrow, OrganicShape, DotPattern, DecorativeCorner, Crosshair, Sticker, Label } from './DecorativeMarks'
 import styles from './Hero.module.css'
-import { LuminousProfileCard } from './LuminousProfileCard'
+import { ProfileMusicCard } from './ProfileMusicCard'
 
 export function Hero() {
   const hasProfilePhoto = profile.profilePhoto && profile.profilePhoto.trim() !== ''
@@ -108,7 +108,7 @@ export function Hero() {
           </motion.div>
 
             <div className={styles.mobileProfilePhoto}>
-              <LuminousProfileCard />
+              <ProfileMusicCard />
             </div>
 
 <motion.div
@@ -140,7 +140,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
               {hasProfilePhoto ? (
-                <LuminousProfileCard />
+                <ProfileMusicCard />
               ) : (
               <div className={styles.visualCard}>
                 <div className={styles.visualHeader}>
