@@ -29,7 +29,7 @@ export const projects: Project[] = [
   },
   {
     id: 'janani-stores',
-    number: '02',
+    number: '03',
     category: 'FULL-STACK',
     title: 'Janani Stores',
     description: 'Online ordering and self-pickup platform with product availability, ordering, payments, and admin workflows.',
@@ -41,7 +41,7 @@ export const projects: Project[] = [
   },
   {
     id: 'nritya-vidyanilaya',
-    number: '03',
+    number: '04',
     category: 'FULL-STACK',
     title: 'Nritya Vidyanilaya',
     description: 'Dance-school management web application for administration and student workflows.',
