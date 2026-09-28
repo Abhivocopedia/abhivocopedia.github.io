@@ -1,27 +1,27 @@
-import { useState } from 'react'
+import { useId } from 'react'
 import { profile } from '../data/profile'
 import styles from './LuminousProfileCard.module.css'
 
 export function LuminousProfileCard() {
-  const [active, setActive] = useState(false)
+  const id = useId().replace(/:/g, '')
+  const iconGradientId = `iconGradient-${id}`
+  const strongInnerId = `strongInner-${id}`
 
   return (
     <div className={styles.container}>
       <input
-        id="luminousProfileToggle"
         type="checkbox"
         className={styles.toggleInput}
-        checked={active}
-        onChange={(event) => setActive(event.target.checked)}
-        aria-label="Activate profile lumen"
+        id={`luminousToggle-${id}`}
       />
 
       <label
-        htmlFor="luminousProfileToggle"
-        className={`${styles.card} ${active ? styles.active : ''}`}
+        htmlFor={`luminousToggle-${id}`}
+        className={styles.card}
       >
-        <div className={styles.lightLayer} aria-hidden="true">
+        <div className={styles.lightLayer}>
           <div className={styles.slit} />
+
           <div className={styles.lumen}>
             <div className={styles.min} />
             <div className={styles.mid} />
@@ -42,54 +42,71 @@ export function LuminousProfileCard() {
             alt={`${profile.name} - ${profile.identity}`}
             draggable="false"
           />
-
-          <div className={styles.photoShade} />
-          <div className={styles.photoGlow} />
-          <div className={styles.photoScan} />
         </div>
 
         <div className={styles.content}>
           <div className={styles.icon}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
+              width="3.2rem"
+              height="3.2rem"
               viewBox="0 0 1024 1024"
               aria-hidden="true"
             >
+              <path
+                fill={`url(#${iconGradientId})`}
+                d="M488.1 414.7V303.4L300.9 428l83.6 55.8zm254.1 137.7v-79.8l-59.8 39.9zM512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64m278 533c0 1.1-.1 2.1-.2 3.1c0 .4-.1.7-.2 1a14.2 14.2 0 0 1-.8 3.2c-.2.6-.4 1.2-.6 1.7c-.2.4-.4.8-.5 1.2c-.3.5-.5 1.1-.8 1.6c-.2.4-.4.7-.7 1.1c-.3.5-.7 1-1 1.5c-.3.4-.5.7-.8 1c-.4.4-.8.9-1.2 1.3c-.3.3-.6.6-1 .9c-.4.4-.9.8-1.4 1.1c-.4.3-.7.6-1.1.8c-.1.1-.3.2-.4.3L525.2 786c-4 2.7-8.6 4-13.2 4c-4.7 0-9.3-1.4-13.3-4L244.6 616.9c-.1-.1-.3-.2-.4-.3l-1.1-.8c-.5-.4-.9-.7-1.3-1.1c-.3-.3-.6-.6-1-.9c-.4-.4-.8-.8-1.2-1.3a7 7 0 0 1-.8-1c-.4-.5-.7-1-1-1.5c-.2-.4-.5-.7-.7-1.1c-.3-.5-.6-1.1-.8-1.6c-.2-.4-.4-.8-.5-1.2c-.2-.6-.4-1.2-.6-1.7c-.1-.4-.3-.8-.4-1.2c-.2-.7-.3-1.3-.4-2c-.1-.3-.1-.7-.2-1c-.1-1-.2-2.1-.2-3.1V427.9c0-1 .1-2.1.2-3.1c.1-.3.1-.7.2-1a14.2 14.2 0 0 1 .8-3.2c.2-.6.4-1.2.6-1.7c.2-.4.4-.8.5-1.2c.2-.5.5-1.1.8-1.6c.2-.4.4-.7.7-1.1c.6-.9 1.2-1.7 1.8-2.5c.4-.4.8-.9 1.2-1.3c.3-.3.6-.6 1-.9c.4-.4.9-.8 1.3-1.1s.7-.6 1.1-.8c.1-.1.3-.2.4-.3L498.7 239c8-5.3 18.5-5.3 26.5 0l254.1 169.1c.1.1.3.2.4.3l1.1.8l1.4 1.1c.3.3.6.6 1 .9c.4.4.8.8 1.2 1.3c.7.8 1.3 1.6 1.8 2.5c.2.4.5.7.7 1.1c.3.5.6 1 .8 1.6c.2.4.4.8.5 1.2c.2.6.4 1.2.6 1.7c.1.4.3.8.4 1.2c.2.7.3 1.3.4 2c.1.3.1.7.2 1c.1 1 .2 2.1.2 3.1zm-254.1 13.3v111.3L723.1 597l-83.6-55.8zM281.8 472.6v79.8l59.8-39.9zM512 456.1l-84.5 56.4l84.5 56.4l84.5-56.4zM723.1 428L535.9 303.4v111.3l103.6 69.1zM384.5 541.2L300.9 597l187.2 124.6V610.3z"
+                filter={`url(#${strongInnerId})`}
+              />
+
               <defs>
                 <linearGradient
-                  id="profileIconGradient"
+                  id={iconGradientId}
                   x1="0"
                   x2="0"
                   y1="-1"
                   y2="0.8"
                 >
-                  <stop offset="0%" stopColor="#f4f4f4" />
-                  <stop offset="100%" stopColor="#5b5b5b" />
+                  <stop offset="0%" stopColor="#bbb" />
+                  <stop offset="100%" stopColor="#555" />
                 </linearGradient>
-              </defs>
 
-              <path
-                fill="url(#profileIconGradient)"
-                d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448s448-200.6 448-448S759.4 64 512 64m0 88c198.8 0 360 161.2 360 360c0 198.8-161.2 360-360 360S152 710.8 152 512s161.2-360 360-360m0 80c-92.8 0-168 75.2-168 168s75.2 168 168 168s168-75.2 168-168s-75.2-168-168-168m0 88c44.2 0 80 35.8 80 80s-35.8 80-80 80s-80-35.8-80-80s35.8-80 80-80m0 304c-113.8 0-213.7 56.3-274.8 141.8C300 818.1 399.2 856 512 856s212-37.9 274.8-90.2C725.7 680.3 625.8 624 512 624"
-              />
+                <filter id={strongInnerId}>
+                  <feFlood floodColor="#fff2" />
+                  <feComposite
+                    operator="out"
+                    in2="SourceGraphic"
+                  />
+                  <feMorphology
+                    operator="dilate"
+                    radius={8}
+                  />
+                  <feGaussianBlur stdDeviation={32} />
+                  <feComposite
+                    operator="atop"
+                    in2="SourceGraphic"
+                  />
+                </filter>
+              </defs>
             </svg>
           </div>
 
           <div className={styles.bottom}>
             <div className={styles.title}>
-              ABHIVOCOPEDIA
+              Luminous Design
             </div>
 
             <p className={styles.description}>
-              LIGHT FOLDS AROUND FORM
+              Light Folds Around Form
               <br />
-              REVEALING LAYERS OF DEPTH
+              Revealing Layers Of Depth
             </p>
 
             <div className={styles.toggle}>
               <div className={styles.handle} />
+
               <span className={styles.toggleLabel}>
-                {active ? 'Deactivate Lumen' : 'Activate Lumen'}
+                Activate Lumen
               </span>
             </div>
           </div>
