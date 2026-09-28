@@ -21,12 +21,22 @@
   transform-style: preserve-3d;
 
   transition:
+    transform 0.8s cubic-bezier(.16, 1, .3, 1),
     translate 0.4s ease-out;
+}
+
+.cardFlipped {
+  transform: rotateY(180deg);
 }
 
 .card:not(.cardFlipped):hover {
   translate: 0 -0.2rem;
 }
+
+.cardFlipped:hover {
+  translate: 0 -0.2rem;
+}
+
 
 /* =========================================================
    COMMON FACE
@@ -699,6 +709,245 @@
     opacity: .9;
     transform: scaleX(1);
   }
+}
+
+
+/* =========================================================
+   BACK — SPOTIFY
+========================================================= */
+
+.back {
+  transform: rotateY(180deg);
+
+  padding: 1rem;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      #262626,
+      #101010 68%
+    );
+
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: .75rem;
+}
+
+.playerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .5rem;
+}
+
+.playerEyebrow {
+  font-family: var(--font-mono);
+
+  font-size: .5rem;
+
+  letter-spacing: .12em;
+
+  color: rgba(255,255,255,.5);
+}
+
+.spotifyBadge {
+  padding: .28rem .48rem;
+
+  border-radius: .45rem;
+
+  background: #1ed760;
+
+  color: #07140b;
+
+  font-family: var(--font-mono);
+
+  font-size: .42rem;
+
+  font-weight: 800;
+
+  letter-spacing: .08em;
+}
+
+.playerIdentity {
+  display: flex;
+
+  align-items: center;
+
+  gap: .7rem;
+}
+
+.playerIdentity > div:last-child {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden;
+}
+
+.playerIdentity strong {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: .78rem;
+}
+
+.playerIdentity span {
+  margin-top: .15rem;
+
+  color: rgba(255,255,255,.55);
+
+  font-size: .5rem;
+}
+
+.musicDot {
+  width: 34px;
+  height: 34px;
+
+  flex: 0 0 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  border-radius: .55rem;
+
+  background: #1ed760;
+}
+
+.musicDot span {
+  width: 3px;
+  height: 11px;
+
+  border-radius: 99px;
+
+  background: #07140b;
+
+  animation:
+    spotifyBars 1s ease-in-out infinite;
+}
+
+.musicDot span:nth-child(2) {
+  animation-delay: .12s;
+}
+
+.musicDot span:nth-child(3) {
+  animation-delay: .24s;
+}
+
+@keyframes spotifyBars {
+  0%, 100% {
+    transform: scaleY(.45);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.spotifyFrame {
+  flex: 1;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  border-radius: .95rem;
+
+  background: #191414;
+
+  box-shadow:
+    0 14px 30px rgba(0,0,0,.35);
+}
+
+.spotifyFrame iframe {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 300px;
+
+  border: 0;
+
+  border-radius: .95rem;
+}
+
+.playerFallback {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+
+  place-items: center;
+
+  color: rgba(255,255,255,.65);
+
+  font-size: .6rem;
+}
+
+.playerFooter {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: .5rem;
+}
+
+.spotifyLink,
+.flipBack {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: .35rem;
+
+  padding: .45rem .6rem;
+
+  border-radius: .55rem;
+
+  font-family: var(--font-mono);
+
+  font-size: .42rem;
+
+  font-weight: 700;
+
+  letter-spacing: .07em;
+}
+
+.spotifyLink {
+  background: #1ed760;
+
+  color: #07140b;
+
+  text-decoration: none;
+}
+
+.flipBack {
+  border:
+    1px solid
+    rgba(255,255,255,.14);
+
+  background:
+    rgba(255,255,255,.05);
+
+  color:
+    rgba(255,255,255,.72);
+
+  cursor: pointer;
+}
+
+.flipBack:hover {
+  color: #fff;
 }
 
 

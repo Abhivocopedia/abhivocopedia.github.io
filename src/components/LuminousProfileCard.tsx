@@ -1,5 +1,4 @@
-import { useCallback, useState } from 'react'
-import type { PointerEvent } from 'react'
+import { useId, useState } from 'react'
 import { featuredSong } from '../data/featuredSong'
 import { profile } from '../data/profile'
 import styles from './LuminousProfileCard.module.css'
@@ -10,220 +9,120 @@ function getSpotifyTrackId(url: string) {
 
 export function LuminousProfileCard() {
   const [lumenOn, setLumenOn] = useState(false)
-  const [flipped, setFlipped] = useState(false)
 
+  const instanceId = useId().replace(/:/g, '')
   const trackId = getSpotifyTrackId(featuredSong.spotifyUrl)
 
   const embedUrl = trackId
     ? `https://open.spotify.com/embed/track/${trackId}?utm_source=generator&theme=0`
     : ''
 
-  const handlePointerMove = useCallback(
-    (event: PointerEvent<HTMLDivElement>) => {
-      if (flipped || event.pointerType === 'touch') return
-
-      const rect = event.currentTarget.getBoundingClientRect()
-      const y = event.clientY - rect.top
-
-      // Original behaviour:
-      // hovering the upper half flips to Spotify.
-      if (y <= rect.height * 0.5) {
-        setFlipped(true)
-      }
-    },
-    [flipped],
-  )
-
-  const handleCardClick = () => {
-    if (flipped) {
-      setFlipped(false)
-    }
-  }
-
   return (
-    <div
-      className={styles.shell}
-      onPointerMove={handlePointerMove}
-      onClick={handleCardClick}
-      tabIndex={0}
-      role="button"
-      aria-label="Profile card with luminous photo and Spotify player"
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault()
-
-          if (flipped) {
-            setFlipped(false)
-          }
-        }
-      }}
-    >
+    <div className={styles.shell}>
       <div
         className={`${styles.card} ${
-          flipped ? styles.cardFlipped : ''
-        } ${lumenOn ? styles.lumenOn : ''}`}
+          lumenOn ? styles.lumenOn : ''
+        }`}
       >
         {/* =====================================================
-            FRONT — LUMINOUS PROFILE
+            PROFILE PHOTO
         ===================================================== */}
-        <div className={`${styles.face} ${styles.front}`}>
-          {/* PROFILE PHOTO */}
-          <div className={styles.photo}>
-            <img
-              src={profile.profilePhoto}
-              alt={`${profile.name} - ${profile.identity}`}
-              draggable="false"
-              loading="eager"
-            />
+        <div className={styles.photo}>
+          <img
+            src={profile.profilePhoto}
+            alt={`${profile.name} - ${profile.identity}`}
+            draggable="false"
+            loading="eager"
+          />
+        </div>
+
+        {/* =====================================================
+            ORIGINAL LUMINOUS LIGHT SYSTEM
+        ===================================================== */}
+        <div className={styles.lightLayer} aria-hidden="true">
+          <div className={styles.slit} />
+
+          <div className={styles.lumen}>
+            <div className={styles.min} />
+            <div className={styles.mid} />
+            <div className={styles.hi} />
           </div>
 
-          {/* ORIGINAL LUMINOUS LIGHT SYSTEM */}
-          <div className={styles.lightLayer} aria-hidden="true">
-            <div className={styles.slit} />
-
-            <div className={styles.lumen}>
-              <div className={styles.min} />
-              <div className={styles.mid} />
-              <div className={styles.hi} />
-            </div>
-
-            <div className={styles.darken}>
-              <div className={styles.sl} />
-              <div className={styles.ll} />
-              <div className={styles.slt} />
-              <div className={styles.srt} />
-            </div>
-          </div>
-
-          {/* CONTENT */}
-          <div className={styles.content}>
-            <div className={styles.bottom}>
-              <div className={styles.title}>
-                ABHIVOCOPEDIA
-              </div>
-
-              <p className={styles.description}>
-                LIGHT FOLDS AROUND FORM
-                <br />
-                REVEALING LAYERS OF DEPTH
-              </p>
-
-              {/* SPOTIFY MINI WIDGET */}
-              {/* OFFICIAL SPOTIFY EMBED */}
-              <div
-                className={styles.spotifyMini}
-                onPointerDown={(event) => event.stopPropagation()}
-                onClick={(event) => event.stopPropagation()}
-              >
-                {embedUrl ? (
-                  <iframe
-                    src={embedUrl}
-                    title={`Spotify: ${featuredSong.title}`}
-                    loading="lazy"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <div className={styles.playerFallback}>
-                    Spotify track unavailable.
-                  </div>
-                )}
-              </div>
-
-              {/* LUMEN TOGGLE */}
-              <button
-                type="button"
-                className={styles.luminousToggle}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  setLumenOn((current) => !current)
-                }}
-                aria-pressed={lumenOn}
-                aria-label={
-                  lumenOn
-                    ? 'Deactivate Lumen'
-                    : 'Activate Lumen'
-                }
-              >
-                <span className={styles.luminousToggleRail}>
-                  <span className={styles.luminousHandle} />
-                </span>
-
-                <span className={styles.luminousToggleLabel}>
-                  {lumenOn
-                    ? 'DEACTIVATE LUMEN'
-                    : 'ACTIVATE LUMEN'}
-                </span>
-              </button>
-            </div>
+          <div className={styles.darken}>
+            <div className={styles.sl} />
+            <div className={styles.ll} />
+            <div className={styles.slt} />
+            <div className={styles.srt} />
           </div>
         </div>
 
         {/* =====================================================
-            BACK — SPOTIFY
+            CONTENT
         ===================================================== */}
-        <div className={`${styles.face} ${styles.back}`}>
-          <div className={styles.playerTop}>
-            <span className={styles.playerEyebrow}>
-              NOW PLAYING
-            </span>
-
-            <span className={styles.spotifyBadge}>
-              SPOTIFY
-            </span>
+        <div className={styles.content}>
+          <div className={styles.topLabel}>
+            PROFILE / SYSTEM
           </div>
 
-          <div className={styles.playerIdentity}>
-            <div className={styles.musicDot}>
-              <span />
-              <span />
-              <span />
+          <div className={styles.bottom}>
+            <div className={styles.title}>
+              ABHIVOCOPEDIA
             </div>
 
-            <div>
-              <strong>{featuredSong.title}</strong>
-              <span>{featuredSong.artist}</span>
-            </div>
-          </div>
-
-          <div className={styles.spotifyFrame}>
-            {embedUrl ? (
-              <iframe
-                src={embedUrl}
-                title={`${featuredSong.title} by ${featuredSong.artist}`}
-                loading="lazy"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                allowFullScreen
-              />
-            ) : (
-              <div className={styles.playerFallback}>
-                <p>Spotify track unavailable.</p>
-              </div>
-            )}
-          </div>
-
-          <div className={styles.playerFooter}>
-            <a
-              href={featuredSong.spotifyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.spotifyLink}
-              onClick={(event) => event.stopPropagation()}
-            >
-              OPEN IN SPOTIFY
-              <span>↗</span>
-            </a>
-
-            <button
-              type="button"
-              className={styles.flipBack}
+            {/* =================================================
+                REAL SPOTIFY EMBED
+            ================================================= */}
+            <div
+              className={styles.spotifyMini}
+              onPointerDown={(event) => {
+                event.stopPropagation()
+              }}
               onClick={(event) => {
                 event.stopPropagation()
-                setFlipped(false)
               }}
             >
-              FLIP BACK
-              <span>↩</span>
+              {embedUrl ? (
+                <iframe
+                  key={`${instanceId}-${trackId}`}
+                  src={embedUrl}
+                  title={`Spotify player for ${featuredSong.title}`}
+                  loading="lazy"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : (
+                <div className={styles.playerFallback}>
+                  Spotify track unavailable.
+                </div>
+              )}
+            </div>
+
+            <p className={styles.description}>
+              LIGHT FOLDS AROUND FORM
+              <br />
+              REVEALING LAYERS OF DEPTH
+            </p>
+
+            {/* =================================================
+                LUMEN CONTROL
+            ================================================= */}
+            <button
+              type="button"
+              className={styles.luminousToggle}
+              onClick={() => {
+                setLumenOn((current) => !current)
+              }}
+              aria-pressed={lumenOn}
+            >
+              <span className={styles.luminousToggleRail}>
+                <span className={styles.luminousHandle} />
+              </span>
+
+              <span className={styles.luminousToggleLabel}>
+                {lumenOn
+                  ? 'DEACTIVATE LUMEN'
+                  : 'ACTIVATE LUMEN'}
+              </span>
             </button>
           </div>
         </div>
