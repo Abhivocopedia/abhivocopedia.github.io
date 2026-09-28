@@ -109,26 +109,28 @@ export function LuminousProfileCard() {
               </p>
 
               {/* SPOTIFY MINI WIDGET */}
-              {/* OFFICIAL SPOTIFY EMBED */}
-              <div
+              <button
+                type="button"
                 className={styles.spotifyMini}
-                onPointerDown={(event) => event.stopPropagation()}
-                onClick={(event) => event.stopPropagation()}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  setFlipped(true)
+                }}
+                aria-label={`Open Spotify player for ${featuredSong.title}`}
               >
-                {embedUrl ? (
-                  <iframe
-                    src={embedUrl}
-                    title={`Spotify: ${featuredSong.title}`}
-                    loading="lazy"
-                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (
-                  <div className={styles.playerFallback}>
-                    Spotify track unavailable.
-                  </div>
-                )}
-              </div>
+                <span className={styles.spotifyArtwork}>
+                  ♪
+                </span>
+
+                <span className={styles.spotifyInfo}>
+                  <strong>{featuredSong.title}</strong>
+                  <span>{featuredSong.artist}</span>
+                </span>
+
+                <span className={styles.spotifyPlay}>
+                  ▶
+                </span>
+              </button>
 
               {/* LUMEN TOGGLE */}
               <button
